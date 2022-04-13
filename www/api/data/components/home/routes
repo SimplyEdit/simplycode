@@ -1,0 +1,3 @@
+'/' : function(params) {
+        document.location.hash="presets";
+}

@@ -1,0 +1,416 @@
+<!DOCTYPE HTML>
+<html lang="nl">
+        <head>
+		<link rel="stylesheet" href="/css/style.css">
+		<link rel="stylesheet" href="/css/extra.css">
+                <script type="text/javascript">
+                        var simplyDataApi = {};
+                        var simplyApp = {};
+
+                        window.addEventListener("simply-content-loaded", function() {
+                                simply.bind = false;
+
+                                var simplyRawApi = {
+                                        url : "/api/",
+                                        headers : {
+                                                'Accept': 'application/json',
+                                                'Content-Type': 'application/json'
+                                        },
+                                        encodeGetParams : function(params) {
+                                                if (!params) {
+                                                        return "";
+                                                }
+                                                return Object.entries(params).map(function(keyvalue) {
+                                                        return "?" + keyvalue.map(encodeURIComponent).join("=")
+                                                }).join("&");
+                                        },
+                                        get : function(endpoint, params={}) {
+                                                if (!params.token && editor.pageData.token) {
+                                                        params.token = editor.pageData.token;
+                                                }
+                                                if (params.token) {
+                                                        this.headers['Authorization'] = "Bearer " + params.token;
+                                                        delete params.token;
+                                                } else {
+                                                        delete this.headers.Authentication;
+                                                }
+                                                return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
+                                                        mode : 'cors',
+                                                        headers: this.headers
+                                                });
+                                        },
+                                        post : function(endpoint, params={}) {
+                                                if (!params.token && editor.pageData.token) {
+                                                        params.token = editor.pageData.token;
+                                                }
+                                                if (params.token) {
+                                                        this.headers['Authorization'] = "Bearer " + params.token;
+                                                        delete params.token;
+                                                } else {
+                                                        delete this.headers.Authentication;
+                                                }
+                                                return fetch(simplyRawApi.url + endpoint + "/", {
+                                                        mode : 'cors',
+                                                        headers: this.headers,
+                                                        method: "POST",
+                                                        body: JSON.stringify(params, null, "\t")
+                                                });
+                                        },
+                                        postRaw : function(endpoint, params={}, body) {
+                                                if (!params.token && editor.pageData.token) {
+                                                        params.token = editor.pageData.token;
+                                                }
+                                                if (params.token) {
+                                                        this.headers['Authorization'] = "Bearer " + params.token;
+                                                        delete params.token;
+                                                } else {
+                                                        delete this.headers.Authentication;
+                                                }
+                                                return fetch(simplyRawApi.url + endpoint + "/", {
+                                                        mode : 'cors',
+                                                        headers: this.headers,
+                                                        method: "POST",
+                                                        body: body
+                                                });
+                                        },
+                                        put : function(endpoint, params={}) {
+                                                if (!params.token && editor.pageData.token) {
+                                                        params.token = editor.pageData.token;
+                                                }
+                                                if (params.token) {
+                                                        this.headers['Authorization'] = "Bearer " + params.token;
+                                                        delete params.token;
+                                                } else {
+                                                        delete this.headers.Authentication;
+                                                }
+                                                return fetch(simplyRawApi.url + endpoint + "/", {
+                                                        mode: 'cors',
+                                                        headers: this.headers,
+                                                        method: "PUT",
+                                                        body: JSON.stringify(params, null, "\t")
+                                                });
+                                        },
+                                        putRaw : function(endpoint, params={}, body) {
+                                                if (!params.token && editor.pageData.token) {
+                                                        params.token = editor.pageData.token;
+                                                }
+                                                if (params.token) {
+                                                        this.headers['Authorization'] = "Bearer " + params.token;
+                                                        delete params.token;
+                                                } else {
+                                                        delete this.headers.Authentication;
+                                                }
+                                                return fetch(simplyRawApi.url + endpoint + "/", {
+                                                        mode: 'cors',
+                                                        headers: this.headers,
+                                                        method: "PUT",
+                                                        body: body
+                                                });
+                                        },
+                                        delete : function(endpoint, params={}) {
+                                                if (!params.token && editor.pageData.token) {
+                                                        params.token = editor.pageData.token;
+                                                }
+                                                if (params.token) {
+                                                        this.headers['Authorization'] = "Bearer " + params.token;
+                                                        delete params.token;
+                                                } else {
+                                                        delete this.headers.Authentication;
+                                                }
+                                                return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
+                                                        mode : 'cors',
+                                                        headers: this.headers,
+                                                        method: "DELETE"
+                                                });
+                                        }
+                                };
+
+                                simplyDataApi = {
+					listComponents : function() {
+						return simplyRawApi.get("components")
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("listComponents failed", response.status);
+						});
+					},
+					getComponent : function(component) {
+						return simplyRawApi.get("components/" + component)
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("getComponent failed", response.status);
+						});
+					},
+					saveComponentPart : function(component, part, contents) {
+						return simplyRawApi.putRaw("components/" + component + "/" + part, {}, contents)
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("saveComponentPart failed", response.status);
+						});
+					},
+					deleteComponent : function(component) {
+						return simplyRawApi.delete("components/" + component)
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("deleteComponent failed", response.status);
+						});
+					}
+                                };
+
+                                simplyApp = simply.app({
+                                        routes: {
+						'#components/:component' : function(params) {
+							simplyApp.actions.getComponent(params.component)
+							.then(function(parts) {
+								var component = {
+									id : params.component
+								};
+
+								parts = parts.filter(function(part) {
+									if (part.id == "meta") {
+										component = JSON.parse(part.contents);
+										component.id = params.component;
+										return false;
+									}
+									return true;
+								});
+
+								editor.pageData.component = component;
+								editor.pageData.parts = parts;
+								editor.pageData.page = "Edit component";
+							});
+						},
+						'#components' : function() {
+							simplyApp.actions.listComponents()
+							.then(function(components) {
+								editor.pageData.components = components;
+								editor.pageData.page = "List components";
+							});
+						},
+						'/' : function() {
+							simplyApp.actions.listComponents()
+							.then(function(components) {
+								editor.pageData.components = components;
+								editor.pageData.page = "List components";
+							});
+						}
+                                        },
+                                        commands: {
+						saveComponent : function() {
+							simplyApp.actions.saveComponent(
+								editor.pageData.component,
+								editor.pageData.parts
+							)
+							.then(function() {
+								editor.pageData.alerts.unshift({
+									"data-simply-template" : "info",
+	                                                                "message" : "Component saved.",
+        	                                                        "state" : "new"
+								});
+							});
+						},
+						createComponent : function() {
+							var newComponent = editor.pageData.newComponent;
+							simplyApp.actions.saveComponent(
+								newComponent,
+								[
+									{"id" : "data-api"},
+									{"id" : "routes"},
+									{"id" : "actions"},
+									{"id" : "commands"},
+									{"id" : "transformers"},
+									{"id" : "data-sources"}
+								]
+							)
+							.then(function() {
+								editor.pageData.alerts.unshift({
+									"data-simply-template" : "info",
+       	                                                  	      	"message" : "Component created.",
+       		                                                        "state" : "new"
+								});
+								document.location.hash="components/" + newComponent.id;
+							});
+						},
+						deleteComponent : function() {
+							simplyApp.actions.deleteComponent(
+								editor.pageData.component.id
+							)
+							.then(function() {
+								editor.pageData.alerts.unshift({
+									"data-simply-template" : "info",
+	                                                                "message" : "Component deleted.",
+        	                                                        "state" : "new"
+								});
+								document.location.hash="components/";
+							});
+						}
+                                        },
+                                        actions: {
+	                                        listComponents : function() {
+        	                                        return simplyDataApi.listComponents();
+                	                        },
+						getComponent : function(component) {
+							return simplyDataApi.getComponent(component);
+						},
+						saveComponent : function(component, parts) {
+							var promises = [];
+							promises.push(simplyDataApi.saveComponentPart(component.id, "meta", JSON.stringify(component)));
+							parts.forEach(function(part) {
+								promises.push(simplyDataApi.saveComponentPart(component.id, part.id, part.contents));
+							});
+							
+							return Promise.all(promises)
+							.then(function() {
+								return true;
+							});
+						},
+						deleteComponent : function(component) {
+							return simplyDataApi.deleteComponent(component);
+						}
+                                        }
+                                });
+
+                                function clone(ob) {
+                                        return JSON.parse(JSON.stringify(ob));
+                                }
+
+                                function updateDataSource(name) {
+                                        document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
+                                                editor.list.applyDataSource(list, name);
+                                                list.dataBindingPaused = 0;
+                                        });
+                                };
+                        });
+                </script>
+        </head>
+        <body>
+	        <template id="header">
+			<style>
+				.simply-toasts {
+					position: relative;
+					z-index: 101;
+				}
+			</style>
+			<div class="simply-toasts">
+                                <ul class="ds-toasts ds-space" data-simply-list="alerts">
+                                        <template data-simply-template="error">
+                                                <li class="ds-toast ds-toast-error ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+                                                        <div class="ds-space" data-simply-field="message"></div>
+                                                </li>
+                                        </template>
+                                        <template data-simply-template="warning">
+                                                <li class="ds-toast ds-toast-warning ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+                                                        <div class="ds-space" data-simply-field="message"></div>
+                                                </li>
+                                        </template>
+                                        <template data-simply-template="info">
+                                                <li class="ds-toast ds-toast-info ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+                                                        <div class="ds-space" data-simply-field="message"></div>
+                                                </li>
+                                        </template>
+                                </ul>
+			</div>
+                </template>
+                <header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
+                        <template data-simply-template='Header' rel="header"></template>
+                </header>
+                <!-- FIXME: hier main van maken -->
+                <div class="main" data-simply-field="page" data-simply-content="template">
+                        <template data-simply-template="List components">
+                                <main>
+                                        <h1>Components</h1>
+                                        <ul data-simply-list="components">
+                                                <template>
+                                                        <li>
+								<a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="componentLink"><span data-simply-field="id"></span></a>
+								<p data-simply-field="description"></p>
+							</li>
+                                                </template>
+                                        </ul>
+					<h1>Add component</h1>
+					<form action="#" data-simply-command="createComponent">
+						<div class="field">
+							<label>Name: <input type="text" data-simply-field="newComponent.id"></label>
+						</div>
+						<div class="field">
+							<label>Description</label>
+							<textarea data-simply-field="newComponent.description"></textarea>
+						</div>
+						<button data-simply-command="createComponent">Create</button>
+					</form>
+                                </main>
+                        </template>
+                        <template data-simply-template="Edit component">
+                                <main>
+                                        <h1>Edit component: <span data-simply-field="component.id"></span></h1>
+					<a href="#">Back</a>
+					<details>
+						<summary>Description</summary>
+						<textarea data-simply-field="component.description"></textarea>
+					</details>
+                                        <div data-simply-list="parts">
+                                                <template>
+						<details>
+							<summary data-simply-field="id"></summary>
+                                                        <textarea data-simply-field="contents"></textarea>
+                                                </details></template>
+                                        </div>
+                                        <button data-simply-command="saveComponent">Save</button>
+                                        <button data-simply-command="deleteComponent">Delete</button>
+                                </main>
+                        </template>
+                </div>
+                <script src="/js/simply.everything.js"></script>
+                <script src="/js/simply-edit.js" data-api-key="muze"></script>
+                <script>
+                        editor.transformers = {
+                                "componentLink" : {
+                                        render : function(data) {
+                                                this.simplyData = data;
+                                                return {
+                                                        href : "#components/" + data,
+                                                        innerHTML: data
+                                                };
+                                        },
+                                        extract : function(data) {
+                                                return this.simplyData;
+                                        }
+                                }
+                        };
+                </script>
+                <script>
+                        // load sorters
+                </script>
+                <script>
+                        window.addEventListener("simply-content-loaded", function() {
+                                // load datasources
+                        });
+                </script>
+                <script>
+                        var purgeTimer;
+                        function purgeToasts() {
+                                editor.pageData.alerts = [];
+                        }
+                        document.addEventListener("animationend", function(evt) {
+                                if (evt.animationName == "ds-toast-show") {
+                                        evt.target.setAttribute("data-state", "shown");
+                                        evt.target.classList.add("ds-toast-animated");
+                                }
+                                if (evt.animationName == "ds-toast-hide") {
+                                        if (purgeTimer) {
+                                                window.clearTimeout(purgeTimer);
+                                        }
+                                        purgeTimer = window.setTimeout(purgeToasts, 200);
+                                }
+                        });
+                </script>
+
+        </body>
+</html>

@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,700,700i');
+
+:root {
+	--highlight-dark: #f16623;
+	--highlight-light: #ff8003;
+	--highlight-color: #fff;
+	--highlight-background: linear-gradient( to left, var(--highlight-light), var(--highlight-dark) );
+
+	--support-dark: #2ba3b0;
+	--support-light: #4fb7c2;
+	--support-color: #fff;
+	--support-background: linear-gradient( to left, var(--support-light), var(--support-dark) );
+
+	--grey-dark: #38393c;
+	--grey-medium: #7f8185;
+	--grey-light: #e9ebec;
+	--grey-dark: #38393c;
+	--black: #000;
+	--white: #fff;
+	--grey-background: var(--grey-dark);
+
+	--font-family: 'Alegreya Sans', sans-serif;
+	--font-size: 20px;
+	--line-height: 1.5em;
+	--color: #7f8185;
+	--background: #fff;
+}
+
+/* general styling on default elements */
+
+html, body {
+	margin: 0;
+	padding: 0;
+	font-family: var(--font-family);
+	font-size: var(--font-size);
+	line-height: var(--line-height);
+	color: var(--color); 
+	background-color: var(--background);
+}
+
+h1 {
+	font-size: 2.4em;
+	font-weight: 300;
+	line-height: 1.1em;
+	margin: 0.5em 0;
+}
+
+h2 {
+	font-size: 1.6em;
+	font-weight: 400;
+	line-height: 1.1em;
+	margin: 0.5em 0;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+}
+
+/* custom styling for custom elements */
+
+.button {
+	padding: 0.5em 0.75em;
+	margin: 0.625em;
+	background: var(--support-background);
+	color: var(--support-color);
+}
+.button:first-child {
+	margin-left: 0;
+}
+.button:last-child {
+	margin-right: 0;
+}
+.button.highlight {
+	background: var(--highlight-background);
+	color: var(--highlight-color);
+}
+
+.text-content {
+	padding: 2.2375em;
+	max-width: 50em;
+}
+.text-content *:first-child {
+	margin-top: 0;
+}
+
+
+
+/* Components: Toast */
+
+:root {
+    --ds-toast-height: 60px;
+    --ds-toast-hide-delay: 3s;
+    --ds-toast-show-duration: 0.3s;
+    --ds-toast-hide-duration: 0.5s;
+    --ds-toast-margin: 20px;
+}
+
+ul.ds-toasts,
+ol.ds-toasts,
+.ds-toasts {
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 101;
+    display: block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 50%;
+    min-width: 300px;
+}
+.ds-toast,
+li.ds-toast {
+    min-width: 300px;
+    float: right;
+    clear: both;
+    margin-top: var(--ds-spacing);
+    margin-right: var(--ds-spacing);
+    background-color: var(--ds-grey-80);
+    color: var(--ds-white);
+    display: block;
+    border-left: 10px solid var(--ds-grey-50);
+    box-shadow: 4px 4px 8px var(--ds-grey-50);
+}
+.ds-toast-error,
+li.ds-toast-error {
+    border-color: var(--ds-error-color);
+}
+.ds-toast-info,
+li.ds-toast-info {
+    border-color: var(--ds-info-color);
+}
+.ds-toast-warning,
+li.ds-toast-warning {
+    border-color: var(--ds-warning-color);
+}
+
+@keyframes ds-toast-show {
+    0% {
+        transform: scaleX(0);
+        transform-origin: right;
+        opacity: 0;
+    }
+    50% {
+        transform: scaleX(0);
+        transform-origin: right;
+        opacity: 0;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        transform: scaleX(1);
+        transform-origin: right;
+        opacity: 1;
+    }
+}
+@keyframes ds-toast-hide {
+    0% {
+        transform: scaleX(1);
+        transform-origin: right;
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scaleX(0);
+        transform-origin: right;
+        opacity: 0;
+    }
+}
+@keyframes ds-toast-move {
+    0% {
+        transform: translateY(-80px); /* toast-height + toast-margin */
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+.ds-toast[data-state="new"] {
+    animation: ds-toast-show var(--ds-toast-show-duration) forwards;
+}
+.ds-toast-autohide[data-state="new"] {
+    animation: ds-toast-show var(--ds-toast-show-duration);
+    animation-delay: 0s;
+}
+.ds-toast-autohide.ds-toast-animated[data-state="shown"] {
+    animation: ds-toast-hide var(--ds-toast-hide-duration) forwards;
+    animation-delay: calc(var(--ds-toast-hide-delay) - var(--ds-toast-show-duration));
+}
+.ds-toast-autohide:not(.ds-toast-animated)[data-state="shown"] {
+    animation: ds-toast-move var(--ds-toast-show-duration), ds-toast-hide var(--ds-toast-hide-duration) forwards;
+    animation-delay: 0s, var(--ds-toast-hide-delay);
+}
+
+
+header > nav.ds-navbar-nav {
+    margin-bottom: 20px;
+    transform: scale(1.5);
+    width: 66.7%; 
+    transform-origin: top left;
+}
+header {
+    margin-bottom: 20px;
+}
+nav .ds-button {
+    margin-right: 0;
+}
+main {
+    max-height: calc(100% - 68px);
+    overflow: auto;
+    max-width: 900px;
+    margin: 0 auto;
+}

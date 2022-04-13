@@ -1,0 +1,34 @@
+{
+	"/faq/": {
+		"data-simply-page-template": "page.html",
+		"header": "Header",
+		"page": "Algemene pagina"
+	},
+	"/": {
+		"menu-nav": [
+			{
+				"link": {
+					"href": "#components",
+					"innerHTML": "Components",
+					"class": "ds-navbar-item",
+					"alt": null,
+					"title": null,
+					"name": null
+				}
+			}
+		],
+		"profile-nav": [
+			{
+				"link": {
+					"href": "#logout",
+					"innerHTML": "Uitloggen",
+					"class": "ds-navbar-item",
+					"alt": null,
+					"title": null,
+					"name": null
+				}
+			}
+		],
+		"header": "Header"
+	}
+}
