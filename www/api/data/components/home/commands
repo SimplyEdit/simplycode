@@ -1,3 +1,0 @@
-home : function() {
-        document.location.href="/server-provisioning/";
-}

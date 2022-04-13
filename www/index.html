@@ -1,131 +1,148 @@
 <!DOCTYPE HTML>
 <html lang="nl">
-        <head>
+	<head>
 		<link rel="stylesheet" href="/css/style.css">
 		<link rel="stylesheet" href="/css/extra.css">
-                <script type="text/javascript">
-                        var simplyDataApi = {};
-                        var simplyApp = {};
+		<style>
+			.sb-code-method {
+				width: 100%;
+			}
+			.sb-code-method th {
+				text-align: left;
+			}
+			.sb-code-method td {
+				vertical-align: top;
+			}
+			.sb-code-method td:first-child {
+				width: 0;
+			}
+			.sb-code-method td textarea {
+				margin-top: 5px;
+			}
+		</style>
+		<script type="text/javascript">
+			var simplyDataApi = {};
+			var simplyApp = {};
 
-                        window.addEventListener("simply-content-loaded", function() {
-                                simply.bind = false;
+			window.addEventListener("simply-content-loaded", function() {
+				simply.bind = false;
 
-                                var simplyRawApi = {
-                                        url : "/api/",
-                                        headers : {
-                                                'Accept': 'application/json',
-                                                'Content-Type': 'application/json'
-                                        },
-                                        encodeGetParams : function(params) {
-                                                if (!params) {
-                                                        return "";
-                                                }
-                                                return Object.entries(params).map(function(keyvalue) {
-                                                        return "?" + keyvalue.map(encodeURIComponent).join("=")
-                                                }).join("&");
-                                        },
-                                        get : function(endpoint, params={}) {
-                                                if (!params.token && editor.pageData.token) {
-                                                        params.token = editor.pageData.token;
-                                                }
-                                                if (params.token) {
-                                                        this.headers['Authorization'] = "Bearer " + params.token;
-                                                        delete params.token;
-                                                } else {
-                                                        delete this.headers.Authentication;
-                                                }
-                                                return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
-                                                        mode : 'cors',
-                                                        headers: this.headers
-                                                });
-                                        },
-                                        post : function(endpoint, params={}) {
-                                                if (!params.token && editor.pageData.token) {
-                                                        params.token = editor.pageData.token;
-                                                }
-                                                if (params.token) {
-                                                        this.headers['Authorization'] = "Bearer " + params.token;
-                                                        delete params.token;
-                                                } else {
-                                                        delete this.headers.Authentication;
-                                                }
-                                                return fetch(simplyRawApi.url + endpoint + "/", {
-                                                        mode : 'cors',
-                                                        headers: this.headers,
-                                                        method: "POST",
-                                                        body: JSON.stringify(params, null, "\t")
-                                                });
-                                        },
-                                        postRaw : function(endpoint, params={}, body) {
-                                                if (!params.token && editor.pageData.token) {
-                                                        params.token = editor.pageData.token;
-                                                }
-                                                if (params.token) {
-                                                        this.headers['Authorization'] = "Bearer " + params.token;
-                                                        delete params.token;
-                                                } else {
-                                                        delete this.headers.Authentication;
-                                                }
-                                                return fetch(simplyRawApi.url + endpoint + "/", {
-                                                        mode : 'cors',
-                                                        headers: this.headers,
-                                                        method: "POST",
-                                                        body: body
-                                                });
-                                        },
-                                        put : function(endpoint, params={}) {
-                                                if (!params.token && editor.pageData.token) {
-                                                        params.token = editor.pageData.token;
-                                                }
-                                                if (params.token) {
-                                                        this.headers['Authorization'] = "Bearer " + params.token;
-                                                        delete params.token;
-                                                } else {
-                                                        delete this.headers.Authentication;
-                                                }
-                                                return fetch(simplyRawApi.url + endpoint + "/", {
-                                                        mode: 'cors',
-                                                        headers: this.headers,
-                                                        method: "PUT",
-                                                        body: JSON.stringify(params, null, "\t")
-                                                });
-                                        },
-                                        putRaw : function(endpoint, params={}, body) {
-                                                if (!params.token && editor.pageData.token) {
-                                                        params.token = editor.pageData.token;
-                                                }
-                                                if (params.token) {
-                                                        this.headers['Authorization'] = "Bearer " + params.token;
-                                                        delete params.token;
-                                                } else {
-                                                        delete this.headers.Authentication;
-                                                }
-                                                return fetch(simplyRawApi.url + endpoint + "/", {
-                                                        mode: 'cors',
-                                                        headers: this.headers,
-                                                        method: "PUT",
-                                                        body: body
-                                                });
-                                        },
-                                        delete : function(endpoint, params={}) {
-                                                if (!params.token && editor.pageData.token) {
-                                                        params.token = editor.pageData.token;
-                                                }
-                                                if (params.token) {
-                                                        this.headers['Authorization'] = "Bearer " + params.token;
-                                                        delete params.token;
-                                                } else {
-                                                        delete this.headers.Authentication;
-                                                }
-                                                return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
-                                                        mode : 'cors',
-                                                        headers: this.headers,
-                                                        method: "DELETE"
-                                                });
-                                        }
-                                };
+				var simplyRawApi = {
+					url : "/api/",
+					headers : {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json'
+					},
+					encodeGetParams : function(params) {
+						if (!params) {
+							return "";
+						}
+						return Object.entries(params).map(function(keyvalue) {
+							return "?" + keyvalue.map(encodeURIComponent).join("=")
+						}).join("&");
+					},
+					get : function(endpoint, params={}) {
+						if (!params.token && editor.pageData.token) {
+							params.token = editor.pageData.token;
+						}
+						if (params.token) {
+							this.headers['Authorization'] = "Bearer " + params.token;
+							delete params.token;
+						} else {
+							delete this.headers.Authentication;
+						}
+						return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
+							mode : 'cors',
+							headers: this.headers
+						});
+					},
+					post : function(endpoint, params={}) {
+						if (!params.token && editor.pageData.token) {
+							params.token = editor.pageData.token;
+						}
+						if (params.token) {
+							this.headers['Authorization'] = "Bearer " + params.token;
+							delete params.token;
+						} else {
+							delete this.headers.Authentication;
+						}
+						return fetch(simplyRawApi.url + endpoint + "/", {
+							mode : 'cors',
+							headers: this.headers,
+							method: "POST",
+							body: JSON.stringify(params, null, "\t")
+						});
+					},
+					postRaw : function(endpoint, params={}, body) {
+						if (!params.token && editor.pageData.token) {
+							params.token = editor.pageData.token;
+						}
+						if (params.token) {
+							this.headers['Authorization'] = "Bearer " + params.token;
+							delete params.token;
+						} else {
+							delete this.headers.Authentication;
+						}
+						return fetch(simplyRawApi.url + endpoint + "/", {
+							mode : 'cors',
+							headers: this.headers,
+							method: "POST",
+							body: body
+						});
+					},
+					put : function(endpoint, params={}) {
+						if (!params.token && editor.pageData.token) {
+							params.token = editor.pageData.token;
+						}
+						if (params.token) {
+							this.headers['Authorization'] = "Bearer " + params.token;
+							delete params.token;
+						} else {
+							delete this.headers.Authentication;
+						}
+						return fetch(simplyRawApi.url + endpoint + "/", {
+							mode: 'cors',
+							headers: this.headers,
+							method: "PUT",
+							body: JSON.stringify(params, null, "\t")
+						});
+					},
+					putRaw : function(endpoint, params={}, body) {
+						if (!params.token && editor.pageData.token) {
+							params.token = editor.pageData.token;
+						}
+						if (params.token) {
+							this.headers['Authorization'] = "Bearer " + params.token;
+							delete params.token;
+						} else {
+							delete this.headers.Authentication;
+						}
+						return fetch(simplyRawApi.url + endpoint + "/", {
+							mode: 'cors',
+							headers: this.headers,
+							method: "PUT",
+							body: body
+						});
+					},
+					delete : function(endpoint, params={}) {
+						if (!params.token && editor.pageData.token) {
+							params.token = editor.pageData.token;
+						}
+						if (params.token) {
+							this.headers['Authorization'] = "Bearer " + params.token;
+							delete params.token;
+						} else {
+							delete this.headers.Authentication;
+						}
+						return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
+							mode : 'cors',
+							headers: this.headers,
+							method: "DELETE"
+						});
+					}
+				};
 
-                                simplyDataApi = {
+				simplyDataApi = {
 					listComponents : function() {
 						return simplyRawApi.get("components")
 						.then(function(response) {
@@ -162,10 +179,10 @@
 							throw new Error("deleteComponent failed", response.status);
 						});
 					}
-                                };
+				};
 
-                                simplyApp = simply.app({
-                                        routes: {
+				simplyApp = simply.app({
+					routes: {
 						'#components/:component' : function(params) {
 							simplyApp.actions.getComponent(params.component)
 							.then(function(parts) {
@@ -181,7 +198,20 @@
 									}
 									return true;
 								});
-
+								if (typeof component.parts === "undefined") {
+									component.parts = {
+										dataApi : [],
+ 										routes : [],
+										actions : [],
+										commands : [],
+										transformers : [],
+										dataSources : [],
+										pageTemplates : []
+									};
+								}
+								parts.forEach(function(part) {
+									component.parts[part.id] = JSON.parse(part.contents);
+								});
 								editor.pageData.component = component;
 								editor.pageData.parts = parts;
 								editor.pageData.page = "Edit component";
@@ -201,39 +231,26 @@
 								editor.pageData.page = "List components";
 							});
 						}
-                                        },
-                                        commands: {
+					},
+					commands: {
 						saveComponent : function() {
-							simplyApp.actions.saveComponent(
-								editor.pageData.component,
-								editor.pageData.parts
-							)
+							simplyApp.actions.saveComponent(editor.pageData.component)
 							.then(function() {
 								editor.pageData.alerts.unshift({
 									"data-simply-template" : "info",
-	                                                                "message" : "Component saved.",
-        	                                                        "state" : "new"
+									"message" : "Component saved.",
+									"state" : "new"
 								});
 							});
 						},
 						createComponent : function() {
 							var newComponent = editor.pageData.newComponent;
-							simplyApp.actions.saveComponent(
-								newComponent,
-								[
-									{"id" : "data-api"},
-									{"id" : "routes"},
-									{"id" : "actions"},
-									{"id" : "commands"},
-									{"id" : "transformers"},
-									{"id" : "data-sources"}
-								]
-							)
+							simplyApp.actions.saveComponent(newComponent)
 							.then(function() {
 								editor.pageData.alerts.unshift({
 									"data-simply-template" : "info",
-       	                                                  	      	"message" : "Component created.",
-       		                                                        "state" : "new"
+       							  	      	"message" : "Component created.",
+       									"state" : "new"
 								});
 								document.location.hash="components/" + newComponent.id;
 							});
@@ -245,27 +262,60 @@
 							.then(function() {
 								editor.pageData.alerts.unshift({
 									"data-simply-template" : "info",
-	                                                                "message" : "Component deleted.",
-        	                                                        "state" : "new"
+									"message" : "Component deleted.",
+									"state" : "new"
 								});
 								document.location.hash="components/";
 							});
+						},
+						addDataApiMethod : function() {
+							editor.pageData.component.parts.dataApi.push({});
+						},
+						addRoute : function() {
+							editor.pageData.component.parts.routes.push({});
+						},
+						addAction : function() {
+							editor.pageData.component.parts.actions.push({});
+						},
+						addCommand : function() {
+							editor.pageData.component.parts.commands.push({});
+						},
+						addTransformer : function() {
+							editor.pageData.component.parts.transformers.push({});
+						},
+						addDataSource : function() {
+							editor.pageData.component.parts.dataSources.push({});
+						},
+						addPageTemplate : function() {
+							editor.pageData.component.parts.pageTemplates.push({});
+						},
+						deleteEntry : function(el) {
+							var target = el;
+							while (!target.hasAttribute("data-simply-list-item")) {
+								target = target.parentNode;
+							}
+							target.parentNode.removeChild(target);
 						}
-                                        },
-                                        actions: {
-	                                        listComponents : function() {
-        	                                        return simplyDataApi.listComponents();
-                	                        },
+					},
+					actions: {
+						listComponents : function() {
+							return simplyDataApi.listComponents();
+						},
 						getComponent : function(component) {
 							return simplyDataApi.getComponent(component);
 						},
-						saveComponent : function(component, parts) {
+						saveComponent : function(component) {
 							var promises = [];
-							promises.push(simplyDataApi.saveComponentPart(component.id, "meta", JSON.stringify(component)));
-							parts.forEach(function(part) {
-								promises.push(simplyDataApi.saveComponentPart(component.id, part.id, part.contents));
-							});
-							
+							for (var name in component.parts) {
+								if (component.parts[name].length) { 
+									promises.push(simplyDataApi.saveComponentPart(component.id, name, JSON.stringify(component.parts[name])));
+								}
+							};
+
+							var meta = clone(component);
+							delete meta.parts;
+							promises.push(simplyDataApi.saveComponentPart(meta.id, "meta", JSON.stringify(meta)));
+
 							return Promise.all(promises)
 							.then(function() {
 								return true;
@@ -274,24 +324,24 @@
 						deleteComponent : function(component) {
 							return simplyDataApi.deleteComponent(component);
 						}
-                                        }
-                                });
+					}
+				});
 
-                                function clone(ob) {
-                                        return JSON.parse(JSON.stringify(ob));
-                                }
+				function clone(ob) {
+					return JSON.parse(JSON.stringify(ob));
+				}
 
-                                function updateDataSource(name) {
-                                        document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
-                                                editor.list.applyDataSource(list, name);
-                                                list.dataBindingPaused = 0;
-                                        });
-                                };
-                        });
-                </script>
-        </head>
-        <body>
-	        <template id="header">
+				function updateDataSource(name) {
+					document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
+						editor.list.applyDataSource(list, name);
+						list.dataBindingPaused = 0;
+					});
+				};
+			});
+		</script>
+	</head>
+	<body>
+		<template id="header">
 			<style>
 				.simply-toasts {
 					position: relative;
@@ -299,41 +349,41 @@
 				}
 			</style>
 			<div class="simply-toasts">
-                                <ul class="ds-toasts ds-space" data-simply-list="alerts">
-                                        <template data-simply-template="error">
-                                                <li class="ds-toast ds-toast-error ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-                                                        <div class="ds-space" data-simply-field="message"></div>
-                                                </li>
-                                        </template>
-                                        <template data-simply-template="warning">
-                                                <li class="ds-toast ds-toast-warning ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-                                                        <div class="ds-space" data-simply-field="message"></div>
-                                                </li>
-                                        </template>
-                                        <template data-simply-template="info">
-                                                <li class="ds-toast ds-toast-info ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-                                                        <div class="ds-space" data-simply-field="message"></div>
-                                                </li>
-                                        </template>
-                                </ul>
+				<ul class="ds-toasts ds-space" data-simply-list="alerts">
+					<template data-simply-template="error">
+						<li class="ds-toast ds-toast-error ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+							<div class="ds-space" data-simply-field="message"></div>
+						</li>
+					</template>
+					<template data-simply-template="warning">
+						<li class="ds-toast ds-toast-warning ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+							<div class="ds-space" data-simply-field="message"></div>
+						</li>
+					</template>
+					<template data-simply-template="info">
+						<li class="ds-toast ds-toast-info ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+							<div class="ds-space" data-simply-field="message"></div>
+						</li>
+					</template>
+				</ul>
 			</div>
-                </template>
-                <header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
-                        <template data-simply-template='Header' rel="header"></template>
-                </header>
-                <!-- FIXME: hier main van maken -->
-                <div class="main" data-simply-field="page" data-simply-content="template">
-                        <template data-simply-template="List components">
-                                <main>
-                                        <h1>Components</h1>
-                                        <ul data-simply-list="components">
-                                                <template>
-                                                        <li>
+		</template>
+		<header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
+			<template data-simply-template='Header' rel="header"></template>
+		</header>
+		<!-- FIXME: hier main van maken -->
+		<div class="main" data-simply-field="page" data-simply-content="template">
+			<template data-simply-template="List components">
+				<main>
+					<h1>Components</h1>
+					<ul data-simply-list="components">
+						<template>
+							<li>
 								<a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="componentLink"><span data-simply-field="id"></span></a>
 								<p data-simply-field="description"></p>
 							</li>
-                                                </template>
-                                        </ul>
+						</template>
+					</ul>
 					<h1>Add component</h1>
 					<form action="#" data-simply-command="createComponent">
 						<div class="field">
@@ -345,72 +395,291 @@
 						</div>
 						<button data-simply-command="createComponent">Create</button>
 					</form>
-                                </main>
-                        </template>
-                        <template data-simply-template="Edit component">
-                                <main>
-                                        <h1>Edit component: <span data-simply-field="component.id"></span></h1>
+				</main>
+			</template>
+			<template data-simply-template="Edit component">
+				<main>
+					<h1>Edit component: <span data-simply-field="component.id"></span></h1>
 					<a href="#">Back</a>
+					<div class="field">
+						<button data-simply-command="saveComponent">Save</button>
+       						<button data-simply-command="deleteComponent">Delete</button>
+					</div>
 					<details>
-						<summary>Description</summary>
-						<textarea data-simply-field="component.description"></textarea>
+						<summary title="Describe this component for your own use.">
+							Description
+						</summary>
+						<textarea placeholder="Describe this component" data-simply-field="component.description"></textarea>
 					</details>
-                                        <div data-simply-list="parts">
-                                                <template>
-						<details>
-							<summary data-simply-field="id"></summary>
-                                                        <textarea data-simply-field="contents"></textarea>
-                                                </details></template>
-                                        </div>
-                                        <button data-simply-command="saveComponent">Save</button>
-                                        <button data-simply-command="deleteComponent">Delete</button>
-                                </main>
-                        </template>
-                </div>
-                <script src="/js/simply.everything.js"></script>
-                <script src="/js/simply-edit.js" data-api-key="muze"></script>
-                <script>
-                        editor.transformers = {
-                                "componentLink" : {
-                                        render : function(data) {
-                                                this.simplyData = data;
-                                                return {
-                                                        href : "#components/" + data,
-                                                        innerHTML: data
-                                                };
-                                        },
-                                        extract : function(data) {
-                                                return this.simplyData;
-                                        }
-                                }
-                        };
-                </script>
-                <script>
-                        // load sorters
-                </script>
-                <script>
-                        window.addEventListener("simply-content-loaded", function() {
-                                // load datasources
-                        });
-                </script>
-                <script>
-                        var purgeTimer;
-                        function purgeToasts() {
-                                editor.pageData.alerts = [];
-                        }
-                        document.addEventListener("animationend", function(evt) {
-                                if (evt.animationName == "ds-toast-show") {
-                                        evt.target.setAttribute("data-state", "shown");
-                                        evt.target.classList.add("ds-toast-animated");
-                                }
-                                if (evt.animationName == "ds-toast-hide") {
-                                        if (purgeTimer) {
-                                                window.clearTimeout(purgeTimer);
-                                        }
-                                        purgeTimer = window.setTimeout(purgeToasts, 200);
-                                }
-                        });
-                </script>
 
-        </body>
+					<details>
+						<summary title="The Data API layer provides functions to load en store data types. Makes use of the Raw API and provides data for actions">
+							Data API
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Method</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.dataApi">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="method" placeholder="API method name, eg getItemList">
+									</td>
+									<td>
+										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addDataApiMethod">Add method</button>
+					</details>
+
+					<details>
+						<summary title="Routes provide a translation from a URL to something the app should do. Routes make use of actions to fetch or store data">
+							Routes
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Method</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.routes">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="route" placeholder="#route/:variable">
+									</td>
+									<td>
+										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addRoute">Add route</button>
+					</details>
+
+					<details>
+						<summary title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
+							Actions
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Action</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.actions">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="action" placeholder="Action name, eg getItemList">
+									</td>
+									<td>
+										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addAction">Add action</button>
+					</details>
+
+					<details>
+						<summary title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
+							Commands
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Command</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.commands">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="command" placeholder="Command name, eg getItemList">
+									</td>
+									<td>
+										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addCommand">Add command</button>
+					</details>
+
+					<details>
+						<summary title="Transformers provide a last moment change to data, just before it is rendered. Use as a value of data-simply-transform on a data-simply-field">
+							Transformers
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Transformers</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.transformers">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="command" placeholder="Transformer name, eg itemNameFromId">
+									</td>
+									<td>
+										<strong title="Render code transforms the data from what is stored into what the user sees">Render</strong><br>
+										<textarea data-simply-field="render-code" placeholder="function(data) {...}"></textarea>
+										<strong title="Extract takes the data as provided from the DOM and transforms it for storage">Extract</strong><br>
+										<textarea data-simply-field="extract-code" placeholder="function(data) {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addTransformer">Add transformer</button>
+					</details>
+
+					<details>
+						<summary title="Data sources provide list information from an external data source. Use this to provide lists that are not part of the subject of the page. Used as data-simply-data on data-simply-lists">
+							Data sources
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Data source</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.dataSources">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="dataSource" placeholder="Data source name, eg itemList">
+									</td>
+									<td>
+										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addDataSource">Add data source</button>
+					</details>
+
+					<details>
+						<summary title="These templates are used in routes to set the HTML of the requested page.">
+							Page HTML template
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Page</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.pageTemplates">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="page" placeholder="Page name">
+									</td>
+									<td>
+										<textarea data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addPageTemplate">Add page HTML template</button>
+					</details>
+
+					<button data-simply-command="saveComponent">Save</button>
+					<button data-simply-command="deleteComponent">Delete</button>
+				</main>
+			</template>
+		</div>
+		<script src="/js/simply.everything.js"></script>
+		<script src="/js/simply-edit.js" data-api-key="muze"></script>
+		<script>
+			editor.transformers = {
+				"componentLink" : {
+					render : function(data) {
+						this.simplyData = data;
+						return {
+							href : "#components/" + data,
+							innerHTML: data
+						};
+					},
+					extract : function(data) {
+						return this.simplyData;
+					}
+				}
+			};
+		</script>
+		<script>
+			// load sorters
+		</script>
+		<script>
+			window.addEventListener("simply-content-loaded", function() {
+				// load datasources
+			});
+		</script>
+		<script>
+			var purgeTimer;
+			function purgeToasts() {
+				editor.pageData.alerts = [];
+			}
+			document.addEventListener("animationend", function(evt) {
+				if (evt.animationName == "ds-toast-show") {
+					evt.target.setAttribute("data-state", "shown");
+					evt.target.classList.add("ds-toast-animated");
+				}
+				if (evt.animationName == "ds-toast-hide") {
+					if (purgeTimer) {
+						window.clearTimeout(purgeTimer);
+					}
+					purgeTimer = window.setTimeout(purgeToasts, 200);
+				}
+			});
+		</script>
+	</body>
 </html>
