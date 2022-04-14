@@ -89,7 +89,7 @@
 				}
 			break;
 			case 'DELETE':
-				if (filesystem::exists($path)) {
+				if (filesystem::exists($path) || filesystem::exists($dirname . "/" . $filename)) {
 					list($realdir, $realfile) = filesystem::realpaths($dirname, $filename);
 
 					if (is_dir($realfile)) {
@@ -104,13 +104,13 @@
 							filesystem::delete($path, $file);
 						}
 						filesystem::delete($path);
-						output('deleted',200);
+						output('deleted', 200);
 					} else {
 						filesystem::delete($dirname, $filename);
-						output('deleted',200);
+						output('deleted', 200);
 					}
 				} else {
-					output('not found', 404);
+					output('not found', 4040);
 				}
 			break;
 		}

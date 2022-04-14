@@ -1,0 +1,1 @@
+[{"method":"listComponents ","code":"function() {\n  return simplyRawApi.get(\"components\")\n  .then(function(response) {\n    if (response.status === 200) {\n      return response.json();\n    }\n    throw new Error(\"listComponents failed\", response.status);\n  });\n}"}]
