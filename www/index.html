@@ -13,7 +13,8 @@
 			.sb-code-method td {
 				vertical-align: top;
 			}
-			.sb-code-method td:first-child {
+			.sb-code-method td:first-child,
+			.sb-code-method td:last-child {
 				width: 0;
 			}
 			.sb-code-method td textarea {
@@ -170,6 +171,15 @@
 							throw new Error("saveComponentPart failed", response.status);
 						});
 					},
+					deleteComponentPart : function(component, part) {
+						return simplyRawApi.delete("components/" + component + "/" + part)
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("deleteComponentPart failed", response.status);
+						});
+					},
 					deleteComponent : function(component) {
 						return simplyRawApi.delete("components/" + component)
 						.then(function(response) {
@@ -268,26 +278,33 @@
 								document.location.hash="components/";
 							});
 						},
-						addDataApiMethod : function() {
+						addDataApiMethod : function(el) {
 							editor.pageData.component.parts.dataApi.push({});
+							simplyApp.commands.codeMirror(el.parentNode); // FIXME: decouple from this code;
 						},
-						addRoute : function() {
+						addRoute : function(el) {
 							editor.pageData.component.parts.routes.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
 						},
-						addAction : function() {
+						addAction : function(el) {
 							editor.pageData.component.parts.actions.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
 						},
-						addCommand : function() {
+						addCommand : function(el) {
 							editor.pageData.component.parts.commands.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
 						},
-						addTransformer : function() {
+						addTransformer : function(el) {
 							editor.pageData.component.parts.transformers.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
 						},
-						addDataSource : function() {
+						addDataSource : function(el) {
 							editor.pageData.component.parts.dataSources.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
 						},
-						addPageTemplate : function() {
+						addPageTemplate : function(el) {
 							editor.pageData.component.parts.pageTemplates.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						deleteEntry : function(el) {
 							var target = el;
@@ -295,6 +312,28 @@
 								target = target.parentNode;
 							}
 							target.parentNode.removeChild(target);
+						},
+						codeMirror : function(el) {
+							if (el.parentNode.hasAttribute("open")) {
+								el.parentNode.removeAttribute("open");
+							} else {
+								el.parentNode.setAttribute("open", "");
+							}
+							var textareas = el.parentNode.querySelectorAll("textarea[data-codemirror-mode]");
+							textareas.forEach(function(textarea) {
+								var mode = "javascript";
+								if (textarea.hasAttribute("data-codemirror-mode")) {
+									mode = textarea.getAttribute("data-codemirror-mode");
+								}
+								var cm = CodeMirror.fromTextArea(textarea, {
+									lineNumbers: true,
+									theme: "base16-dark",
+									mode: mode
+								});
+								cm.on("change", function(event) {
+									cm.getTextArea().dataBinding.set(cm.getValue());
+								});
+							});
 						}
 					},
 					actions: {
@@ -309,6 +348,12 @@
 							for (var name in component.parts) {
 								if (component.parts[name].length) { 
 									promises.push(simplyDataApi.saveComponentPart(component.id, name, JSON.stringify(component.parts[name])));
+								} else {
+									editor.pageData.parts.forEach(function(part) {
+										if (part.id == name) {
+		 									promises.push(simplyDataApi.deleteComponentPart(component.id, name));
+										}
+									});
 								}
 							};
 
@@ -413,7 +458,7 @@
 					</details>
 
 					<details>
-						<summary title="The Data API layer provides functions to load en store data types. Makes use of the Raw API and provides data for actions">
+						<summary data-simply-command="codeMirror" title="The Data API layer provides functions to load en store data types. Makes use of the Raw API and provides data for actions">
 							Data API
 						</summary>
 						<table class="sb-code-method">
@@ -431,7 +476,7 @@
 										<input data-simply-field="method" placeholder="API method name, eg getItemList">
 									</td>
 									<td>
-										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
 									</td>
 									<td>
 										<button data-simply-command="deleteEntry">Delete</button>
@@ -444,13 +489,13 @@
 					</details>
 
 					<details>
-						<summary title="Routes provide a translation from a URL to something the app should do. Routes make use of actions to fetch or store data">
+						<summary data-simply-command="codeMirror" title="Routes provide a translation from a URL to something the app should do. Routes make use of actions to fetch or store data">
 							Routes
 						</summary>
 						<table class="sb-code-method">
 							<thead>
 								<tr>
-									<th>Method</th>
+									<th>Route</th>
 									<th>Code</th>
 									<th></th>
 								</tr>
@@ -462,7 +507,7 @@
 										<input data-simply-field="route" placeholder="#route/:variable">
 									</td>
 									<td>
-										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
 									</td>
 									<td>
 										<button data-simply-command="deleteEntry">Delete</button>
@@ -475,7 +520,7 @@
 					</details>
 
 					<details>
-						<summary title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
+						<summary data-simply-command="codeMirror" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
 							Actions
 						</summary>
 						<table class="sb-code-method">
@@ -493,7 +538,7 @@
 										<input data-simply-field="action" placeholder="Action name, eg getItemList">
 									</td>
 									<td>
-										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
 									</td>
 									<td>
 										<button data-simply-command="deleteEntry">Delete</button>
@@ -506,7 +551,7 @@
 					</details>
 
 					<details>
-						<summary title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
+						<summary data-simply-command="codeMirror" title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
 							Commands
 						</summary>
 						<table class="sb-code-method">
@@ -524,7 +569,7 @@
 										<input data-simply-field="command" placeholder="Command name, eg getItemList">
 									</td>
 									<td>
-										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
 									</td>
 									<td>
 										<button data-simply-command="deleteEntry">Delete</button>
@@ -537,13 +582,13 @@
 					</details>
 
 					<details>
-						<summary title="Transformers provide a last moment change to data, just before it is rendered. Use as a value of data-simply-transform on a data-simply-field">
+						<summary data-simply-command="codeMirror" title="Transformers provide a last moment change to data, just before it is rendered. Use as a value of data-simply-transform on a data-simply-field">
 							Transformers
 						</summary>
 						<table class="sb-code-method">
 							<thead>
 								<tr>
-									<th>Transformers</th>
+									<th>Transformer</th>
 									<th>Code</th>
 									<th></th>
 								</tr>
@@ -556,9 +601,9 @@
 									</td>
 									<td>
 										<strong title="Render code transforms the data from what is stored into what the user sees">Render</strong><br>
-										<textarea data-simply-field="render-code" placeholder="function(data) {...}"></textarea>
+										<textarea data-codemirror-mode="javascript" data-simply-field="render-code" placeholder="function(data) {...}"></textarea>
 										<strong title="Extract takes the data as provided from the DOM and transforms it for storage">Extract</strong><br>
-										<textarea data-simply-field="extract-code" placeholder="function(data) {...}"></textarea>
+										<textarea data-codemirror-mode="javascript" data-simply-field="extract-code" placeholder="function(data) {...}"></textarea>
 									</td>
 									<td>
 										<button data-simply-command="deleteEntry">Delete</button>
@@ -571,7 +616,7 @@
 					</details>
 
 					<details>
-						<summary title="Data sources provide list information from an external data source. Use this to provide lists that are not part of the subject of the page. Used as data-simply-data on data-simply-lists">
+						<summary data-simply-command="codeMirror" title="Data sources provide list information from an external data source. Use this to provide lists that are not part of the subject of the page. Used as data-simply-data on data-simply-lists">
 							Data sources
 						</summary>
 						<table class="sb-code-method">
@@ -589,7 +634,7 @@
 										<input data-simply-field="dataSource" placeholder="Data source name, eg itemList">
 									</td>
 									<td>
-										<textarea data-simply-field="code" placeholder="function() {...}"></textarea>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
 									</td>
 									<td>
 										<button data-simply-command="deleteEntry">Delete</button>
@@ -602,7 +647,7 @@
 					</details>
 
 					<details>
-						<summary title="These templates are used in routes to set the HTML of the requested page.">
+						<summary data-simply-command="codeMirror" title="These templates are used in routes to set the HTML of the requested page.">
 							Page HTML template
 						</summary>
 						<table class="sb-code-method">
@@ -620,7 +665,7 @@
 										<input data-simply-field="page" placeholder="Page name">
 									</td>
 									<td>
-										<textarea data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
+										<textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
 									</td>
 									<td>
 										<button data-simply-command="deleteEntry">Delete</button>
@@ -681,5 +726,10 @@
 				}
 			});
 		</script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js" integrity="sha512-xwrAU5yhWwdTvvmMNheFn9IyuDbl/Kyghz2J3wQRDR8tyNmT8ZIYOd0V3iPYY/g4XdNPy0n/g0NvqGu9f0fPJQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" integrity="sha512-uf06llspW44/LZpHzHT6qBOIVODjWtv4MxCricRxkzvopAlSWnTf6hpZTFxuuZcuNE9CBQhqE0Seu1CoRk84nQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/base16-dark.min.css" integrity="sha512-CNZkbIVu/G4dB3YpFIZgMtE45vHp/QocgMbf6jg+DFFPLN3emncIob8ubKANmsGQ8JsnzzSVTj7WrFrnx6EgXQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js" integrity="sha512-0IM15+FEzmvrcePHk/gDCLbZnmja9DhCDUrESXPYLM4r+eDtNadxDUa5Fd/tNQGCbCoxu75TaVuvJkdmq0uh/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js" integrity="sha512-IS1FyxQkiJHT1SAvLXBaJu1UTFSIw0GT/DuzxHl69djqyLoEwGmR2davcZUnB8M7ppi9nfTGZR/vdfqmWt+i6A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	</body>
 </html>
