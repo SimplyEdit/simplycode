@@ -1,0 +1,7 @@
+- Add a Base components.
+  This is where the RawAPI, Header can go. Also where head/foot HTML things go? And asset files?
+- Rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
+  These are things that are not part of the base.
+- Rework codemirror integration so that it can be a standalone module;
+  It requires code in other modules/page templates at the moment, would be a lot nicer if that was not the case. It should be more a plugin type thing.
+- Have a way to reorganize code (sorting within a module, moving code from one module to another)
