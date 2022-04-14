@@ -20,7 +20,7 @@
 	--grey-background: var(--grey-dark);
 
 	--font-family: 'Alegreya Sans', sans-serif;
-	--font-size: 20px;
+	--font-size: 14px;
 	--line-height: 1.5em;
 	--color: #7f8185;
 	--background: #fff;
@@ -197,24 +197,4 @@ li.ds-toast-warning {
 .ds-toast-autohide:not(.ds-toast-animated)[data-state="shown"] {
     animation: ds-toast-move var(--ds-toast-show-duration), ds-toast-hide var(--ds-toast-hide-duration) forwards;
     animation-delay: 0s, var(--ds-toast-hide-delay);
-}
-
-
-header > nav.ds-navbar-nav {
-    margin-bottom: 20px;
-    transform: scale(1.5);
-    width: 66.7%; 
-    transform-origin: top left;
-}
-header {
-    margin-bottom: 20px;
-}
-nav .ds-button {
-    margin-right: 0;
-}
-main {
-    max-height: calc(100% - 68px);
-    overflow: auto;
-    max-width: 900px;
-    margin: 0 auto;
 }
