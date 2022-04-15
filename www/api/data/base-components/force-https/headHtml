@@ -1,0 +1,1 @@
+[{"name":"Forward to https","code":"<script>\n        if (document.location.protocol == \"http:\") {\n                document.location.href = document.location.href.replace(/^http:/, \"https:\");\n        }\n</script>"}]
