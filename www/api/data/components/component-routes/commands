@@ -1,0 +1,1 @@
+[{"command":"addRoute","code":"function(el) {\n  editor.pageData.component.parts.routes.push({});\n  simplyApp.commands.codeMirror(el.parentNode);\n}"}]

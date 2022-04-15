@@ -1,0 +1,1 @@
+[{"command":"addCommand","code":"function(el) {\n  editor.pageData.component.parts.commands.push({});\n  simplyApp.commands.codeMirror(el.parentNode);\n}"}]

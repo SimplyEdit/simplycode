@@ -1,0 +1,1 @@
+[{"route":"#pages","code":"function() {\n  simplyApp.actions.listPages()\n    .then(function(components) {\n    editor.pageData.components = components;\n    editor.pageData.page = \"Pages\";\n  });\n}"}]

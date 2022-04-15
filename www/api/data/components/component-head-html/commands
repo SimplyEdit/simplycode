@@ -1,0 +1,1 @@
+[{"command":"addHeadHtml","code":"function(el) {\n  editor.pageData.component.parts.headHtml.push({});\n  simplyApp.commands.codeMirror(el.parentNode);\n}"}]

@@ -1,0 +1,1 @@
+[{"command":"addTransformer","code":"function(el) {\n  editor.pageData.component.parts.transformers.push({});\n  simplyApp.commands.codeMirror(el.parentNode);\n}"}]
