@@ -306,8 +306,8 @@
 										commands : [],
 										transformers : [],
 										dataSources : [],
-										pageCss : [],
-										pageTemplates : []
+										componentCss : [],
+										componentTemplates : []
 									};
 								}
 								parts.forEach(function(part) {
@@ -553,8 +553,16 @@
 							editor.pageData.component.parts.pageTemplates.push({});
 							simplyApp.commands.codeMirror(el.parentNode);
 						},
-						addCssCollection : function(el) {
+						addComponentTemplate : function(el) {
+							editor.pageData.component.parts.componentTemplates.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
+						},
+						addPageCss : function(el) {
 							editor.pageData.component.parts.pageCss.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
+						},
+						addComponentCss : function(el) {
+							editor.pageData.component.parts.componentCss.push({});
 							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addHeadHtml : function(el) {
@@ -879,6 +887,70 @@
 				<button data-simply-command="addPageTemplate">Add page HTML template</button>
 			</details>
 		</template>
+		<template id="componentComponentTemplate">
+			<details>
+				<summary data-simply-command="codeMirror" title="These templates are used to build up page templates.">
+					Component HTML template
+				</summary>
+				<table class="sb-code-method">
+					<thead>
+						<tr>
+							<th>Template</th>
+							<th>Code</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody data-simply-list="component.parts.componentTemplates">
+					<template>
+						<tr>
+							<td>
+								<input data-simply-field="component" placeholder="Component name">
+							</td>
+							<td>
+								<textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<div>Component Html</div>"></textarea>
+							</td>
+							<td>
+								<button data-simply-command="deleteEntry">Delete</button>
+							</td>
+						</tr>
+					</template>
+					</tbody>
+				</table>
+				<button data-simply-command="addComponentTemplate">Add component HTML template</button>
+			</details>
+		</template>
+		<template id="componentComponentCss">
+			<details>
+				<summary data-simply-command="codeMirror" title="Set component CSS - this CSS is globally available.">
+					Component CSS collections
+				</summary>
+				<table class="sb-code-method">
+					<thead>
+						<tr>
+							<th>CSS collection</th>
+							<th>Styles</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody data-simply-list="component.parts.componentCss">
+					<template>
+						<tr>
+							<td>
+								<input data-simply-field="name" placeholder="Name this CSS collection">
+							</td>
+							<td>
+								<textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
+							</td>
+							<td>
+								<button data-simply-command="deleteEntry">Delete</button>
+							</td>
+						</tr>
+					</template>
+					</tbody>
+				</table>
+				<button data-simply-command="addComponentCss">Add CSS collection</button>
+			</details>
+		</template>
 		<template id="componentHeadHtml">
 			<details>
 				<summary data-simply-command="codeMirror" title="These are added to the &lt;head&gt; section of the HTML">
@@ -1068,7 +1140,7 @@
 					</template>
 					</tbody>
 				</table>
-				<button data-simply-command="addCssCollection">Add CSS collection</button>
+				<button data-simply-command="addPageCss">Add CSS collection</button>
 			</details>
 		</template>
 		<template id="componentDataApi">
@@ -1308,8 +1380,8 @@
        					<button data-simply-command="deleteComponent">Delete</button>
 					</div>
 					<div is="simply-component" rel="componentDescription"></div>
-					<div is="simply-component" rel="componentPageTemplate"></div>
-					<div is="simply-component" rel="componentPageCss"></div>
+					<div is="simply-component" rel="componentComponentTemplate"></div>
+					<div is="simply-component" rel="componentComponentCss"></div>
 					<div is="simply-component" rel="componentCommands"></div>
 					<div is="simply-component" rel="componentActions"></div>
 					<div is="simply-component" rel="componentDataApi"></div>
