@@ -3,7 +3,7 @@ Bugs:
 - after deleting a part, codemirror needs to reinitialize;
 
 TODO:
-- CSS syntax highlighting
+[v] CSS syntax highlighting
 - Add an option for adding assets? in base components/
 
 - Where do sorters go? Add them to page components at least?
@@ -56,6 +56,7 @@ Misc ideas:
 Done:
 [v] Add syntax highlighting for HTML, HTML mixed mode etc.
 [v] Add a page CSS entry
+[v] CSS syntax highlighting
 [v] reorder to frontend-first ordering, so start with html/css instead of the data api.
 [v] Add a Base components thing to get to feature complete for the server-provisioning example.
     This is where the RawAPI, Header can go.

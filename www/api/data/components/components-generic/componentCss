@@ -1,0 +1,1 @@
+[{"name":"code-method block","code":".sb-code-method {\n  width: 100%;\n}\n.sb-code-method th {\n  text-align: left;\n}\n.sb-code-method td {\n  vertical-align: top;\n}\n.sb-code-method td:first-child,\n.sb-code-method td:last-child {\n  width: 0;\n}\n.sb-code-method td textarea {\n  margin-top: 5px;\n}"}]
