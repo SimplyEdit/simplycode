@@ -144,6 +144,51 @@
 				};
 
 				simplyDataApi = {
+					listBaseComponents : function() {
+						return simplyRawApi.get("base-components")
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("listBaseComponents failed", response.status);
+						});
+					},
+					getBaseComponent : function(component) {
+						return simplyRawApi.get("base-components/" + component)
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("getBaseComponent failed", response.status);
+						});
+					},
+					saveBaseComponentPart : function(component, part, contents) {
+						return simplyRawApi.putRaw("base-components/" + component + "/" + part, {}, contents)
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("saveBaseComponentPart failed", response.status);
+						});
+					},
+					deleteBaseComponentPart : function(component, part) {
+						return simplyRawApi.delete("base-components/" + component + "/" + part)
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("deleteBaseComponentPart failed", response.status);
+						});
+					},
+					deleteBaseComponent : function(component) {
+						return simplyRawApi.delete("base-components/" + component)
+						.then(function(response) {
+							if (response.status === 200) {
+								return response.json();
+							}
+							throw new Error("deleteComponent failed", response.status);
+						});
+					},
 					listComponents : function() {
 						return simplyRawApi.get("components")
 						.then(function(response) {
@@ -216,6 +261,7 @@
 										commands : [],
 										transformers : [],
 										dataSources : [],
+										pageCss : [],
 										pageTemplates : []
 									};
 								}
@@ -232,6 +278,46 @@
 							.then(function(components) {
 								editor.pageData.components = components;
 								editor.pageData.page = "List components";
+							});
+						},
+						'#base/:component' : function(params) {
+							simplyApp.actions.getBaseComponent(params.component)
+							.then(function(parts) {
+								var component = {
+									id : params.component
+								};
+
+								parts = parts.filter(function(part) {
+									if (part.id == "meta") {
+										component = JSON.parse(part.contents);
+										component.id = params.component;
+										return false;
+									}
+									return true;
+								});
+								if (typeof component.parts === "undefined") {
+									component.parts = {
+										rawApi : [],
+ 										routes : [],
+										actions : [],
+										headHtml : [],
+										bodyHtml : [],
+										footHtml : []
+									};
+								}
+								parts.forEach(function(part) {
+									component.parts[part.id] = JSON.parse(part.contents);
+								});
+								editor.pageData.component = component;
+								editor.pageData.parts = parts;
+								editor.pageData.page = "Edit base component";
+							});
+						},
+						'#base' : function() {
+							simplyApp.actions.listBaseComponents()
+							.then(function(components) {
+								editor.pageData.components = components;
+								editor.pageData.page = "Base components";
 							});
 						},
 						'/' : function() {
@@ -278,6 +364,41 @@
 								document.location.hash="components/";
 							});
 						},
+						saveBaseComponent : function() {
+							simplyApp.actions.saveBaseComponent(editor.pageData.component)
+							.then(function() {
+								editor.pageData.alerts.unshift({
+									"data-simply-template" : "info",
+									"message" : "BaseComponent saved.",
+									"state" : "new"
+								});
+							});
+						},
+						createBaseComponent : function() {
+							var newComponent = editor.pageData.newComponent;
+							simplyApp.actions.saveBaseComponent(newComponent)
+							.then(function() {
+								editor.pageData.alerts.unshift({
+									"data-simply-template" : "info",
+       							  	      	"message" : "BaseComponent created.",
+       									"state" : "new"
+								});
+								document.location.hash="base/" + newComponent.id;
+							});
+						},
+						deleteBaseComponent : function() {
+							simplyApp.actions.deleteBaseComponent(
+								editor.pageData.component.id
+							)
+							.then(function() {
+								editor.pageData.alerts.unshift({
+									"data-simply-template" : "info",
+									"message" : "BaseComponent deleted.",
+									"state" : "new"
+								});
+								document.location.hash="base/";
+							});
+						},
 						addDataApiMethod : function(el) {
 							editor.pageData.component.parts.dataApi.push({});
 							simplyApp.commands.codeMirror(el.parentNode); // FIXME: decouple from this code;
@@ -306,12 +427,30 @@
 							editor.pageData.component.parts.pageTemplates.push({});
 							simplyApp.commands.codeMirror(el.parentNode);
 						},
+						addCssCollection : function(el) {
+							editor.pageData.component.parts.pageCss.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
+						},
+						addHeadHtml : function(el) {
+							editor.pageData.component.parts.headHtml.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
+						},
+						addBodyHtml : function(el) {
+							editor.pageData.component.parts.bodyHtml.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
+						},
+						addFootHtml : function(el) {
+							editor.pageData.component.parts.footHtml.push({});
+							simplyApp.commands.codeMirror(el.parentNode);
+						},
 						deleteEntry : function(el) {
 							var target = el;
 							while (!target.hasAttribute("data-simply-list-item")) {
 								target = target.parentNode;
 							}
+							var parent = target.parentNode;
 							target.parentNode.removeChild(target);
+							simplyApp.commands.codeMirror(parent);
 						},
 						codeMirror : function(el) {
 							if (el.parentNode.hasAttribute("open")) {
@@ -319,7 +458,7 @@
 							} else {
 								el.parentNode.setAttribute("open", "");
 							}
-							var textareas = el.parentNode.querySelectorAll("textarea[data-codemirror-mode]");
+							var textareas = el.parentNode.querySelectorAll("textarea[data-codemirror-mode]:not([style])");
 							textareas.forEach(function(textarea) {
 								var mode = "javascript";
 								if (textarea.hasAttribute("data-codemirror-mode")) {
@@ -370,6 +509,38 @@
 						}
 					},
 					actions: {
+						listBaseComponents : function() {
+							return simplyDataApi.listBaseComponents();
+						},
+						getBaseComponent : function(component) {
+							return simplyDataApi.getBaseComponent(component);
+						},
+						saveBaseComponent : function(component) {
+							var promises = [];
+							for (var name in component.parts) {
+								if (component.parts[name].length) { 
+									promises.push(simplyDataApi.saveBaseComponentPart(component.id, name, JSON.stringify(component.parts[name])));
+								} else {
+									editor.pageData.parts.forEach(function(part) {
+										if (part.id == name) {
+		 									promises.push(simplyDataApi.deleteBaseComponentPart(component.id, name));
+										}
+									});
+								}
+							};
+
+							var meta = clone(component);
+							delete meta.parts;
+							promises.push(simplyDataApi.saveBaseComponentPart(meta.id, "meta", JSON.stringify(meta)));
+
+							return Promise.all(promises)
+							.then(function() {
+								return true;
+							});
+						},
+						deleteBaseComponent : function(component) {
+							return simplyDataApi.deleteBaseComponent(component);
+						},
 						listComponents : function() {
 							return simplyDataApi.listComponents();
 						},
@@ -451,9 +622,271 @@
 		</header>
 		<!-- FIXME: hier main van maken -->
 		<div class="main" data-simply-field="page" data-simply-content="template">
+			<template data-simply-template="Base components">
+				<main>
+					<h1>Base components</h1>
+					<a href="#">Back</a>
+					<ul data-simply-list="components">
+						<template>
+							<li>
+								<a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="baseComponentLink"><span data-simply-field="id"></span></a>
+								<p data-simply-field="description"></p>
+							</li>
+						</template>
+					</ul>
+					<h1>Add component</h1>
+					<form action="#" data-simply-command="createBaseComponent">
+						<div class="field">
+							<label>Name: <input type="text" data-simply-field="newComponent.id"></label>
+						</div>
+						<div class="field">
+							<label>Description</label>
+							<textarea data-simply-field="newComponent.description"></textarea>
+						</div>
+						<button data-simply-command="createBaseComponent">Create</button>
+					</form>
+				</main>
+			</template>
+			<template data-simply-template="Edit base component">
+				<main>
+					<h1>Edit base component: <span data-simply-field="component.id"></span></h1>
+					<a href="#">Back</a>
+					<div class="field">
+						<button data-simply-command="saveBaseComponent">Save</button>
+       						<button data-simply-command="deleteBaseComponent">Delete</button>
+					</div>
+					<details>
+						<summary title="Describe this component for your own use.">
+							Description
+						</summary>
+						<textarea placeholder="Describe this component" data-simply-field="component.description"></textarea>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="These are added to the &lt;head&gt; section of the HTML">
+							Additional head HTML
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.headHtml">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="name" placeholder="Name">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addHeadHtml">Add head HTML</button>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="These are added to the top of the &lt;body&gt; of the HTML">
+							Additional body HTML
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.bodyHtml">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="name" placeholder="Name">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addBodyHtml">Add body HTML</button>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="These templates are added just before the &lt;/body&gt; in the HTML">
+							Additional foot HTML
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.footHtml">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="name" placeholder="Name">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addFootHtml">Add foot HTML</button>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
+							Commands
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Command</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.commands">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="command" placeholder="Command name, eg getItemList">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addCommand">Add command</button>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
+							Actions
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Action</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.actions">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="action" placeholder="Action name, eg getItemList">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addAction">Add action</button>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="Routes provide a translation from a URL to something the app should do. Routes make use of actions to fetch or store data">
+							Routes
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Route</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.routes">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="route" placeholder="#route/:variable">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addRoute">Add route</button>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="The Raw API layer provides lower level functions to access an API. It handles things like authentication, connection, encoding and the likes. It exposes 'get', 'post' methods.">
+							Raw API
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Method</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.rawApi">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="method" placeholder="API method name, eg getItemList">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addRawApiMethod">Add method</button>
+					</details>
+
+					<button data-simply-command="saveBaseComponent">Save</button>
+					<button data-simply-command="deleteBaseComponent">Delete</button>
+				</main>
+			</template>
 			<template data-simply-template="List components">
 				<main>
 					<h1>Components</h1>
+					<a href="#base">Base components</a>
 					<ul data-simply-list="components">
 						<template>
 							<li>
@@ -488,6 +921,130 @@
 							Description
 						</summary>
 						<textarea placeholder="Describe this component" data-simply-field="component.description"></textarea>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="These templates are used in routes to set the HTML of the requested page.">
+							Page HTML template
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Page</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.pageTemplates">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="page" placeholder="Page name">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addPageTemplate">Add page HTML template</button>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="Set page specific CSS - this CSS is only used for this page and is removed when we are on another page.">
+							Page CSS collections
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>CSS collection</th>
+									<th>Styles</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.pageCss">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="name" placeholder="Name this CSS collection">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addCssCollection">Add CSS collection</button>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
+							Commands
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Command</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.commands">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="command" placeholder="Command name, eg getItemList">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addCommand">Add command</button>
+					</details>
+
+					<details>
+						<summary data-simply-command="codeMirror" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
+							Actions
+						</summary>
+						<table class="sb-code-method">
+							<thead>
+								<tr>
+									<th>Action</th>
+									<th>Code</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody data-simply-list="component.parts.actions">
+							<template>
+								<tr>
+									<td>
+										<input data-simply-field="action" placeholder="Action name, eg getItemList">
+									</td>
+									<td>
+										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+									</td>
+									<td>
+										<button data-simply-command="deleteEntry">Delete</button>
+									</td>
+								</tr>
+							</template>
+							</tbody>
+						</table>
+						<button data-simply-command="addAction">Add action</button>
 					</details>
 
 					<details>
@@ -550,68 +1107,6 @@
 							</tbody>
 						</table>
 						<button data-simply-command="addRoute">Add route</button>
-					</details>
-
-					<details>
-						<summary data-simply-command="codeMirror" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
-							Actions
-						</summary>
-						<table class="sb-code-method">
-							<thead>
-								<tr>
-									<th>Action</th>
-									<th>Code</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody data-simply-list="component.parts.actions">
-							<template>
-								<tr>
-									<td>
-										<input data-simply-field="action" placeholder="Action name, eg getItemList">
-									</td>
-									<td>
-										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-									</td>
-									<td>
-										<button data-simply-command="deleteEntry">Delete</button>
-									</td>
-								</tr>
-							</template>
-							</tbody>
-						</table>
-						<button data-simply-command="addAction">Add action</button>
-					</details>
-
-					<details>
-						<summary data-simply-command="codeMirror" title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
-							Commands
-						</summary>
-						<table class="sb-code-method">
-							<thead>
-								<tr>
-									<th>Command</th>
-									<th>Code</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody data-simply-list="component.parts.commands">
-							<template>
-								<tr>
-									<td>
-										<input data-simply-field="command" placeholder="Command name, eg getItemList">
-									</td>
-									<td>
-										<textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-									</td>
-									<td>
-										<button data-simply-command="deleteEntry">Delete</button>
-									</td>
-								</tr>
-							</template>
-							</tbody>
-						</table>
-						<button data-simply-command="addCommand">Add command</button>
 					</details>
 
 					<details>
@@ -679,37 +1174,6 @@
 						<button data-simply-command="addDataSource">Add data source</button>
 					</details>
 
-					<details>
-						<summary data-simply-command="codeMirror" title="These templates are used in routes to set the HTML of the requested page.">
-							Page HTML template
-						</summary>
-						<table class="sb-code-method">
-							<thead>
-								<tr>
-									<th>Page</th>
-									<th>Code</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody data-simply-list="component.parts.pageTemplates">
-							<template>
-								<tr>
-									<td>
-										<input data-simply-field="page" placeholder="Page name">
-									</td>
-									<td>
-										<textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
-									</td>
-									<td>
-										<button data-simply-command="deleteEntry">Delete</button>
-									</td>
-								</tr>
-							</template>
-							</tbody>
-						</table>
-						<button data-simply-command="addPageTemplate">Add page HTML template</button>
-					</details>
-
 					<button data-simply-command="saveComponent">Save</button>
 					<button data-simply-command="deleteComponent">Delete</button>
 				</main>
@@ -719,6 +1183,18 @@
 		<script src="/js/simply-edit.js" data-api-key="muze"></script>
 		<script>
 			editor.transformers = {
+				"baseComponentLink" : {
+					render : function(data) {
+						this.simplyData = data;
+						return {
+							href : "#base/" + data,
+							innerHTML: data
+						};
+					},
+					extract : function(data) {
+						return this.simplyData;
+					}
+				},
 				"componentLink" : {
 					render : function(data) {
 						this.simplyData = data;
