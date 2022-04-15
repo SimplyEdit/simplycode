@@ -1,0 +1,1 @@
+[{"component":"componentDescription","code":"<details>\n  <summary title=\"Describe this component for your own use.\">\n    Description\n  </summary>\n  <textarea placeholder=\"Describe this component\" data-simply-field=\"component.description\"></textarea>\n</details>\n"}]
