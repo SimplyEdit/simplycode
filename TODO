@@ -1,6 +1,14 @@
+Bugs:
+- issue with codemirror width being weird. We need to lock down the table widths to get this working properly;
+- after deleting a part, codemirror needs to reinitialize;
+
 TODO:
-- Add a Base components thing to get to feature complete for the server-provisioning example.
-  This is where the RawAPI, Header can go. Also where head/foot HTML things go? And asset files? Reusable templates?
+- CSS syntax highlighting
+- Add an option for Header and Footer? in base components?
+- Add an option for adding assets? in base components/
+- Add an option for commands/actions in base components?
+
+- Where do sorters go? Add them to page components at least?
 - Rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
   These are things that are not part of the base.
 - Rework codemirror integration so that it can be a standalone module;
@@ -11,9 +19,13 @@ TODO:
 
 Misc ideas:
 - Add full screen view to edit a specific part 
+
 - Have a way to add tests for a component/part
   Should run directly in the browser. 
   Run this whenever a component/part changes to keep the feedback look short.
+
+  Backstopjs-like comparison of changes?
+  QUnit for tests?
 
 - Add an app overview page with statistics, lines of code spent
 - Design system, where does it fit in?
@@ -24,5 +36,32 @@ Misc ideas:
 
 - Add a way to browse and edit the code by topic (routes, commands, actions) instead of modules.
 
+- Add a preview mode for a component preview:
+  - shows HTML + CSS of the current component/page;
+  - add buttons to show commands, transformers, data sources
+    - with an option to show a specific one, or a subset;
+    - show a different color for commands that have no code?
+  
+	[data-simply-command=deleteEntry]::before {
+	  content: attr(data-simply-command);
+	  position: absolute;
+	  border: 2px dotted steelblue;
+	  background-color: #f4f4bf;
+	  padding: 4px;
+	  margin-top: -34px;
+	  margin-left: -7px;
+	}
+
+	- In preview mode: add data-simply-commands that navigate to the command code instead of executing that code;
+	- Add sample data for components to show
+
 Done:
-[v] Add syntax highlighting for HTML, CSS, HTML mixed mode etc.
+[v] Add syntax highlighting for HTML, HTML mixed mode etc.
+[v] Add a page CSS entry
+[v] reorder to frontend-first ordering, so start with html/css instead of the data api.
+[v] Add a Base components thing to get to feature complete for the server-provisioning example.
+    This is where the RawAPI, Header can go.
+    Also where head/foot HTML things go? And asset files? Bootstrap? CodeMirror scripts? Reusable templates?
+
+Bugs fixed:
+[v] running codemirror twice on the same textarea causes it to go wonky
