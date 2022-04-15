@@ -4,9 +4,7 @@ Bugs:
 
 TODO:
 - CSS syntax highlighting
-- Add an option for Header and Footer? in base components?
 - Add an option for adding assets? in base components/
-- Add an option for commands/actions in base components?
 
 - Where do sorters go? Add them to page components at least?
 - Rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
@@ -62,6 +60,8 @@ Done:
 [v] Add a Base components thing to get to feature complete for the server-provisioning example.
     This is where the RawAPI, Header can go.
     Also where head/foot HTML things go? And asset files? Bootstrap? CodeMirror scripts? Reusable templates?
+[v] Add an option for Header and Footer? in base components? -> can be done using bodyHtml and footHtml;
+[v] Add an option for commands/actions in base components?
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
