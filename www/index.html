@@ -407,6 +407,14 @@
 								editor.pageData.page = "Base components";
 							});
 						},
+						'#preview' : function() {
+							editor.pageData.app = {};
+							simplyApp.actions.getAppData()
+							.then(function(appData) {
+								editor.pageData.app = appData;
+								editor.pageData.page = "App HTML preview";
+							});
+						},
 						'/' : function() {
 							simplyApp.actions.listComponents()
 							.then(function(components) {
@@ -738,6 +746,86 @@
 						},
 						deleteComponent : function(component) {
 							return simplyDataApi.deleteComponent(component);
+						},
+						getBaseComponents : function() {
+							var promises = [];
+							return simplyApp.actions.listBaseComponents()
+							.then(function(baseComponents) {
+								baseComponents.forEach(function(baseComponent) {
+									promises.push(simplyApp.actions.getBaseComponent(baseComponent.id));
+								});
+							})
+							.then(function() {
+								return Promise.all(promises);
+							});
+						},
+						getComponents : function() {
+							var promises = [];
+							return simplyApp.actions.listComponents()
+							.then(function(components) {
+								components.forEach(function(component) {
+									promises.push(simplyApp.actions.getComponent(component.id));
+								});
+							})
+							.then(function() {
+								return Promise.all(promises);
+							});
+						},
+						getPages : function() {
+							var promises = [];
+							return simplyApp.actions.listPages()
+							.then(function(pages) {
+								pages.forEach(function(page) {
+									promises.push(simplyApp.actions.getPage(page.id));
+								});
+							})
+							.then(function() {
+								return Promise.all(promises);
+							});
+						},
+						getAppData : function() {
+							var appData = {
+							};
+							var promises = [
+								simplyApp.actions.getBaseComponents(),
+								simplyApp.actions.getComponents(),
+								simplyApp.actions.getPages()
+							];
+							return Promise.all(promises)
+							.then(function(appComponents) {
+								appComponents.forEach(function(appComponent) {
+									appComponent.forEach(function(component) {
+										component.forEach(function(part) {
+											if (part.id == "meta") {
+												return;
+											};
+
+											if (typeof appData[part.id] === "undefined") {
+												appData[part.id] = [];
+											}
+											parts = JSON.parse(part.contents);
+											parts.forEach(function(entry) {
+												appData[part.id].push(entry);
+											});
+										});
+									});
+								});
+							})
+							.then(function() {
+								if (appData["routes"]) {
+									appData["routes"].sort(function(a, b) {
+										if (a.route.length > b.route.length) {
+											return -1;
+										} else if (a.route.length < b.route.length) {
+											return 1;
+										} else {
+											return 0;
+										}
+									});
+								}
+
+								return appData;
+							});
 						}
 					}
 				});
@@ -1192,7 +1280,7 @@
 					<template>
 						<tr>
 							<td>
-								<input data-simply-field="command" placeholder="Transformer name, eg itemNameFromId">
+								<input data-simply-field="transformer" placeholder="Transformer name, eg itemNameFromId">
 							</td>
 							<td>
 								<strong title="Render code transforms the data from what is stored into what the user sees">Render</strong><br>
@@ -1394,6 +1482,256 @@
 					</div>
 				</main>
 			</template>
+			<template data-simply-template="App HTML preview">
+				<style>
+					.sb-preview [data-simply-list-item]:last-child .trailingComma {
+						display: none;
+					}
+				</style>
+				<main>
+					<h1>App HTML preview</h1>
+					<div class="field">
+						<button data-simply-command="saveAppHtml">Publish App</button>
+					</div>
+					<div class="sb-preview">
+						<pre>
+&lt;!DOCTYPE HTML>
+&lt;html lang="nl">
+&lt;head>
+						</pre>
+<pre>&lt;!-- Component CSS --></pre>
+&lt;style&gt;
+						<div data-simply-list="app.componentCss">
+							<template>
+								<pre class="componentCss">
+/* <span data-simply-field="name"></span> */<br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
+								</pre>
+							</template>
+						</div>
+&lt;/style&gt;
+<pre>&lt;!-- /Component CSS --></pre>
+<pre>&lt;!-- Head HTML --></pre>
+						<div data-simply-list="app.headHtml">
+							<template>
+								<pre class="headHtml">
+&lt!-- <span data-simply-field="name"></span> --><br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
+								</pre>
+							</template>
+						</div>
+<pre>&lt;!-- /Head HTML --></pre>
+
+<pre>
+        &lt;script type="text/javascript"&gt;
+            var simplyDataApi = {};
+            var simplyApp = {};
+
+            window.addEventListener("simply-content-loaded", function() {
+                simply.bind = false;
+</pre>
+
+<pre>
+/* Raw API */
+simplyRawApi = {
+</pre>
+						<div data-simply-list="app.rawApi">
+							<template>
+								<pre class="rawApiMethod">
+<span data-simply-field="method"></span> : <span data-simply-field="code"></span><span class="trailingComma">,</span>
+								</pre>
+							</template>
+						</div>
+<pre>
+};
+/* End of Raw API */
+</pre>
+<pre>
+/* Data API */
+simplyDataApi = {
+</pre>
+						<div data-simply-list="app.dataApi">
+							<template>
+								<pre class="rawApiMethod">
+<span data-simply-field="method"></span> : <span data-simply-field="code"></span><span class="trailingComma">,</span>
+								</pre>
+							</template>
+						</div>
+<pre>
+}
+/* End of Data API */
+</pre>
+
+<pre>
+				simplyApp = simply.app({
+					actions: {
+</pre>
+
+<pre>/* Actions */</pre>
+						<div data-simply-list="app.actions">
+							<template>
+								<pre class="action">
+<span data-simply-field="action"></span> : <span data-simply-field="code"></span><span class="trailingComma">,</span>
+								</pre>
+							</template>
+						</div>
+<pre>/* /Actions */</pre>
+
+<pre>
+					},
+					commands: {
+</pre>
+
+<pre>/* Commands */</pre>
+						<div data-simply-list="app.commands">
+							<template>
+								<pre class="command">
+<span data-simply-field="command"></span> : <span data-simply-field="code"></span><span class="trailingComma">,</span>
+								</pre>
+							</template>
+						</div>
+<pre>/* /Commands */ </pre>
+<pre>
+					},
+					routes: {
+</pre>
+<pre>/* Routes */ </pre>
+						<div data-simply-list="app.routes">
+							<template>
+								<pre class="route">
+"<span data-simply-field="route"></span>" : <span data-simply-field="code"></span><span class="trailingComma">,</span>
+								</pre>
+							</template>
+						</div>
+<pre>/* /Routes */ </pre>
+<pre>
+					}
+				});
+</pre>
+
+<pre>
+				function clone(ob) {
+					return JSON.parse(JSON.stringify(ob));
+				}
+
+				function updateDataSource(name) {
+					document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
+						editor.list.applyDataSource(list, name);
+						list.dataBindingPaused = 0;
+					});
+				};
+			});
+		&lt;/script&gt;
+
+
+&lt;/head>
+&lt;body>
+</pre>
+<pre>&lt;!-- Body HTML --></pre>
+						<div data-simply-list="app.bodyHtml">
+							<template>
+								<pre class="bodyHtml">
+&lt!-- <span data-simply-field="name"></span> --><br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
+								</pre>
+							</template>
+						</div>
+<pre>&lt;!-- /Body HTML --></pre>
+
+<pre>&lt;!-- Component HTML templates --></pre>
+						<div data-simply-list="app.componentTemplates">
+							<template>
+								<pre class="componentTemplate">
+&lt;template id="<span data-simply-field="component"></span>"&gt;
+<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
+&lt;/template&gt;
+								</pre>
+							</template>
+						</div>
+<pre>&lt;!-- /Component HTML templates --></pre>
+<pre>
+		&lt;header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
+			&lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
+		&lt;/header&gt;
+		&lt;div is="simply-component" rel="navigation"&gt;&lt;/div&gt;
+		&lt;!-- FIXME: hier main van maken --&gt;
+		&lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
+</pre>
+
+<pre>&lt;!-- Page HTML templates --></pre>
+						<div data-simply-list="app.pageTemplates">
+							<template>
+								<pre class="pageTemplate">
+&lt;template data-simply-template="<span data-simply-field="page"></span>"&gt;
+<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
+&lt;/template&gt;
+								</pre>
+							</template>
+						</div>
+<pre>&lt;!-- /Page HTML templates --></pre>
+
+
+<pre>
+		&lt;/div>
+		&lt;script src="/js/simply.everything.js">&lt;/script>
+		&lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+		&lt;script>
+</pre>
+
+<pre>
+/* Transformers */
+editor.transformers = {
+</pre>
+						<div data-simply-list="app.transformers">
+							<template>
+								<pre class="transformer">
+"<span data-simply-field="transformer"></span>" : {
+  render : <span data-simply-field="render-code"></span>,
+  extract : <span data-simply-field="extract-code"></span>
+}<span class="trailingComma">,</span>
+								</pre>
+							</template>
+						</div>
+<pre>
+};
+/* /Transformers */ </pre>
+
+<pre>
+		&lt;/script>
+</pre>
+
+
+<pre>
+		&lt;script&gt;
+			// load sorters
+		&lt;/script&gt;
+		&lt;script&gt;
+			window.addEventListener("simply-content-loaded", function() {
+				// load datasources
+			});
+		&lt;/script&gt;
+</pre>
+
+<pre>&lt;!-- Foot HTML --></pre>
+						<div data-simply-list="app.footHtml">
+							<template>
+								<pre class="footHtml">
+&lt!-- <span data-simply-field="name"></span> --><br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
+								</pre>
+							</template>
+						</div>
+<pre>&lt;!-- /Foot HTML --></pre>
+						<pre>
+&lt;/body>
+&lt;/html>
+						</pre>
+					</div>
+					<div class="field">
+						<button data-simply-command="saveAppHtml">Publish App</button>
+					</div>
+				</main>
+			</template>
 		</div>
 		<script src="/js/simply.everything.js"></script>
 		<script src="/js/simply-edit.js" data-api-key="muze"></script>
@@ -1430,6 +1768,17 @@
 							href : "#pages/" + data,
 							innerHTML: data
 						};
+					},
+					extract : function(data) {
+						return this.simplyData;
+					}
+				},
+				"htmlEscape" : {
+					render: function(data) {
+						this.simplyData = data;
+						return data
+							.replace(/</g, "&lt;")
+							.replace(/>/g, "&gt;");
 					},
 					extract : function(data) {
 						return this.simplyData;
