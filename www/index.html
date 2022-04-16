@@ -1470,29 +1470,5 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js" integrity="sha512-0IM15+FEzmvrcePHk/gDCLbZnmja9DhCDUrESXPYLM4r+eDtNadxDUa5Fd/tNQGCbCoxu75TaVuvJkdmq0uh/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js" integrity="sha512-IS1FyxQkiJHT1SAvLXBaJu1UTFSIw0GT/DuzxHl69djqyLoEwGmR2davcZUnB8M7ppi9nfTGZR/vdfqmWt+i6A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js" integrity="sha512-UWfBe6aiZInvbBlm91IURVHHTwigTPtM3M4B73a8AykmxhDWq4EC/V2rgUNiLgmd/i0y0KWHolqmVQyJ35JsNA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-		<script>
-			class SimplyComponent extends HTMLDivElement {
-			  constructor() {
-			    var self = super();
-			    var templateId = self.getAttribute("rel");
-			    if (document.getElementById(templateId)) {
-	                    content = document.getElementById(templateId).content;
-						for (var i=0; i<content.childNodes.length; i++) {
-		 			        var clone = content.childNodes[i].cloneNode(true);
-							if (clone.nodeType == document.ELEMENT_NODE) {
-								clone.querySelectorAll("template").forEach(function(t) {
-									t.setAttribute("simply-component", "");
-								});
-						        self.parentNode.insertBefore(clone, self);
-							}
-	  			      	}
-				      	self.parentNode.removeChild(self);
-			    }
-			  }
-			}
-
-			// Define the new element
-			customElements.define('simply-component', SimplyComponent, { extends: 'div' });
-		</script>
 	</body>
 </html>
