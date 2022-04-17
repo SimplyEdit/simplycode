@@ -1,0 +1,1 @@
+[{"name":"component-parts-count","code":"<script>\n  document.addEventListener(\"simply-data-changed\", function(event) {\n    if (event.data.dataBinding.parentKey == \"/component/parts/\") {\n      var list = event.data.arguments[0];\n      editor.pageData.count[list] = event.data.arguments[1].length;\n    }\n  });\n</script>"}]
