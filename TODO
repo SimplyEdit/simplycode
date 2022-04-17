@@ -3,9 +3,7 @@ Bugs:
 - after deleting a part, codemirror needs to reinitialize;
 
 TODO:
-[v] CSS syntax highlighting
 - Add an option for adding assets? in base components/
-
 - Where do sorters go? Add them to page components at least?
 - Rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
   These are things that are not part of the base.
@@ -22,7 +20,7 @@ Misc ideas:
   Should run directly in the browser. 
   Run this whenever a component/part changes to keep the feedback look short.
 
-  Backstopjs-like comparison of changes?
+  Backstopjs-like comparison of visual changes?
   QUnit for tests?
 
 - Add an app overview page with statistics, lines of code spent
@@ -53,6 +51,29 @@ Misc ideas:
 	- In preview mode: add data-simply-commands that navigate to the command code instead of executing that code;
 	- Add sample data for components to show
 
+- Preview/app structure:
+<!doctype html>
+<html>
+<head>
+	--> simply-design stylesheets
+	--> simplyDataApi, RawAPI, routes, commands, actions
+	--> clone, updateDataSource functions;
+	--> headHtml
+</head>
+<body>
+	--> bodyHtml
+	>> data-simply-field="page"
+	--> footHtml
+
+	>> simply-edit + simplyview
+	>> datasources
+	>> transformers
+	>> sorters
+</body>
+</html>
+
+- Detect duplicates in commands/actions/routes etc.
+
 Done:
 [v] Add syntax highlighting for HTML, HTML mixed mode etc.
 [v] Add a page CSS entry
@@ -63,6 +84,7 @@ Done:
     Also where head/foot HTML things go? And asset files? Bootstrap? CodeMirror scripts? Reusable templates?
 [v] Add an option for Header and Footer? in base components? -> can be done using bodyHtml and footHtml;
 [v] Add an option for commands/actions in base components?
+[v] Add counters to parts to visually see which ones have content
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
