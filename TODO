@@ -1,14 +1,11 @@
 Bugs:
 - issue with codemirror width being weird. We need to lock down the table widths to get this working properly;
-- after deleting a part, codemirror needs to reinitialize;
 
 TODO:
 - Add an option for adding assets? in base components/
 - Where do sorters go? Add them to page components at least?
 - Rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
   These are things that are not part of the base.
-- Rework codemirror integration so that it can be a standalone module;
-  It requires code in other modules/page templates at the moment, would be a lot nicer if that was not the case. It should be more a plugin type thing.
 - Have a way to reorganize code (sorting within a module, moving code from one module to another).
 - Add a compile/build/pack step to bundle everything.
 - Improve styling: at least for the buttons and back links. Reuse simply-edit backend style?
@@ -85,6 +82,9 @@ Done:
 [v] Add an option for Header and Footer? in base components? -> can be done using bodyHtml and footHtml;
 [v] Add an option for commands/actions in base components?
 [v] Add counters to parts to visually see which ones have content
+[v] Rework codemirror integration so that it can be a standalone module;
+  It requires code in other modules/page templates at the moment, would be a lot nicer if that was not the case. It should be more a plugin type thing.
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
+[v] after deleting a part, codemirror needs to reinitialize;
