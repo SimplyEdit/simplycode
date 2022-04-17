@@ -1,1 +1,1 @@
-[{"command":"addFootHtml","code":"function(el) {\n  editor.pageData.component.parts.footHtml.push({});\n  simplyApp.commands.codeMirror(el.parentNode);\n}"}]
+[{"command":"addFootHtml","code":"function(el) {\n  editor.pageData.component.parts.footHtml.push({});\n}"}]

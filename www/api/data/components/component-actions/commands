@@ -1,1 +1,1 @@
-[{"command":"addAction","code":"function(el) {\n  editor.pageData.component.parts.actions.push({});\n  simplyApp.commands.codeMirror(el.parentNode);\n}"}]
+[{"command":"addAction","code":"function(el) {\n  editor.pageData.component.parts.actions.push({});\n}"}]

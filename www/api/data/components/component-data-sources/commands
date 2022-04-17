@@ -1,1 +1,1 @@
-[{"command":"addDataSource","code":"function(el) {\n  editor.pageData.component.parts.dataSources.push({});\n  simplyApp.commands.codeMirror(el.parentNode);\n}"}]
+[{"command":"addDataSource","code":"function(el) {\n  editor.pageData.component.parts.dataSources.push({});\n}"}]

@@ -1,0 +1,1 @@
+[{"command":"addRawApi","code":"function(el) {\n  editor.pageData.component.parts.rawApi.push({});\n}"}]

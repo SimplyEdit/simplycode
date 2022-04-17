@@ -1,1 +1,1 @@
-[{"command":"addDataApiMethod","code":"function(el) {\n  editor.pageData.component.parts.dataApi.push({});\n  simplyApp.commands.codeMirror(el.parentNode); // FIXME: decouple from this code;\n}"}]
+[{"command":"addDataApiMethod","code":"function(el) {\n  editor.pageData.component.parts.dataApi.push({});\n}"}]
