@@ -9,6 +9,7 @@ TODO:
 - Have a way to reorganize code (sorting within a module, moving code from one module to another).
 - Add a compile/build/pack step to bundle everything.
 - Improve styling: at least for the buttons and navigation. Reuse simply-edit backend style?
+- Fix preview indentation; should it be a highlighted look instead?
 
 Misc ideas:
 - Add full screen view to edit a specific part 
@@ -46,7 +47,8 @@ Misc ideas:
 	}
 
 	- In preview mode: add data-simply-commands that navigate to the command code instead of executing that code;
-	- Add sample data for components to show
+
+- Add a 'sample data' part for components to show in preview (like the json tab in http://simplystyle.se.yvo.muze.nl/woonmatch/)
 
 
 - Detect duplicates in commands/actions/routes etc.
