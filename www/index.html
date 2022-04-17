@@ -20,6 +20,19 @@
 			.sb-code-method td textarea {
 				margin-top: 5px;
 			}
+			.sb-component summary span[data-count] {
+				font-weight: bold;
+			}
+			.sb-component summary span[data-count]:after {
+				content: '(' attr(data-count) ')';
+			}
+			.sb-component summary span[data-count="0"] {
+				font-weight: normal;
+				font-style: italic;
+			}
+			.sb-component summary span[data-count="0"]:after {
+				content: '';
+			}
 		</style>
 		<script type="text/javascript">
 			var simplyDataApi = {};
@@ -310,11 +323,14 @@
 										componentTemplates : []
 									};
 								}
+								var count = {};
 								parts.forEach(function(part) {
 									component.parts[part.id] = JSON.parse(part.contents);
+									count[part.id] = component.parts[part.id].length;
 								});
 								editor.pageData.component = component;
 								editor.pageData.parts = parts;
+								editor.pageData.count = count;
 								editor.pageData.page = "Edit component";
 							});
 						},
@@ -352,11 +368,14 @@
 										pageTemplates : []
 									};
 								}
+								var count = {};
 								parts.forEach(function(part) {
 									component.parts[part.id] = JSON.parse(part.contents);
+									count[part.id] = component.parts[part.id].length;
 								});
 								editor.pageData.component = component;
 								editor.pageData.parts = parts;
+								editor.pageData.count = count;
 								editor.pageData.page = "Edit page";
 							});
 						},
@@ -392,11 +411,14 @@
 										footHtml : []
 									};
 								}
+								var count = {};
 								parts.forEach(function(part) {
 									component.parts[part.id] = JSON.parse(part.contents);
+									count[part.id] = component.parts[part.id].length;
 								});
 								editor.pageData.component = component;
 								editor.pageData.parts = parts;
+								editor.pageData.count = count;
 								editor.pageData.page = "Edit base component";
 							});
 						},
@@ -872,9 +894,11 @@
 			</div>
 		</template>
 		<template id="componentActions">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
-					Actions
+					<span data-simply-field="count.actions" data-simply-content="attributes" data-simply-attributes="data-count">
+						Actions
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -904,9 +928,11 @@
 			</details>
 		</template>
 		<template id="componentCommands">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
-					Commands
+					<span data-simply-field="count.commands" data-simply-content="attributes" data-simply-attributes="data-count">
+						Commands
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -936,7 +962,7 @@
 			</details>
 		</template>
 		<template id="componentDescription">
-			<details>
+			<details class="sb-component">
 				<summary title="Describe this component for your own use.">
 					Description
 				</summary>
@@ -944,9 +970,11 @@
 			</details>
 		</template>
 		<template id="componentPageTemplate">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="These templates are used in routes to set the HTML of the requested page.">
-					Page HTML template
+					<span data-simply-field="count.pageTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
+						Page HTML template
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -976,9 +1004,11 @@
 			</details>
 		</template>
 		<template id="componentComponentTemplate">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="These templates are used to build up page templates.">
-					Component HTML template
+					<span data-simply-field="count.componentTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
+						Component HTML template
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1008,9 +1038,11 @@
 			</details>
 		</template>
 		<template id="componentComponentCss">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="Set component CSS - this CSS is globally available.">
-					Component CSS collections
+					<span data-simply-field="count.componentCss" data-simply-content="attributes" data-simply-attributes="data-count">
+						Component CSS collections
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1040,9 +1072,11 @@
 			</details>
 		</template>
 		<template id="componentHeadHtml">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="These are added to the &lt;head&gt; section of the HTML">
-					Additional head HTML
+					<span data-simply-field="count.headHtml" data-simply-content="attributes" data-simply-attributes="data-count">
+						Additional head HTML
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1072,9 +1106,11 @@
 			</details>
 		</template>
 		<template id="componentBodyHtml">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="These are added to the top of the &lt;body&gt; of the HTML">
-					Additional body HTML
+					<span data-simply-field="count.bodyHtml" data-simply-content="attributes" data-simply-attributes="data-count">
+						Additional body HTML
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1104,9 +1140,11 @@
 			</details>
 		</template>
 		<template id="componentFootHtml">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="These templates are added just before the &lt;/body&gt; in the HTML">
-					Additional foot HTML
+					<span data-simply-field="count.footHtml" data-simply-content="attributes" data-simply-attributes="data-count">
+						Additional foot HTML
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1136,9 +1174,11 @@
 			</details>
 		</template>
 		<template id="componentRoutes">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="Routes provide a translation from a URL to something the app should do. Routes make use of actions to fetch or store data">
-					Routes
+					<span data-simply-field="count.routes" data-simply-content="attributes" data-simply-attributes="data-count">
+						Routes
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1168,9 +1208,11 @@
 			</details>
 		</template>
 		<template id="componentRawApi">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="The Raw API layer provides lower level functions to access an API. It handles things like authentication, connection, encoding and the likes. It exposes 'get', 'post' methods.">
-					Raw API
+					<span data-simply-field="count.rawApi" data-simply-content="attributes" data-simply-attributes="data-count">
+						Raw API
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1200,9 +1242,11 @@
 			</details>
 		</template>
 		<template id="componentPageCss">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="Set page specific CSS - this CSS is only used for this page and is removed when we are on another page.">
-					Page CSS collections
+					<span data-simply-field="count.pageCss" data-simply-content="attributes" data-simply-attributes="data-count">
+						Page CSS collections
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1232,9 +1276,11 @@
 			</details>
 		</template>
 		<template id="componentDataApi">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="The Data API layer provides functions to load en store data types. Makes use of the Raw API and provides data for actions">
-					Data API
+					<span data-simply-field="count.dataApi" data-simply-content="attributes" data-simply-attributes="data-count">
+						Data API
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1264,9 +1310,11 @@
 			</details>
 		</template>
 		<template id="componentTransformers">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="Transformers provide a last moment change to data, just before it is rendered. Use as a value of data-simply-transform on a data-simply-field">
-					Transformers
+					<span data-simply-field="count.transformers" data-simply-content="attributes" data-simply-attributes="data-count">
+						Transformers
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1299,9 +1347,11 @@
 			</details>
 		</template>
 		<template id="componentDataSources">
-			<details>
+			<details class="sb-component">
 				<summary data-simply-command="codeMirror" title="Data sources provide list information from an external data source. Use this to provide lists that are not part of the subject of the page. Used as data-simply-data on data-simply-lists">
-					Data sources
+					<span data-simply-field="count.dataSources" data-simply-content="attributes" data-simply-attributes="data-count">
+						Data sources
+					</span>
 				</summary>
 				<table class="sb-code-method">
 					<thead>
@@ -1793,6 +1843,14 @@ editor.transformers = {
 		<script>
 			window.addEventListener("simply-content-loaded", function() {
 				// load datasources
+			});
+		</script>
+		<script>
+			document.addEventListener("simply-data-changed", function(event) {
+				if (event.data.dataBinding.parentKey == "/component/parts/") {
+					var list = event.data.arguments[0];
+					editor.pageData.count[list] = event.data.arguments[1].length;
+				}
 			});
 		</script>
 		<script>
