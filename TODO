@@ -8,7 +8,7 @@ TODO:
   These are things that are not part of the base.
 - Have a way to reorganize code (sorting within a module, moving code from one module to another).
 - Add a compile/build/pack step to bundle everything.
-- Improve styling: at least for the buttons and back links. Reuse simply-edit backend style?
+- Improve styling: at least for the buttons and navigation. Reuse simply-edit backend style?
 
 Misc ideas:
 - Add full screen view to edit a specific part 
@@ -48,26 +48,6 @@ Misc ideas:
 	- In preview mode: add data-simply-commands that navigate to the command code instead of executing that code;
 	- Add sample data for components to show
 
-- Preview/app structure:
-<!doctype html>
-<html>
-<head>
-	--> simply-design stylesheets
-	--> simplyDataApi, RawAPI, routes, commands, actions
-	--> clone, updateDataSource functions;
-	--> headHtml
-</head>
-<body>
-	--> bodyHtml
-	>> data-simply-field="page"
-	--> footHtml
-
-	>> simply-edit + simplyview
-	>> datasources
-	>> transformers
-	>> sorters
-</body>
-</html>
 
 - Detect duplicates in commands/actions/routes etc.
 
@@ -84,6 +64,26 @@ Done:
 [v] Add counters to parts to visually see which ones have content
 [v] Rework codemirror integration so that it can be a standalone module;
   It requires code in other modules/page templates at the moment, would be a lot nicer if that was not the case. It should be more a plugin type thing.
+[v] Preview/app structure:
+	<!doctype html>
+	<html>
+	<head>
+		--> simply-design stylesheets
+		--> simplyDataApi, RawAPI, routes, commands, actions
+		--> clone, updateDataSource functions;
+		--> headHtml
+	</head>
+	<body>
+		--> bodyHtml
+		>> data-simply-field="page"
+		--> footHtml
+
+		>> simply-edit + simplyview
+		>> datasources
+		>> transformers
+		>> sorters
+	</body>
+	</html>
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
