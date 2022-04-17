@@ -1,35 +1,40 @@
 Bugs:
 - issue with codemirror width being weird. We need to lock down the table widths to get this working properly;
 
+=====
 TODO:
-- Add an option for adding assets? in base components/
+=====
+[Gather feedback]
+- Brainstorm about what this thing should be called. Simply Bits? Simply Build?
 - Where do sorters go? Add them to page components at least?
-- Rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
+- Validate naming scheme of what we call things with other developers. 
+  Should we rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
   These are things that are not part of the base.
+
+[New features]
+- Add an option for adding assets? in base components?
 - Have a way to reorganize code (sorting within a module, moving code from one module to another).
-- Add a compile/build/pack step to bundle everything.
+- Add a compile/build/pack step to bundle everything and create a working app;
+
+[Code improvements]
 - Improve styling: at least for the buttons and navigation. Reuse simply-edit backend style?
-- Fix preview indentation; should it be a highlighted look instead?
+- Replace the table structure in de componentAction etc with a grid or flexbox structure
+- Fix HTML preview indentation; should it be a highlighted look (using static codemirror view) instead?
 
-Misc ideas:
-- Add full screen view to edit a specific part 
-
+====================================
+Misc backlogged ideas in categories:
+====================================
+[Automated tests]
 - Have a way to add tests for a component/part
   Should run directly in the browser. 
-  Run this whenever a component/part changes to keep the feedback look short.
+  Run this whenever a component/part changes to keep the feedback loop short.
 
   Backstopjs-like comparison of visual changes?
   QUnit for tests?
+- How would a CI/CD, GitHub actions look for a Simply Build project?
 
-- Add an app overview page with statistics, lines of code spent
-- Design system, where does it fit in?
-
-- Keyboard shortcuts?
-- Can we reorganize the code on disk so that editing files directly is feasable?
-- How can we do git and/or versioning?
-
-- Add a way to browse and edit the code by topic (routes, commands, actions) instead of modules.
-
+[Preview mode and manual tests]
+- Add a 'sample data' part for components to show in preview (like the json tab in http://simplystyle.se.yvo.muze.nl/woonmatch/)
 - Add a preview mode for a component preview:
   - shows HTML + CSS of the current component/page;
   - add buttons to show commands, transformers, data sources
@@ -48,10 +53,27 @@ Misc ideas:
 
 	- In preview mode: add data-simply-commands that navigate to the command code instead of executing that code;
 
-- Add a 'sample data' part for components to show in preview (like the json tab in http://simplystyle.se.yvo.muze.nl/woonmatch/)
-
-
+[Developer experience]
+- Add full screen view to edit a specific part.
+- Add an app overview page with statistics about the code, lines of code spent.
+- Keyboard shortcuts?
+- Can we reorganize the code/api on disk so that editing files directly is feasable?
 - Detect duplicates in commands/actions/routes etc.
+- Detect unimplemented commands/actions/api methods
+- Add a way to browse and edit the code by topic (routes, commands, actions) instead of modules. 
+  Tags for browsing/selecting code bits?
+  Overall improvements in code navigation
+
+[Developer collaboration]
+- How can we do git and/or versioning?
+- Can we make the Simply Build environment, previews and the like work multi-player? For instance with hyperhyperspace to connect different nodse/browsers?
+
+[Unorganized]
+- Design system, where does it fit in? Do we have the features of simplyDesign(v1) covered with what we have now?
+- Can we reuse bootstrap to create components, and how would that work?
+- Markdown support for descriptions?
+- Comments, documentation about components?
+- Search
 
 Done:
 [v] Add syntax highlighting for HTML, HTML mixed mode etc.
