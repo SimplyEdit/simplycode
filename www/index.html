@@ -553,59 +553,45 @@
 						},
 						addDataApiMethod : function(el) {
 							editor.pageData.component.parts.dataApi.push({});
-							simplyApp.commands.codeMirror(el.parentNode); // FIXME: decouple from this code;
 						},
 						addRawApiMethod : function(el) {
 							editor.pageData.component.parts.rawApi.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addRoute : function(el) {
 							editor.pageData.component.parts.routes.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addAction : function(el) {
 							editor.pageData.component.parts.actions.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addCommand : function(el) {
 							editor.pageData.component.parts.commands.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addTransformer : function(el) {
 							editor.pageData.component.parts.transformers.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addDataSource : function(el) {
 							editor.pageData.component.parts.dataSources.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addPageTemplate : function(el) {
 							editor.pageData.component.parts.pageTemplates.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addComponentTemplate : function(el) {
 							editor.pageData.component.parts.componentTemplates.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addPageCss : function(el) {
 							editor.pageData.component.parts.pageCss.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addComponentCss : function(el) {
 							editor.pageData.component.parts.componentCss.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addHeadHtml : function(el) {
 							editor.pageData.component.parts.headHtml.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addBodyHtml : function(el) {
 							editor.pageData.component.parts.bodyHtml.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						addFootHtml : function(el) {
 							editor.pageData.component.parts.footHtml.push({});
-							simplyApp.commands.codeMirror(el.parentNode);
 						},
 						deleteEntry : function(el) {
 							var target = el;
@@ -614,7 +600,6 @@
 							}
 							var parent = target.parentNode;
 							target.parentNode.removeChild(target);
-							simplyApp.commands.codeMirror(parent);
 						},
 						codeMirror : function(el) {
 							if (el.parentNode.hasAttribute("open")) {
@@ -622,54 +607,7 @@
 							} else {
 								el.parentNode.setAttribute("open", "");
 							}
-							var textareas = el.parentNode.querySelectorAll("textarea[data-codemirror-mode]:not([style])");
-							textareas.forEach(function(textarea) {
-								var mode = "javascript";
-								if (textarea.hasAttribute("data-codemirror-mode")) {
-									mode = textarea.getAttribute("data-codemirror-mode");
-								}
-								switch (mode) {
-									case "css":
-										// no change needed
-									break;
-									case "html":
-										mode = {
-											name: "html",
-											htmlMode : true,
-											matchClosing : true
-										}
-									break;
-									case "htmlmixed":
-										mode = {
-											name: "htmlmixed",
-											tags: {
-												style: [[null, null, "css"]],
-												script: [[null, null, "javascript"]]
-											}
-										};
-									break;
-									case "javascript":
-										// no change needed
-									break;
-									case "json":
-										mode = {
-											name : "javascript",
-											json : true
-										};
-									break;
-									default:
-										mode = "javascript";
-									break;
-								}
-								var cm = CodeMirror.fromTextArea(textarea, {
-									lineNumbers: true,
-									theme: "base16-dark",
-									mode: mode
-								});
-								cm.on("change", function(event) {
-									cm.getTextArea().dataBinding.set(cm.getValue());
-								});
-							});
+							simplyApp.actions.codeMirrorInit();
 						}
 					},
 					actions: {
@@ -847,6 +785,56 @@
 								}
 
 								return appData;
+							});
+						},
+						codeMirrorInit() {
+							var textareas = document.querySelectorAll(".sb-component[open] textarea[data-codemirror-mode]:not([style])");
+							textareas.forEach(function(textarea) {
+								var mode = "javascript";
+								if (textarea.hasAttribute("data-codemirror-mode")) {
+									mode = textarea.getAttribute("data-codemirror-mode");
+								}
+								switch (mode) {
+									case "css":
+										// no change needed
+									break;
+									case "html":
+										mode = {
+											name: "html",
+											htmlMode : true,
+											matchClosing : true
+										}
+									break;
+									case "htmlmixed":
+										mode = {
+											name: "htmlmixed",
+											tags: {
+												style: [[null, null, "css"]],
+												script: [[null, null, "javascript"]]
+											}
+										};
+									break;
+									case "javascript":
+										// no change needed
+									break;
+									case "json":
+										mode = {
+											name : "javascript",
+											json : true
+										};
+									break;
+									default:
+										mode = "javascript";
+									break;
+								}
+								var cm = CodeMirror.fromTextArea(textarea, {
+									lineNumbers: true,
+									theme: "base16-dark",
+									mode: mode
+								});
+								cm.on("change", function(event) {
+									cm.getTextArea().dataBinding.set(cm.getValue());
+								});
 							});
 						}
 					}
@@ -1850,6 +1838,13 @@ editor.transformers = {
 				if (event.data.dataBinding.parentKey == "/component/parts/") {
 					var list = event.data.arguments[0];
 					editor.pageData.count[list] = event.data.arguments[1].length;
+				}
+			});
+		</script>
+		<script>
+			document.addEventListener("simply-data-changed", function(event) {
+				if (event.data.dataBinding.parentKey == "/component/parts/") {
+					simplyApp.actions.codeMirrorInit();
 				}
 			});
 		</script>
