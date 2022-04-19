@@ -1,1 +1,1 @@
-[{"component":"navigation","code":"<nav>\n  <li><a href=\"#base\">Base components</a></li>\n  <li><a href=\"#components\">Components</a></li>\n  <li><a href=\"#pages\">Pages</a></li>\n<li><a href=\"#preview\">HTML Preview</a></li>\n</nav>\n"}]
+[{"component":"navigation","code":"<nav>\n  <li><a href=\"#base\">Base components</a></li>\n  <li><a href=\"#components\">Components</a></li>\n  <li><a href=\"#pages\">Pages</a></li>\n  <li><a href=\"#publish\">Publish App HTML</a></li>\n</nav>\n"}]

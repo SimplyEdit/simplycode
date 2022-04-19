@@ -1,0 +1,1 @@
+[{"command":"saveAppHtml","code":"function() {\n  var appHtml = document.querySelector(\".sb-preview\").innerText;\n  simplyApp.actions.saveAppHtml(appHtml)\n    .then(function() {\n    editor.pageData.alerts.unshift({\n      \"data-simply-template\" : \"info\",\n      \"message\" : \"App published!\",\n      \"state\" : \"new\"\n    });\n  });\n}"}]
