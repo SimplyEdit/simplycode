@@ -1532,238 +1532,249 @@
                         <button data-simply-command="saveAppHtml">Publish App</button>
                     </div>
                     <div class="sb-preview">
-                        <pre>
+<pre>
 &lt;!DOCTYPE HTML>
 &lt;html lang="nl">
-&lt;head>
-                        </pre>
-<pre>&lt;!-- Component CSS --></pre>
-&lt;style&gt;
+</pre>
+<pre>
+  &lt;head>
+</pre>
+<pre>
+    &lt;!-- Component CSS -->
+    &lt;style&gt;
+</pre>
                         <div data-simply-list="app.componentCss">
                             <template>
                                 <pre class="componentCss">
-/* <span data-simply-field="name"></span> */<br>
-<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
+      /* <span data-simply-field="name"></span> */<br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=6></span>
                                 </pre>
                             </template>
                         </div>
-&lt;/style&gt;
-<pre>&lt;!-- /Component CSS --></pre>
-<pre>&lt;!-- Head HTML --></pre>
+<pre>
+    &lt;/style&gt;
+    &lt;!-- /Component CSS -->
+</pre>
+<pre>
+    &lt;!-- Head HTML -->
+</pre>
                         <div data-simply-list="app.headHtml">
                             <template>
-                                <pre class="headHtml">
-&lt!-- <span data-simply-field="name"></span> --><br>
-<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
-                                </pre>
+<pre class="headHtml">
+    &lt!-- <span data-simply-field="name"></span> --><br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+</pre>
                             </template>
                         </div>
-<pre>&lt;!-- /Head HTML --></pre>
-
 <pre>
-        &lt;script type="text/javascript"&gt;
-            var simplyDataApi = {};
-            var simplyApp = {};
-
-            window.addEventListener("simply-content-loaded", function() {
-                simply.bind = false;
+    &lt;!-- /Head HTML -->
 </pre>
-
 <pre>
-/* Raw API */
-simplyRawApi = {
+    &lt;script&gt;
+      var simplyDataApi = {};
+      var simplyApp = {};
+
+      window.addEventListener("simply-content-loaded", function() {
+        simply.bind = false;
+</pre>
+<pre>
+        /* Raw API */
+        simplyRawApi = {
 </pre>
                         <div data-simply-list="app.rawApi">
                             <template>
-                                <pre class="rawApiMethod">
-<span data-simply-field="method"></span> : <span data-simply-field="code"></span><span class="trailingComma">,</span>
-                                </pre>
+<pre class="rawApiMethod">
+          <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
+</pre>
                             </template>
                         </div>
 <pre>
-};
-/* End of Raw API */
+        };
+        /* End of Raw API */
 </pre>
 <pre>
-/* Data API */
-simplyDataApi = {
+        /* Data API */
+        simplyDataApi = {
 </pre>
                         <div data-simply-list="app.dataApi">
                             <template>
-                                <pre class="rawApiMethod">
-<span data-simply-field="method"></span> : <span data-simply-field="code"></span><span class="trailingComma">,</span>
-                                </pre>
+<pre class="rawApiMethod">
+          <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
+</pre>
                             </template>
                         </div>
 <pre>
-}
-/* End of Data API */
+        }
+        /* End of Data API */
 </pre>
 
 <pre>
-                simplyApp = simply.app({
-                    actions: {
+        simplyApp = simply.app({
+          /* Actions */
+          actions: {
 </pre>
-
-<pre>/* Actions */</pre>
                         <div data-simply-list="app.actions">
                             <template>
-                                <pre class="action">
-<span data-simply-field="action"></span> : <span data-simply-field="code"></span><span class="trailingComma">,</span>
-                                </pre>
+<pre class="action">
+            <span data-simply-field="action"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
+</pre>
                             </template>
                         </div>
-<pre>/* /Actions */</pre>
-
 <pre>
-                    },
-                    commands: {
+          },
+          /* /Actions */
 </pre>
 
-<pre>/* Commands */</pre>
+
+<pre>
+          /* Commands */
+          commands: {
+</pre>
                         <div data-simply-list="app.commands">
                             <template>
-                                <pre class="command">
-<span data-simply-field="command"></span> : <span data-simply-field="code"></span><span class="trailingComma">,</span>
-                                </pre>
+<pre class="command">
+            <span data-simply-field="command"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
+</pre>
                             </template>
                         </div>
-<pre>/* /Commands */ </pre>
 <pre>
-                    },
-                    routes: {
+          },
+          /* /Commands */
 </pre>
-<pre>/* Routes */ </pre>
+<pre>
+          /* Routes */
+          routes: {
+</pre>
                         <div data-simply-list="app.routes">
                             <template>
-                                <pre class="route">
-"<span data-simply-field="route"></span>" : <span data-simply-field="code"></span><span class="trailingComma">,</span>
-                                </pre>
+<pre class="route">
+            "<span data-simply-field="route"></span>" : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
+</pre>
                             </template>
                         </div>
-<pre>/* /Routes */ </pre>
 <pre>
-                    }
-                });
+          /* /Routes */
+          }
+        });
 </pre>
-
 <pre>
-                function clone(ob) {
-                    return JSON.parse(JSON.stringify(ob));
-                }
+        function clone(ob) {
+          return JSON.parse(JSON.stringify(ob));
+        }
 
-                function updateDataSource(name) {
-                    document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
-                        editor.list.applyDataSource(list, name);
-                        list.dataBindingPaused = 0;
-                    });
-                };
-            });
-        &lt;/script&gt;
-
-
-&lt;/head>
-&lt;body>
+        function updateDataSource(name) {
+          document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
+            editor.list.applyDataSource(list, name);
+            list.dataBindingPaused = 0;
+          });
+        };
+      });
+    &lt;/script&gt;
+  &lt;/head>
+  &lt;body>
+    &lt;!-- Body HTML -->
 </pre>
-<pre>&lt;!-- Body HTML --></pre>
                         <div data-simply-list="app.bodyHtml">
                             <template>
-                                <pre class="bodyHtml">
-&lt!-- <span data-simply-field="name"></span> --><br>
-<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
-                                </pre>
+<pre class="bodyHtml">
+    &lt!-- <span data-simply-field="name"></span> --><br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+</pre>
                             </template>
                         </div>
-<pre>&lt;!-- /Body HTML --></pre>
-
-<pre>&lt;!-- Component HTML templates --></pre>
+<pre>
+    &lt;!-- /Body HTML --></pre>
+</pre>
+<pre>
+    &lt;!-- Component HTML templates -->
+</pre>
                         <div data-simply-list="app.componentTemplates">
                             <template>
-                                <pre class="componentTemplate">
-&lt;template id="<span data-simply-field="component"></span>"&gt;
-<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
-&lt;/template&gt;
-                                </pre>
+<pre class="componentTemplate">
+    &lt;template id="<span data-simply-field="component"></span>"&gt;
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=6></span>
+    &lt;/template&gt;
+</pre>
                             </template>
                         </div>
-<pre>&lt;!-- /Component HTML templates --></pre>
 <pre>
-        &lt;header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
-            &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
-        &lt;/header&gt;
-        &lt;div is="simply-component" rel="navigation"&gt;&lt;/div&gt;
-        &lt;!-- FIXME: hier main van maken --&gt;
-        &lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
+    &lt;!-- /Component HTML templates -->
 </pre>
-
-<pre>&lt;!-- Page HTML templates --></pre>
+<pre>
+    &lt;header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
+      &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
+    &lt;/header&gt;
+    &lt;div is="simply-component" rel="navigation"&gt;&lt;/div&gt;
+    &lt;!-- FIXME: hier main van maken --&gt;
+    &lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
+</pre>
+<pre>
+      &lt;!-- Page HTML templates --></pre>
                         <div data-simply-list="app.pageTemplates">
                             <template>
-                                <pre class="pageTemplate">
-&lt;template data-simply-template="<span data-simply-field="page"></span>"&gt;
-<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
-&lt;/template&gt;
-                                </pre>
+<pre class="pageTemplate">
+      &lt;template data-simply-template="<span data-simply-field="page"></span>"&gt;
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=6></span>
+      &lt;/template&gt;
+</pre>
                             </template>
                         </div>
-<pre>&lt;!-- /Page HTML templates --></pre>
-
-
 <pre>
-        &lt;/div>
-        &lt;script src="/js/simply.everything.js">&lt;/script>
-        &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
-        &lt;script>
+      &lt;!-- /Page HTML templates -->
 </pre>
-
 <pre>
-/* Transformers */
-editor.transformers = {
+    &lt;/div>
+    &lt;script src="/js/simply.everything.js">&lt;/script>
+    &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+    &lt;script>
+</pre>
+<pre>
+      /* Transformers */
+      editor.transformers = {
 </pre>
                         <div data-simply-list="app.transformers">
                             <template>
-                                <pre class="transformer">
-"<span data-simply-field="transformer"></span>" : {
-  render : <span data-simply-field="render-code"></span>,
-  extract : <span data-simply-field="extract-code"></span>
-}<span class="trailingComma">,</span>
-                                </pre>
+<pre class="transformer">
+        "<span data-simply-field="transformer"></span>" : {
+          render : <span data-simply-field="render-code" data-simply-transformer="indentCode" data-indent=10></span>,
+          extract : <span data-simply-field="extract-code" data-simply-transformer="indentCode" data-indent=10></span>
+        }<span class="trailingComma">,</span>
+</pre>
                             </template>
                         </div>
 <pre>
-};
-/* /Transformers */ </pre>
-
-<pre>
-        &lt;/script>
+      };
+      /* /Transformers */
+    &lt;/script>
 </pre>
-
-
 <pre>
-        &lt;script&gt;
-            // load sorters
-        &lt;/script&gt;
-        &lt;script&gt;
-            window.addEventListener("simply-content-loaded", function() {
-                // load datasources
-            });
-        &lt;/script&gt;
+    &lt;script&gt;
+      // load sorters
+    &lt;/script&gt;
+    &lt;script&gt;
+      window.addEventListener("simply-content-loaded", function() {
+        // load datasources
+      });
+    &lt;/script&gt;
 </pre>
-
-<pre>&lt;!-- Foot HTML --></pre>
+<pre>
+    &lt;!-- Foot HTML -->
+</pre>
                         <div data-simply-list="app.footHtml">
                             <template>
-                                <pre class="footHtml">
-&lt!-- <span data-simply-field="name"></span> --><br>
-<span data-simply-field="code" data-simply-transformer="htmlEscape"></span>
-                                </pre>
+<pre class="footHtml">
+    &lt!-- <span data-simply-field="name"></span> --><br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+</pre>
                             </template>
                         </div>
-<pre>&lt;!-- /Foot HTML --></pre>
-                        <pre>
-&lt;/body>
+<pre>
+    &lt;!-- /Foot HTML -->
+</pre>
+<pre>
+  &lt;/body>
 &lt;/html>
-                        </pre>
+</pre>
                     </div>
                     <div class="field">
                         <button data-simply-command="saveAppHtml">Publish App</button>
@@ -1814,9 +1825,27 @@ editor.transformers = {
                 "htmlEscape" : {
                     render: function(data) {
                         this.simplyData = data;
+						if (this.hasAttribute("data-indent")) {
+							var indent = " ".repeat(this.getAttribute("data-indent"));
+							data = indent + data.replace(/\n/g, "\n" + indent);
+						}
                         return data
                             .replace(/</g, "&lt;")
                             .replace(/>/g, "&gt;");
+                    },
+                    extract : function(data) {
+                        return this.simplyData;
+                    }
+                },
+                "indentCode" : {
+                    render: function(data) {
+                        this.simplyData = data;
+						if (this.hasAttribute("data-indent")) {
+							var indent = " ".repeat(this.getAttribute("data-indent"));
+							data = data.replace(/\n/g, "\n" + indent);
+						}
+                        return data
+							.replace(/\t/g, "  ");
                     },
                     extract : function(data) {
                         return this.simplyData;
