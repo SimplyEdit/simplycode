@@ -290,6 +290,15 @@
                             }
                             throw new Error("deleteComponent failed", response.status);
                         });
+                    },
+                    saveAppHtml : function(appHtml) {
+                        return simplyRawApi.putRaw("generated.html", appHtml)
+                        .then(function(response) {
+                            if (response.status === 200) {
+                                return response.json();
+                            }
+                            throw new Error("saveAppHtml failed", response.status);
+                        });
                     }
                 };
 
@@ -657,6 +666,17 @@
                                     cm.getTextArea().dataBinding.set(cm.getValue());
                                 });
                             });
+                        },
+                        saveAppHtml : function() {
+                            var appHtml = document.querySelector(".sb-preview").innerText;
+                            simplyApp.actions.saveAppHtml(appHtml)
+                            .then(function() {
+                                editor.pageData.alerts.unshift({
+                                    "data-simply-template" : "info",
+                                    "message" : "App published!",
+                                    "state" : "new"
+                                });
+                            });
                         }
                     },
                     actions: {
@@ -835,6 +855,9 @@
 
                                 return appData;
                             });
+                        },
+                        saveAppHtml(appHtml) {
+                            return simplyDataApi.saveAppHtml(appHtml);
                         }
                     }
                 });
@@ -1825,10 +1848,10 @@
                 "htmlEscape" : {
                     render: function(data) {
                         this.simplyData = data;
-						if (this.hasAttribute("data-indent")) {
-							var indent = " ".repeat(this.getAttribute("data-indent"));
-							data = indent + data.replace(/\n/g, "\n" + indent);
-						}
+                        if (this.hasAttribute("data-indent")) {
+                            var indent = " ".repeat(this.getAttribute("data-indent"));
+                            data = indent + data.replace(/\n/g, "\n" + indent);
+                        }
                         return data
                             .replace(/</g, "&lt;")
                             .replace(/>/g, "&gt;");
@@ -1840,12 +1863,12 @@
                 "indentCode" : {
                     render: function(data) {
                         this.simplyData = data;
-						if (this.hasAttribute("data-indent")) {
-							var indent = " ".repeat(this.getAttribute("data-indent"));
-							data = data.replace(/\n/g, "\n" + indent);
-						}
+                        if (this.hasAttribute("data-indent")) {
+                            var indent = " ".repeat(this.getAttribute("data-indent"));
+                            data = data.replace(/\n/g, "\n" + indent);
+                        }
                         return data
-							.replace(/\t/g, "  ");
+                            .replace(/\t/g, "  ");
                     },
                     extract : function(data) {
                         return this.simplyData;
