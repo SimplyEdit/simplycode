@@ -292,7 +292,7 @@
                         });
                     },
                     saveAppHtml : function(appHtml) {
-                        return simplyRawApi.putRaw("generated.html", appHtml)
+                        return simplyRawApi.putRaw("generated.html", {}, appHtml)
                         .then(function(response) {
                             if (response.status === 200) {
                                 return response.json();
