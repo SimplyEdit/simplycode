@@ -437,12 +437,12 @@
                                 editor.pageData.page = "Base components";
                             });
                         },
-                        '#preview' : function() {
+                        '#publish' : function() {
                             editor.pageData.app = {};
                             simplyApp.actions.getAppData()
                             .then(function(appData) {
                                 editor.pageData.app = appData;
-                                editor.pageData.page = "App HTML preview";
+                                editor.pageData.page = "Publish App HTML";
                             });
                         },
                         '/' : function() {
@@ -1395,7 +1395,7 @@
                 <li><a href="#base">Base components</a></li>
                 <li><a href="#components">Components</a></li>
                 <li><a href="#pages">Pages</a></li>
-                <li><a href="#preview">HTML preview</a></li>
+                <li><a href="#publish">Publish App HTML</a></li>
             </nav>
         </template>
 
@@ -1543,7 +1543,7 @@
                     </div>
                 </main>
             </template>
-            <template data-simply-template="App HTML preview">
+            <template data-simply-template="Publish App HTML">
                 <style>
                     .sb-preview [data-simply-list-item]:last-child .trailingComma {
                         display: none;
