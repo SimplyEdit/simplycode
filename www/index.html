@@ -1853,10 +1853,9 @@
                             var indent = " ".repeat(this.getAttribute("data-indent"));
                             data = indent + data.replace(/\n/g, "\n" + indent);
                         }
-                        return data
-                            .replace(/&/g, "&amp;")
-                            .replace(/</g, "&lt;")
-                            .replace(/>/g, "&gt;");
+                        var dataDiv = document.createElement("div");
+                        dataDiv.appendChild(document.createTextNode(data));
+                        return dataDiv.innerHTML;
                     },
                     extract : function(data) {
                         return this.simplyData;
@@ -1869,9 +1868,10 @@
                             var indent = " ".repeat(this.getAttribute("data-indent"));
                             data = data.replace(/\n/g, "\n" + indent);
                         }
-                        return data
-                            .replace(/&/g, "&amp;")
-                            .replace(/\t/g, "  ");
+                        data = data.replace(/\t/g, "  ");
+                        var dataDiv = document.createElement("div");
+                        dataDiv.appendChild(document.createTextNode(data));
+                        return dataDiv.innerHTML;
                     },
                     extract : function(data) {
                         return this.simplyData;
