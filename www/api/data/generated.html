@@ -996,12 +996,12 @@
 
     <!-- Toast styles -->
 
-      <style>
-        .simply-toasts {
-    	  position: relative;
-          z-index: 101;
-        }
-      </style>
+    <style>
+      .simply-toasts {
+        position: relative;
+        z-index: 101;
+      }
+    </style>
     
 
     <!-- /Body HTML -->
@@ -1011,8 +1011,8 @@
     <template id="componentActions">
       <details class="sb-component">
         <summary data-simply-command="codeMirror" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
-      	<span data-simply-field="count.actions" data-simply-content="attributes" data-simply-attributes="data-count">
-        	  Actions
+          <span data-simply-field="count.actions" data-simply-content="attributes" data-simply-attributes="data-count">
+            Actions
           </span>
         </summary>
         <table class="sb-code-method">
@@ -1932,9 +1932,9 @@
               var indent = " ".repeat(this.getAttribute("data-indent"));
               data = indent + data.replace(/\n/g, "\n" + indent);
             }
-            return data
-              .replace(/&/g, "&amp;")
-              .replace(//g, "&gt;");
+            var dataDiv = document.createElement("div");
+            dataDiv.appendChild(document.createTextNode(data));
+            return dataDiv.innerHTML;
           },
           extract : function(data) {
             return this.simplyData;
@@ -1948,9 +1948,10 @@
               var indent = " ".repeat(this.getAttribute("data-indent"));
               data = data.replace(/\n/g, "\n" + indent);
             }
-            return data
-              .replace(/&/g, "&amp;")
-              .replace(/\t/g, "  ");
+            data = data.replace(/\t/g, "  ");
+            var dataDiv = document.createElement("div");
+            dataDiv.appendChild(document.createTextNode(data));
+            return dataDiv.innerHTML;
           },
           extract : function(data) {
             return this.simplyData;
