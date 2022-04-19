@@ -19,6 +19,7 @@ TODO:
 [Code improvements]
 - Improve styling: at least for the buttons and navigation. Reuse simply-edit backend style?
 - Replace the table structure in de componentAction etc with a grid or flexbox structure
+- Replace count items with CSS counters
 - Fix HTML preview indentation; should it be a highlighted look (using static codemirror view) instead?
 
 ====================================
