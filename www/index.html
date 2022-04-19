@@ -856,7 +856,7 @@
                                 return appData;
                             });
                         },
-                        saveAppHtml(appHtml) {
+                        saveAppHtml : function(appHtml) {
                             return simplyDataApi.saveAppHtml(appHtml);
                         }
                     }
@@ -1584,7 +1584,7 @@
                         <div data-simply-list="app.headHtml">
                             <template>
 <pre class="headHtml">
-    &lt!-- <span data-simply-field="name"></span> --><br>
+    &lt;!-- <span data-simply-field="name"></span> --><br>
 <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
 </pre>
                             </template>
@@ -1700,13 +1700,13 @@
                         <div data-simply-list="app.bodyHtml">
                             <template>
 <pre class="bodyHtml">
-    &lt!-- <span data-simply-field="name"></span> --><br>
+    &lt;!-- <span data-simply-field="name"></span> --><br>
 <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
 </pre>
                             </template>
                         </div>
 <pre>
-    &lt;!-- /Body HTML --></pre>
+    &lt;!-- /Body HTML -->
 </pre>
 <pre>
     &lt;!-- Component HTML templates -->
@@ -1732,7 +1732,8 @@
     &lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
 </pre>
 <pre>
-      &lt;!-- Page HTML templates --></pre>
+      &lt;!-- Page HTML templates -->
+</pre>
                         <div data-simply-list="app.pageTemplates">
                             <template>
 <pre class="pageTemplate">
@@ -1786,7 +1787,7 @@
                         <div data-simply-list="app.footHtml">
                             <template>
 <pre class="footHtml">
-    &lt!-- <span data-simply-field="name"></span> --><br>
+    &lt;!-- <span data-simply-field="name"></span> --><br>
 <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
 </pre>
                             </template>
