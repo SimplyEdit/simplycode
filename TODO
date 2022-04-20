@@ -24,7 +24,6 @@ TODO:
 
 [Tests]
 - Add a place to add tests next to the code.
-- Integrate QUnit for commands
 - Integrate validator.w3.org for HTML
 
 ====================================
@@ -117,6 +116,9 @@ Done:
 [v] Fix HTML preview indentation;
 [v] Replace the table structure in de componentAction etc with a grid or flexbox structure
 [v] Move QUnit tests editor to an own component
+[v] Integrate QUnit for commands
+[v] Integrate QUnit for actions
+[v] Fix QUnit iframe height to follow the iframe content height;
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
