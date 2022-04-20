@@ -1,6 +1,7 @@
 Bugs:
 - issue with codemirror width being weird. We need to lock down the table widths to get this working properly;
 - chrome doesn't render the simply-components
+- update code for components
 
 =====
 TODO:
@@ -117,8 +118,10 @@ Done:
 	</html>
 [v] Fix HTML preview indentation;
 [v] Replace the table structure in de componentAction etc with a grid or flexbox structure
+[v] Move QUnit tests editor to an own component
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
 [v] after deleting a part, codemirror needs to reinitialize;
+
 
