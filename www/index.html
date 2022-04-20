@@ -7,19 +7,6 @@
             .sb-code-method {
                 width: 100%;
             }
-            .sb-code-method th {
-                text-align: left;
-            }
-            .sb-code-method td {
-                vertical-align: top;
-            }
-            .sb-code-method td:first-child,
-            .sb-code-method td:last-child {
-                width: 0;
-            }
-            .sb-code-method td textarea {
-                margin-top: 5px;
-            }
             .sb-component summary span[data-count] {
                 font-weight: bold;
             }
@@ -31,6 +18,20 @@
             }
             .sb-component summary span[data-count="0"]:after {
                 content: '';
+            }
+
+            .sb-part {
+                display: grid;
+                grid-template-columns: 1fr 6fr 1fr;
+                gap: 10px;
+            }
+            .sb-part label {
+                display: block;
+            }
+            .sb-editors {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 10px;
             }
         </style>
         <script type="text/javascript">
@@ -910,30 +911,30 @@
                         Actions
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Action</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.actions">
+                <div class="sb-code-method" data-simply-list="component.parts.actions">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Action</label>
                                 <input data-simply-field="action" placeholder="Action name, eg getItemList">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                                </div>
+	                            <div class="sb-editor-tests">
+                                    <label>Tests</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="tests" placeholder="function() {...}"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addAction">Add action</button>
             </details>
         </template>
@@ -944,30 +945,30 @@
                         Commands
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Command</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.commands">
+                <div class="sb-code-method" data-simply-list="component.parts.commands">
                     <template>
-                        <tr>
-                            <td>
-                                <input data-simply-field="command" placeholder="Command name, eg getItemList">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Command</label>
+	                            <input data-simply-field="command" placeholder="Command name, eg getItemList">
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                                </div>
+	                            <div class="sb-editor-tests">
+                                    <label>Tests</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="tests" placeholder="function() {...}"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addCommand">Add command</button>
             </details>
         </template>
@@ -986,30 +987,26 @@
                         Page HTML template
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Page</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.pageTemplates">
+                <div class="sb-code-method" data-simply-list="component.parts.pageTemplates">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Page</label>
                                 <input data-simply-field="page" placeholder="Page name">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addPageTemplate">Add page HTML template</button>
             </details>
         </template>
@@ -1020,30 +1017,26 @@
                         Component HTML template
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Template</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.componentTemplates">
+                <div class="sb-code-method" data-simply-list="component.parts.componentTemplates">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Component template</label>
                                 <input data-simply-field="component" placeholder="Component name">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<div>Component Html</div>"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addComponentTemplate">Add component HTML template</button>
             </details>
         </template>
@@ -1054,30 +1047,26 @@
                         Component CSS collections
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>CSS collection</th>
-                            <th>Styles</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.componentCss">
+                <div class="sb-code-method" data-simply-list="component.parts.componentCss">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>CSS collection</label>
                                 <input data-simply-field="name" placeholder="Name this CSS collection">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Styles</label>
+                                    <textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addComponentCss">Add CSS collection</button>
             </details>
         </template>
@@ -1088,30 +1077,26 @@
                         Additional head HTML
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.headHtml">
+                <div class="sb-code-method" data-simply-list="component.parts.headHtml">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Name</label>
                                 <input data-simply-field="name" placeholder="Name">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addHeadHtml">Add head HTML</button>
             </details>
         </template>
@@ -1122,30 +1107,26 @@
                         Additional body HTML
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.bodyHtml">
+                <div class="sb-code-method" data-simply-list="component.parts.bodyHtml">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Name</label>
                                 <input data-simply-field="name" placeholder="Name">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addBodyHtml">Add body HTML</button>
             </details>
         </template>
@@ -1156,30 +1137,26 @@
                         Additional foot HTML
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.footHtml">
+                <div class="sb-code-method" data-simply-list="component.parts.footHtml">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Name</label>
                                 <input data-simply-field="name" placeholder="Name">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addFootHtml">Add foot HTML</button>
             </details>
         </template>
@@ -1190,30 +1167,26 @@
                         Routes
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Route</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.routes">
+                <div class="sb-code-method" data-simply-list="component.parts.routes">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Route</label>
                                 <input data-simply-field="route" placeholder="#route/:variable">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addRoute">Add route</button>
             </details>
         </template>
@@ -1224,30 +1197,26 @@
                         Raw API
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Method</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.rawApi">
+                <div class="sb-code-method" data-simply-list="component.parts.rawApi">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Method</label>
                                 <input data-simply-field="method" placeholder="API method name, eg getItemList">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addRawApiMethod">Add method</button>
             </details>
         </template>
@@ -1258,30 +1227,26 @@
                         Page CSS collections
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>CSS collection</th>
-                            <th>Styles</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.pageCss">
+                <div class="sb-code-method" data-simply-list="component.parts.pageCss">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>CSS collection</label>
                                 <input data-simply-field="name" placeholder="Name this CSS collection">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Styles</label>
+                                    <textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addPageCss">Add CSS collection</button>
             </details>
         </template>
@@ -1292,30 +1257,26 @@
                         Data API
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Method</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.dataApi">
+                <div class="sb-code-method" data-simply-list="component.parts.dataApi">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Method</label>
                                 <input data-simply-field="method" placeholder="API method name, eg getItemList">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addDataApiMethod">Add method</button>
             </details>
         </template>
@@ -1326,33 +1287,30 @@
                         Transformers
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Transformer</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.transformers">
+                <div class="sb-code-method" data-simply-list="component.parts.transformers">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Method</label>
                                 <input data-simply-field="transformer" placeholder="Transformer name, eg itemNameFromId">
-                            </td>
-                            <td>
-                                <strong title="Render code transforms the data from what is stored into what the user sees">Render</strong><br>
-                                <textarea data-codemirror-mode="javascript" data-simply-field="render-code" placeholder="function(data) {...}"></textarea>
-                                <strong title="Extract takes the data as provided from the DOM and transforms it for storage">Extract</strong><br>
-                                <textarea data-codemirror-mode="javascript" data-simply-field="extract-code" placeholder="function(data) {...}"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label title="Render code transforms the data from what is stored into what the user sees">Render code</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="render-code" placeholder="function() {...}"></textarea>
+                                </div>
+	                            <div class="sb-editor-code">
+                                    <label title="Extract takes the data as provided from the DOM and transforms it for storage">Extract code</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="extract-code" placeholder="function() {...}"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addTransformer">Add transformer</button>
             </details>
         </template>
@@ -1363,30 +1321,26 @@
                         Data sources
                     </span>
                 </summary>
-                <table class="sb-code-method">
-                    <thead>
-                        <tr>
-                            <th>Data source</th>
-                            <th>Code</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody data-simply-list="component.parts.dataSources">
+                <div class="sb-code-method" data-simply-list="component.parts.dataSources">
                     <template>
-                        <tr>
-                            <td>
+                        <div class="sb-part">
+	                        <div class="sb-properties">
+                                <label>Data source</label>
                                 <input data-simply-field="dataSource" placeholder="Data source name, eg itemList">
-                            </td>
-                            <td>
-                                <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                            </td>
-                            <td>
-                                <button data-simply-command="deleteEntry">Delete</button>
-                            </td>
-                        </tr>
+	                        </div>
+	                        <div class="sb-editors">
+	                            <div class="sb-editor-code">
+                                    <label>Code</label>
+                                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                                </div>
+	                        </div>
+	                        <div class="sb-options">
+                                <label>Options</label>
+	                            <button data-simply-command="deleteEntry">Delete</button>
+	                        </div>
+                        </div>
                     </template>
-                    </tbody>
-                </table>
+                </div>
                 <button data-simply-command="addDataSource">Add data source</button>
             </details>
         </template>
