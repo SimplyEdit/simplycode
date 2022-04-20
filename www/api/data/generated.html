@@ -2046,7 +2046,10 @@
 
     <script>
       document.addEventListener("simply-data-changed", function(event) {
-        if (event.data.dataBinding.parentKey == "/component/parts/") {
+        if (
+          (event.data.dataBinding.parentKey == "/component/parts/") ||
+          (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
+        ) {
           simplyApp.commands.codeMirrorInit();
         }
       });
