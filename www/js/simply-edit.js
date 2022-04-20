@@ -959,7 +959,7 @@
 							clone = document.importNode(list.templates[requestedTemplate].content, true);
 							// Grr... android browser imports the nodes, except the contents of subtemplates. Find them and put them back where they belong.
 							var originalTemplates = list.templates[requestedTemplate].content.querySelectorAll("template");
-							var importedTemplates = clone.querySelectorAll("template");
+							var importedTemplates = clone.querySelectorAll("template:not([simply-component])");
 
 							for (i=0; i<importedTemplates.length; i++) {
 								importedTemplates[i].innerHTML = originalTemplates[i].innerHTML;
