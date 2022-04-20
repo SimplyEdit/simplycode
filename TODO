@@ -1,6 +1,5 @@
 Bugs:
 - issue with codemirror width being weird. We need to lock down the table widths to get this working properly;
-- chrome doesn't render the simply-components
 - update code for components
 
 =====
@@ -123,5 +122,4 @@ Done:
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
 [v] after deleting a part, codemirror needs to reinitialize;
-
-
+[v] chrome doesn't render the simply-components
