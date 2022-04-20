@@ -33,6 +33,12 @@
                 grid-template-columns: 1fr;
                 gap: 10px;
             }
+
+            .sb-test {
+                display: grid;
+                grid-template-columns: 1fr 6fr 1fr;
+                gap: 10px;
+            }
         </style>
         <script type="text/javascript">
             var simplyDataApi = {};
@@ -610,6 +616,9 @@
                             var parent = target.parentNode;
                             target.parentNode.removeChild(target);
                         },
+                        addTest : function(el) {
+                            el.previousElementSibling.dataBinding.config.data.tests.push({});
+                        },
                         codeMirror : function(el) {
                             if (el.parentNode.hasAttribute("open")) {
                                 el.parentNode.removeAttribute("open");
@@ -904,6 +913,28 @@
                 </ul>
             </div>
         </template>
+        <template id="componentQUnitTests">
+            <div class="sb-editor-qunit-tests">
+                <label>Tests</label>
+                <div class="sb-tests" data-simply-list="tests">
+                    <template>
+                        <div class="sb-test">
+                            <div class="sb-test-properties">
+                                <input data-simply-field="name" placeholder="Test name">
+                            </div>
+                            <div class="sb-test-editor">
+                                <textarea data-codemirror-mode="javascript" data-simply-field="test" placeholder="function() {...}"></textarea>
+                            </div>
+                            <div class="sb-test-options">
+                                <label>Options</label>
+                                <button data-simply-command="deleteEntry">Delete test</button>
+                            </div>
+                        </div>
+                     </template>
+                </div>
+                <button data-simply-command="addTest">Add test</button>
+            </div>
+        </template>
         <template id="componentActions">
             <details class="sb-component">
                 <summary data-simply-command="codeMirror" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
@@ -923,12 +954,9 @@
                                     <label>Code</label>
                                     <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                                 </div>
-	                            <div class="sb-editor-tests">
-                                    <label>Tests</label>
-                                    <textarea data-codemirror-mode="javascript" data-simply-field="tests" placeholder="function() {...}"></textarea>
-                                </div>
-	                        </div>
-	                        <div class="sb-options">
+                                <div is="simply-component" rel="componentQUnitTests"></div>
+                            </div>
+                            <div class="sb-options">
                                 <label>Options</label>
 	                            <button data-simply-command="deleteEntry">Delete</button>
 	                        </div>
@@ -957,12 +985,9 @@
                                     <label>Code</label>
                                     <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                                 </div>
-	                            <div class="sb-editor-tests">
-                                    <label>Tests</label>
-                                    <textarea data-codemirror-mode="javascript" data-simply-field="tests" placeholder="function() {...}"></textarea>
-                                </div>
-	                        </div>
-	                        <div class="sb-options">
+                                <div is="simply-component" rel="componentQUnitTests"></div>
+                            </div>
+                            <div class="sb-options">
                                 <label>Options</label>
 	                            <button data-simply-command="deleteEntry">Delete</button>
 	                        </div>
@@ -1851,7 +1876,7 @@
         </script>
         <script>
             document.addEventListener("simply-data-changed", function(event) {
-                if (event.data.dataBinding.parentKey == "/component/parts/") {
+                if (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0) {
                     simplyApp.commands.codeMirrorInit();
                 }
             });
