@@ -47,6 +47,36 @@
         width: 100%;
         height: 0px;
       }
+      .sb-html-valid,
+      .sb-html-invalid {
+        padding: 4px 10px;
+        background-color: #D2E0E6;
+        color: #2B81AF;
+      }
+      .sb-html-valid {
+        border-top: 5px solid #C6E746; /* pass color from qunit */
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        margin-bottom: 10px;
+      }
+      .sb-html-invalid {
+        border-top: 5px solid #EE5757; /* fail color from qunit */
+      }
+      .sb-html-messages:not(.simply-empty) {
+        padding: 4px 10px;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #D2E0E6;
+        color: #2B81AF;
+      }
+      .sb-html-message:not(:last-child) {
+        border-bottom: 1px solid #2B81AF;
+      }
+      .sb-html-message [data-simply-field=firstLine]:not(:empty):after {
+        content: " - ";
+      }
+
     </style>
     <!-- /Component CSS -->
     <!-- Head HTML -->
@@ -1099,6 +1129,15 @@
                 <div class="sb-editor-code">
                   <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
+                  <div data-simply-field="code" data-simply-transformer="validateHtml"></div>
+                  <div class="sb-html-messages" data-simply-list="validateResult.messages">
+                    <template>
+                      <div class="sb-html-message">
+                        <span data-simply-field="message"></span><br>
+                        <span data-simply-field="extract" data-simply-transformer="escapeHtml"></span> on line <span data-simply-field="firstLine"></span> <span data-simply-field="lastLine"></span>
+                      </div>
+                    </template>
+                  </div>
                 </div>
               </div>
               <div class="sb-options">
@@ -1367,7 +1406,7 @@
     QUnit.done(function() {
         document.testRunner.style.height = document.body.offsetHeight + "px";
     });
-    QUnit.module("Component");
+    QUnit.module("[Command] <span data-simply-field="command"></span>");
 </pre>
             <div data-simply-list="tests">
               <template>
@@ -1434,7 +1473,7 @@
 <pre>
   &lt;script>
     QUnit.config.reorder = false;
-    QUnit.module("Component");
+    QUnit.module("[Action] <span data-simply-field="action"></span>");
 </pre>
             <div data-simply-list="tests">
               <template>
@@ -2011,7 +2050,7 @@
           }
         },
         "htmlEscape" : {
-          render: function(data) {
+          render : function(data) {
             this.simplyData = data;
             if (this.hasAttribute("data-indent")) {
               var indent = " ".repeat(this.getAttribute("data-indent"));
@@ -2026,7 +2065,7 @@
           }
         },
         "indentCode" : {
-          render: function(data) {
+          render : function(data) {
             this.simplyData = data;
             if (this.hasAttribute("data-indent")) {
               var indent = " ".repeat(this.getAttribute("data-indent"));
@@ -2036,6 +2075,38 @@
             var dataDiv = document.createElement("div");
             dataDiv.appendChild(document.createTextNode(data));
             return dataDiv.innerHTML;
+          },
+          extract : function(data) {
+            return this.simplyData;
+          }
+        },
+        "validateHtml" : {
+          render : function(data) {
+            this.simplyData = data;
+            var element = this;
+            let htmlData = "<!doctype html><html lang='en'><head><title>Test</title></head><body>" + data + "</body></html>";
+            fetch("https://validator.w3.org/nu/?out=json", {
+              mode : 'cors',
+              headers: {
+                 "Content-type" : "text/html; charset=utf-8"
+              },
+              method: "POST",
+              body: htmlData
+            })
+            .then(function(result) {
+              return result.json();
+            })
+            .then(function(validateResult) {
+              element.dataBinding.config.data.validateResult = validateResult;
+              if(validateResult.messages.length) {
+                element.className = "sb-html-invalid";
+                element.innerHTML = "HTML validation failed:";
+              } else {
+                element.innerHTML = "HTML validated!";
+                element.className = "sb-html-valid";
+              }
+            });
+            return "Validating...";
           },
           extract : function(data) {
             return this.simplyData;
