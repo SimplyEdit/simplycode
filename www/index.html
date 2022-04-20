@@ -45,8 +45,7 @@
       iframe.qunit {
         border: 0;
         width: 100%;
-        height: 200px;
-        margin-top: -10px;
+        height: 0px;
       }
     </style>
     <!-- /Component CSS -->
@@ -736,19 +735,10 @@
                 document.location.hash="pages/" + newComponent.id;
               });
             },
-            runTests : function(el) {
-              var target = el;
-              while (!target.hasAttribute("data-simply-list-item")) {
-                target = target.parentNode;
-              }
-              var testIframe = target.querySelector("iframe");
-              testIframe.contentWindow.document.open();
-              testIframe.contentWindow.document.write(target.querySelector(".qunit-code").innerText);
-              testIframe.contentWindow.document.close();
-            },
             autoRunTests : function(el) {
               var testRunners = document.querySelectorAll(".sb-component[open] iframe.qunit");
               testRunners.forEach(function(testRunner) {
+                testRunner.contentWindow.document.testRunner = testRunner;
                 testRunner.contentWindow.document.open();
                 testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
                 testRunner.contentWindow.document.close();
@@ -984,6 +974,7 @@
                   <div class="sb-editor-code">
                     <label>Code</label>
                     <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                    <div is="simply-component" rel="componentQUnitActionRunner"></div>
                   </div>
                   <div is="simply-component" rel="componentQUnitTests"></div>
                 </div>
@@ -992,7 +983,6 @@
                   <button data-simply-command="deleteEntry">Delete action</button>
                 </div>
               </div>
-              <div is="simply-component" rel="componentQUnitTests"></div>
             </div>
           </template>
         </div>
@@ -1047,6 +1037,7 @@
                 <div class="sb-editor-code">
                   <label>Code</label>
                   <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                  <div is="simply-component" rel="componentQUnitCommandRunner"></div>
                 </div>
                 <div is="simply-component" rel="componentQUnitTests"></div>
               </div>
@@ -1310,7 +1301,6 @@
     </template>
     <template id="componentQUnitTests">
       <div class="sb-editor-qunit-tests">
-        <div is="simply-component" rel="componentQUnitRunner"></div>
         <label>Tests</label>
         <div class="sb-tests" data-simply-list="tests">
           <template>
@@ -1329,10 +1319,9 @@
            </template>
         </div>
         <button data-simply-command="addTest">Add test</button>
-        <button data-simply-command="runTests">Run tests</button>
       </div>
     </template>
-    <template id="componentQUnitRunner">
+    <template id="componentQUnitCommandRunner">
       <div class="qunit-runner">
         <iframe class="qunit"></iframe>
         <div class="qunit-code">
@@ -1361,6 +1350,7 @@
   &lt;div id="qunit">&lt;/div>
   &lt;div id="qunit-fixture">&lt;/div>
   &lt;script src="//code.jquery.com/qunit/qunit-1.19.0.js">&lt;/script>
+<pre class="commands">
   &lt;script>
     var commands = {
 </pre>
@@ -1370,6 +1360,78 @@
 <pre>
     };
   &lt;/script>
+</pre>
+<pre>
+  &lt;script>
+    QUnit.config.reorder = false;
+    QUnit.done(function() {
+        document.testRunner.style.height = document.body.offsetHeight + "px";
+    });
+    QUnit.module("Component");
+</pre>
+            <div data-simply-list="tests">
+              <template>
+<pre>
+    QUnit.test(
+    "<span data-simply-field="name"></span>",
+<span data-simply-field="test-code" data-simply-transformer="htmlEscape" data-indent=8></span>
+    );
+</pre>
+              </template>
+            </div>
+<pre>
+  &lt;/script>
+</pre>
+</pre>
+<pre>
+&lt;/body>
+&lt;/html>
+</pre>
+        </div>
+      </div>
+    </template>
+    <template id="componentQUnitActionRunner">
+      <div class="qunit-runner">
+        <iframe class="qunit"></iframe>
+        <div class="qunit-code">
+<pre>
+&lt;!DOCTYPE HTML>
+&lt;html lang="nl">
+  &lt;head>
+</pre>
+<pre class="head">
+  &lt;meta charset="utf-8">
+  &lt;title>QUnit test&lt;/title>
+  &lt;link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.19.0.css">
+  &lt;style>
+    html,body { padding: 0; margin: 0 }
+    #qunit-header { display: none; }
+    #qunit-tests a { display: none; }
+    #qunit-testrunner-toolbar { display: none; }
+    #qunit-userAgent { display: none; }
+  &lt;/style>
+</pre>
+<pre>
+  &lt;/head>
+  &lt;body>
+<pre class="body">
+<pre>
+  &lt;div id="qunit">&lt;/div>
+  &lt;div id="qunit-fixture">&lt;/div>
+  &lt;script src="//code.jquery.com/qunit/qunit-1.19.0.js">&lt;/script>
+</pre>
+<pre class="actions">
+  &lt;script>
+    var actions = {
+</pre>
+<pre class="action">
+    <span data-simply-field="action"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=8></span>
+</pre>
+<pre>
+    };
+  &lt;/script>
+</pre>
+<pre>
   &lt;script>
     QUnit.config.reorder = false;
     QUnit.module("Component");
