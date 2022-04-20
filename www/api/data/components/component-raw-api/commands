@@ -1,1 +1,1 @@
-[{"command":"addRawApi","code":"function(el) {\n  editor.pageData.component.parts.rawApi.push({});\n}","tests":[]}]
+[{"command":"addRawApiMethod","code":"function(el) {\n  editor.pageData.component.parts.rawApi.push({});\n}","tests":[]}]
