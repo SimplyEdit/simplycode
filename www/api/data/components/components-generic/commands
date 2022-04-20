@@ -1,1 +1,1 @@
-[{"command":"deleteEntry","code":"function(el) {\n  var target = el;\n  while (!target.hasAttribute(\"data-simply-list-item\")) {\n    target = target.parentNode;\n  }\n  var parent = target.parentNode;\n  target.parentNode.removeChild(target);\n}"}]
+[{"command":"deleteEntry","code":"function(el) {\n  var target = el;\n  while (!target.hasAttribute(\"data-simply-list-item\")) {\n    target = target.parentNode;\n  }\n  var parent = target.parentNode;\n  target.parentNode.removeChild(target);\n}","tests":[]}]

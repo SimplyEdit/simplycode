@@ -1,1 +1,1 @@
-[{"command":"addDataSource","code":"function(el) {\n  editor.pageData.component.parts.dataSources.push({});\n}"}]
+[{"command":"addDataSource","code":"function(el) {\n  editor.pageData.component.parts.dataSources.push({});\n}","tests":[]}]
