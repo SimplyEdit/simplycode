@@ -1,5 +1,6 @@
 Bugs:
 - issue with codemirror width being weird. We need to lock down the table widths to get this working properly;
+- chrome doesn't render the simply-components
 
 =====
 TODO:
@@ -18,9 +19,14 @@ TODO:
 
 [Code improvements]
 - Improve styling: at least for the buttons and navigation. Reuse simply-edit backend style?
-- Replace the table structure in de componentAction etc with a grid or flexbox structure
+- Add tabs for editors so we can have more of them: specs, tests, sample data, preview? etc;
 - Replace count items with CSS counters
-- Fix HTML preview indentation; should it be a highlighted look (using static codemirror view) instead?
+- Should HTML preview be a highlighted look (using static codemirror view) instead?
+
+[Tests]
+- Add a place to add tests next to the code.
+- Integrate QUnit for commands
+- Integrate validator.w3.org for HTML
 
 ====================================
 Misc backlogged ideas in categories:
@@ -109,7 +115,10 @@ Done:
 		>> sorters
 	</body>
 	</html>
+[v] Fix HTML preview indentation;
+[v] Replace the table structure in de componentAction etc with a grid or flexbox structure
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
 [v] after deleting a part, codemirror needs to reinitialize;
+
