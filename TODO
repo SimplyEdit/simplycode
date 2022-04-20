@@ -1,6 +1,5 @@
 Bugs:
 - issue with codemirror width being weird. We need to lock down the table widths to get this working properly;
-- update code for components
 
 =====
 TODO:
