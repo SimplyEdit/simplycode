@@ -1121,6 +1121,7 @@
                 <div class="sb-editor-code">
                   <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+                  <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
               </div>
               <div class="sb-options">
@@ -1320,6 +1321,7 @@
                 <div class="sb-editor-code">
                   <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+                  <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
               </div>
               <div class="sb-options">
@@ -1351,6 +1353,7 @@
                 <div class="sb-editor-code">
                   <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+                  <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
               </div>
               <div class="sb-options">
@@ -1413,6 +1416,7 @@
                 <div class="sb-editor-code">
                   <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
+                  <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
               </div>
               <div class="sb-options">
@@ -2296,6 +2300,10 @@
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
           simplyApp.commands.codeMirrorInit();
+          window.setTimeout(
+            simplyApp.commands.codeMirrorInit,
+            250
+          );
         }
       });
     </script>
@@ -2306,7 +2314,13 @@
       document.addEventListener("simply-data-changed", function(event) {
         if (event.data.dataBinding.parentKey == "/component/parts/") {
           var list = event.data.arguments[0];
-          editor.pageData.count[list] = event.data.arguments[1].length;
+          var length;
+          if (typeof(event.data.arguments[1]) === "undefined") {
+            length = 0;
+          } else {
+            length = event.data.arguments[1].length;
+          }
+          editor.pageData.count[list] = length;
         }
       });
     </script>
