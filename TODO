@@ -15,6 +15,10 @@ TODO:
 - Add an option for adding assets? in base components?
 - Have a way to reorganize code (sorting within a module, moving code from one module to another).
 - Add a compile/build/pack step to bundle everything and create a working app;
+- Compile in datasources and sorters
+- Do we want a deeper layered data structure, to accomodate orgs and projects?
+  so www/api/data/{organization}/{project}/base-components etc;
+  Or will a project have a UUID as a 'key' for it?
 
 [Code improvements]
 - Improve styling: at least for the buttons and navigation. Reuse simply-edit backend style?
@@ -69,6 +73,7 @@ Misc backlogged ideas in categories:
 - Add a way to browse and edit the code by topic (routes, commands, actions) instead of modules. 
   Tags for browsing/selecting code bits?
   Overall improvements in code navigation
+- Documentation, sample applications
 
 [Developer collaboration]
 - How can we do git and/or versioning?
@@ -80,6 +85,9 @@ Misc backlogged ideas in categories:
 - Markdown support for descriptions?
 - Comments, documentation about components?
 - Search
+- Raw API: split out methods and properties
+- Sample app that is not simply-build
+- Includes for commands/actions/etc from other components, to make it clear that it is referenced (deleteEntry)
 
 Done:
 [v] Add syntax highlighting for HTML, HTML mixed mode etc.
