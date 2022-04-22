@@ -111,925 +111,926 @@
       var simplyApp = {};
 
       window.addEventListener("simply-content-loaded", function() {
-      simply.bind = false;
+        simply.bind = false;
 
-      /* Raw API */
-      var simplyRawApi = {
+        /* Raw API */
+        var simplyRawApi = {
 
-        url : "/api/",
+          url : "/api/",
 
-        headers : {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
+          headers : {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
 
-        encodeGetParams : function(params) {
-          if (!params) {
-            return "";
-          }
-          return Object.entries(params).map(function(keyvalue) {
-            return "?" + keyvalue.map(encodeURIComponent).join("=")
-          }).join("&");
-        },
-
-        get : function(endpoint, params={}) {
-          if (!params.token && editor.pageData.token) {
-            params.token = editor.pageData.token;
-          }
-          if (params.token) {
-            this.headers['Authorization'] = "Bearer " + params.token;
-            delete params.token;
-          } else {
-            delete this.headers.Authentication;
-          }
-          return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
-            mode : 'cors',
-            headers: this.headers
-          });
-        },
-
-        post : function(endpoint, params={}) {
-          if (!params.token && editor.pageData.token) {
-            params.token = editor.pageData.token;
-          }
-          if (params.token) {
-            this.headers['Authorization'] = "Bearer " + params.token;
-            delete params.token;
-          } else {
-            delete this.headers.Authentication;
-          }
-          return fetch(simplyRawApi.url + endpoint + "/", {
-            mode : 'cors',
-            headers: this.headers,
-            method: "POST",
-            body: JSON.stringify(params, null, "\t")
-          });
-        },
-
-        postRaw : function(endpoint, params={}, body) {
-          if (!params.token && editor.pageData.token) {
-            params.token = editor.pageData.token;
-          }
-          if (params.token) {
-            this.headers['Authorization'] = "Bearer " + params.token;
-            delete params.token;
-          } else {
-            delete this.headers.Authentication;
-          }
-          return fetch(simplyRawApi.url + endpoint + "/", {
-            mode : 'cors',
-            headers: this.headers,
-            method: "POST",
-            body: body
-          });
-        },
-
-        put : function(endpoint, params={}) {
-          if (!params.token && editor.pageData.token) {
-            params.token = editor.pageData.token;
-          }
-          if (params.token) {
-            this.headers['Authorization'] = "Bearer " + params.token;
-            delete params.token;
-          } else {
-            delete this.headers.Authentication;
-          }
-          return fetch(simplyRawApi.url + endpoint + "/", {
-            mode: 'cors',
-            headers: this.headers,
-            method: "PUT",
-            body: JSON.stringify(params, null, "\t")
-          });
-        },
-
-        putRaw : function(endpoint, params={}, body) {
-          if (!params.token && editor.pageData.token) {
-            params.token = editor.pageData.token;
-          }
-          if (params.token) {
-            this.headers['Authorization'] = "Bearer " + params.token;
-            delete params.token;
-          } else {
-            delete this.headers.Authentication;
-          }
-          return fetch(simplyRawApi.url + endpoint + "/", {
-            mode: 'cors',
-            headers: this.headers,
-            method: "PUT",
-            body: body
-          });
-        },
-
-        delete : function(endpoint, params={}) {
-          if (!params.token && editor.pageData.token) {
-            params.token = editor.pageData.token;
-          }
-          if (params.token) {
-            this.headers['Authorization'] = "Bearer " + params.token;
-            delete params.token;
-          } else {
-            delete this.headers.Authentication;
-          }
-          return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
-            mode : 'cors',
-            headers: this.headers,
-            method: "DELETE"
-          });
-        }
-
-      };
-      /* End of Raw API */
-
-      /* Data API */
-      simplyDataApi = {
-
-        saveBaseComponentPart : function(component, part, contents) {
-          return simplyRawApi.putRaw("base-components/" + component + "/" + part, {}, contents)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+          encodeGetParams : function(params) {
+            if (!params) {
+              return "";
             }
-            throw new Error("saveBaseComponentPart failed", response.status);
-          });
-        },
+            return Object.entries(params).map(function(keyvalue) {
+              return "?" + keyvalue.map(encodeURIComponent).join("=")
+            }).join("&");
+          },
 
-        deleteBaseComponentPart : function(component, part) {
-          return simplyRawApi.delete("base-components/" + component + "/" + part)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+          get : function(endpoint, params={}) {
+            if (!params.token && editor.pageData.token) {
+              params.token = editor.pageData.token;
             }
-            throw new Error("deleteBaseComponentPart failed", response.status);
-          });
-        },
-
-        deleteBaseComponent : function(component) {
-          return simplyRawApi.delete("base-components/" + component)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+            if (params.token) {
+              this.headers['Authorization'] = "Bearer " + params.token;
+              delete params.token;
+            } else {
+              delete this.headers.Authentication;
             }
-            throw new Error("deleteComponent failed", response.status);
-          });
-        },
-
-        getBaseComponent : function(component) {
-          return simplyRawApi.get("base-components/" + component)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
-            }
-            throw new Error("getBaseComponent failed", response.status);
-          });
-        },
-
-        listBaseComponents : function() {
-          return simplyRawApi.get("base-components")
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
-            }
-            throw new Error("listBaseComponents failed", response.status);
-          });
-        },
-
-        getComponent : function(component) {
-          return simplyRawApi.get("components/" + component)
-          .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
-            }
-            throw new Error("getComponent failed", response.status);
-          });
-        },
-
-        saveComponentPart : function(component, part, contents) {
-            return simplyRawApi.putRaw("components/" + component + "/" + part, {}, contents)
-            .then(function(response) {
-                if (response.status === 200) {
-                    return response.json();
-                }
-                throw new Error("saveComponentPart failed", response.status);
+            return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
+              mode : 'cors',
+              headers: this.headers
             });
-        },
+          },
 
-        deleteComponent : function(component) {
-            return simplyRawApi.delete("components/" + component)
-            .then(function(response) {
-                if (response.status === 200) {
-                    return response.json();
-                }
-                throw new Error("deleteComponent failed", response.status);
+          post : function(endpoint, params={}) {
+            if (!params.token && editor.pageData.token) {
+              params.token = editor.pageData.token;
+            }
+            if (params.token) {
+              this.headers['Authorization'] = "Bearer " + params.token;
+              delete params.token;
+            } else {
+              delete this.headers.Authentication;
+            }
+            return fetch(simplyRawApi.url + endpoint + "/", {
+              mode : 'cors',
+              headers: this.headers,
+              method: "POST",
+              body: JSON.stringify(params, null, "\t")
             });
-        },
+          },
 
-        deleteComponentPart : function(component, part) {
-          return simplyRawApi.delete("components/" + component + "/" + part)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+          postRaw : function(endpoint, params={}, body) {
+            if (!params.token && editor.pageData.token) {
+              params.token = editor.pageData.token;
             }
-            throw new Error("deleteComponentPart failed", response.status);
-          });
-        },
-
-        listComponents  : function() {
-          return simplyRawApi.get("components")
-          .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+            if (params.token) {
+              this.headers['Authorization'] = "Bearer " + params.token;
+              delete params.token;
+            } else {
+              delete this.headers.Authentication;
             }
-            throw new Error("listComponents failed", response.status);
-          });
-        },
+            return fetch(simplyRawApi.url + endpoint + "/", {
+              mode : 'cors',
+              headers: this.headers,
+              method: "POST",
+              body: body
+            });
+          },
 
-        getPage : function(component) {
-          return simplyRawApi.get("pages/" + component)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+          put : function(endpoint, params={}) {
+            if (!params.token && editor.pageData.token) {
+              params.token = editor.pageData.token;
             }
-            throw new Error("getPage failed", response.status);
-          });
-        },
-
-        savePagePart : function(component, part, contents) {
-          return simplyRawApi.putRaw("pages/" + component + "/" + part, {}, contents)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+            if (params.token) {
+              this.headers['Authorization'] = "Bearer " + params.token;
+              delete params.token;
+            } else {
+              delete this.headers.Authentication;
             }
-            throw new Error("savePagePart failed", response.status);
-          });
-        },
+            return fetch(simplyRawApi.url + endpoint + "/", {
+              mode: 'cors',
+              headers: this.headers,
+              method: "PUT",
+              body: JSON.stringify(params, null, "\t")
+            });
+          },
 
-        deletePagePart : function(component, part) {
-          return simplyRawApi.delete("pages/" + component + "/" + part)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+          putRaw : function(endpoint, params={}, body) {
+            if (!params.token && editor.pageData.token) {
+              params.token = editor.pageData.token;
             }
-            throw new Error("deletePagePart failed", response.status);
-          });
-        },
-
-        deletePage : function(component) {
-          return simplyRawApi.delete("pages/" + component)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+            if (params.token) {
+              this.headers['Authorization'] = "Bearer " + params.token;
+              delete params.token;
+            } else {
+              delete this.headers.Authentication;
             }
-            throw new Error("deleteComponent failed", response.status);
-          });
-        },
+            return fetch(simplyRawApi.url + endpoint + "/", {
+              mode: 'cors',
+              headers: this.headers,
+              method: "PUT",
+              body: body
+            });
+          },
 
-        listPages : function() {
-          return simplyRawApi.get("pages")
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+          delete : function(endpoint, params={}) {
+            if (!params.token && editor.pageData.token) {
+              params.token = editor.pageData.token;
             }
-            throw new Error("listPages failed", response.status);
-          });
-        },
-
-        saveAppHtml : function(appHtml) {
-          return simplyRawApi.putRaw("generated.html", {}, appHtml)
-            .then(function(response) {
-            if (response.status === 200) {
-              return response.json();
+            if (params.token) {
+              this.headers['Authorization'] = "Bearer " + params.token;
+              delete params.token;
+            } else {
+              delete this.headers.Authentication;
             }
-            throw new Error("saveAppHtml failed", response.status);
-          });
-        }
+            return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
+              mode : 'cors',
+              headers: this.headers,
+              method: "DELETE"
+            });
+          }
 
-      };
-      /* End of Data API */
+        };
+        /* End of Raw API */
 
-      simplyApp = simply.app({
-        /* Actions */
-        actions: {
+        /* Data API */
+        simplyDataApi = {
 
-          saveBaseComponent : function(component) {
-            var promises = [];
-            for (var name in component.parts) {
-              if (component.parts[name].length) { 
-                promises.push(simplyDataApi.saveBaseComponentPart(component.id, name, JSON.stringify(component.parts[name])));
-              } else {
-                editor.pageData.parts.forEach(function(part) {
-                  if (part.id == name) {
-                    promises.push(simplyDataApi.deleteBaseComponentPart(component.id, name));
-                  }
-                });
+          saveBaseComponentPart : function(component, part, contents) {
+            return simplyRawApi.putRaw("base-components/" + component + "/" + part, {}, contents)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
               }
-            };
-          
-            var meta = clone(component);
-            delete meta.parts;
-            promises.push(simplyDataApi.saveBaseComponentPart(meta.id, "meta", JSON.stringify(meta)));
-          
-            return Promise.all(promises)
-              .then(function() {
-              return true;
+              throw new Error("saveBaseComponentPart failed", response.status);
+            });
+          },
+
+          deleteBaseComponentPart : function(component, part) {
+            return simplyRawApi.delete("base-components/" + component + "/" + part)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteBaseComponentPart failed", response.status);
             });
           },
 
           deleteBaseComponent : function(component) {
-            return simplyDataApi.deleteBaseComponent(component);
-          },
-
-          getBaseComponent : function(component) {
-            return simplyDataApi.getBaseComponent(component);
-          },
-
-          listBaseComponents : function() {
-            return simplyDataApi.listBaseComponents();
-          },
-
-          getComponent : function(component) {
-            return simplyDataApi.getComponent(component);
-          },
-
-          saveComponent : function(component) {
-            var promises = [];
-            for (var name in component.parts) {
-              if (component.parts[name].length) { 
-                promises.push(simplyDataApi.saveComponentPart(component.id, name, JSON.stringify(component.parts[name])));
-              } else {
-                editor.pageData.parts.forEach(function(part) {
-                  if (part.id == name) {
-                    promises.push(simplyDataApi.deleteComponentPart(component.id, name));
-                  }
-                });
+            return simplyRawApi.delete("base-components/" + component)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
               }
-            };
-          
-            var meta = clone(component);
-            delete meta.parts;
-            promises.push(simplyDataApi.saveComponentPart(meta.id, "meta", JSON.stringify(meta)));
-          
-            return Promise.all(promises)
-              .then(function() {
-              return true;
+              throw new Error("deleteComponent failed", response.status);
             });
           },
 
+          getBaseComponent : function(component) {
+            return simplyRawApi.get("base-components/" + component)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("getBaseComponent failed", response.status);
+            });
+          },
+
+          listBaseComponents : function() {
+            return simplyRawApi.get("base-components")
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("listBaseComponents failed", response.status);
+            });
+          },
+
+          getComponent : function(component) {
+            return simplyRawApi.get("components/" + component)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("getComponent failed", response.status);
+            });
+          },
+
+          saveComponentPart : function(component, part, contents) {
+              return simplyRawApi.putRaw("components/" + component + "/" + part, {}, contents)
+              .then(function(response) {
+                  if (response.status === 200) {
+                      return response.json();
+                  }
+                  throw new Error("saveComponentPart failed", response.status);
+              });
+          },
+
           deleteComponent : function(component) {
-              return simplyDataApi.deleteComponent(component);
+              return simplyRawApi.delete("components/" + component)
+              .then(function(response) {
+                  if (response.status === 200) {
+                      return response.json();
+                  }
+                  throw new Error("deleteComponent failed", response.status);
+              });
+          },
+
+          deleteComponentPart : function(component, part) {
+            return simplyRawApi.delete("components/" + component + "/" + part)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteComponentPart failed", response.status);
+            });
           },
 
           listComponents  : function() {
-            return simplyDataApi.listComponents();
+            return simplyRawApi.get("components")
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("listComponents failed", response.status);
+            });
           },
 
           getPage : function(component) {
-            return simplyDataApi.getPage(component);
+            return simplyRawApi.get("pages/" + component)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("getPage failed", response.status);
+            });
           },
 
-          savePage : function(component) {
-            var promises = [];
-            for (var name in component.parts) {
-              if (component.parts[name].length) { 
-                promises.push(simplyDataApi.savePagePart(component.id, name, JSON.stringify(component.parts[name])));
-              } else {
-                editor.pageData.parts.forEach(function(part) {
-                  if (part.id == name) {
-                    promises.push(simplyDataApi.deletePagePart(component.id, name));
-                  }
-                });
+          savePagePart : function(component, part, contents) {
+            return simplyRawApi.putRaw("pages/" + component + "/" + part, {}, contents)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
               }
-            };
-          
-            var meta = clone(component);
-            delete meta.parts;
-            promises.push(simplyDataApi.savePagePart(meta.id, "meta", JSON.stringify(meta)));
-          
-            return Promise.all(promises)
-              .then(function() {
-              return true;
+              throw new Error("savePagePart failed", response.status);
+            });
+          },
+
+          deletePagePart : function(component, part) {
+            return simplyRawApi.delete("pages/" + component + "/" + part)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deletePagePart failed", response.status);
             });
           },
 
           deletePage : function(component) {
-            return simplyDataApi.deletePage(component);
+            return simplyRawApi.delete("pages/" + component)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteComponent failed", response.status);
+            });
           },
 
           listPages : function() {
-            return simplyDataApi.listPages();
+            return simplyRawApi.get("pages")
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("listPages failed", response.status);
+            });
           },
 
           saveAppHtml : function(appHtml) {
-            return simplyDataApi.saveAppHtml(appHtml);
-          },
-
-          getBaseComponents : function() {
-            var promises = [];
-            return simplyApp.actions.listBaseComponents()
-              .then(function(baseComponents) {
-              baseComponents.forEach(function(baseComponent) {
-                promises.push(simplyApp.actions.getBaseComponent(baseComponent.id));
-              });
-            })
-              .then(function() {
-              return Promise.all(promises);
+            return simplyRawApi.putRaw("generated.html", {}, appHtml)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("saveAppHtml failed", response.status);
             });
-          },
+          }
 
-          getComponents : function() {
-            var promises = [];
-            return simplyApp.actions.listComponents()
-              .then(function(components) {
-              components.forEach(function(component) {
-                promises.push(simplyApp.actions.getComponent(component.id));
-              });
-            })
-              .then(function() {
-              return Promise.all(promises);
-            });
-          },
+        };
+        /* End of Data API */
 
-          getPages : function() {
-            var promises = [];
-            return simplyApp.actions.listPages()
-              .then(function(pages) {
-              pages.forEach(function(page) {
-                promises.push(simplyApp.actions.getPage(page.id));
-              });
-            })
-              .then(function() {
-              return Promise.all(promises);
-            });
-          },
+        simplyApp = simply.app({
+          /* Actions */
+          actions: {
 
-          getAppData : function() {
-            var appData = {
-            };
-            var promises = [
-              simplyApp.actions.getBaseComponents(),
-              simplyApp.actions.getComponents(),
-              simplyApp.actions.getPages()
-            ];
-            return Promise.all(promises)
-              .then(function(appComponents) {
-              appComponents.forEach(function(appComponent) {
-                appComponent.forEach(function(component) {
-                  component.forEach(function(part) {
-                    if (part.id == "meta") {
-                      return;
-                    };
-          
-                    if (typeof appData[part.id] === "undefined") {
-                      appData[part.id] = [];
+            saveBaseComponent : function(component) {
+              var promises = [];
+              for (var name in component.parts) {
+                if (component.parts[name].length) { 
+                  promises.push(simplyDataApi.saveBaseComponentPart(component.id, name, JSON.stringify(component.parts[name])));
+                } else {
+                  editor.pageData.parts.forEach(function(part) {
+                    if (part.id == name) {
+                      promises.push(simplyDataApi.deleteBaseComponentPart(component.id, name));
                     }
-                    parts = JSON.parse(part.contents);
-                    parts.forEach(function(entry) {
-                      appData[part.id].push(entry);
+                  });
+                }
+              };
+            
+              var meta = clone(component);
+              delete meta.parts;
+              promises.push(simplyDataApi.saveBaseComponentPart(meta.id, "meta", JSON.stringify(meta)));
+            
+              return Promise.all(promises)
+                .then(function() {
+                return true;
+              });
+            },
+
+            deleteBaseComponent : function(component) {
+              return simplyDataApi.deleteBaseComponent(component);
+            },
+
+            getBaseComponent : function(component) {
+              return simplyDataApi.getBaseComponent(component);
+            },
+
+            listBaseComponents : function() {
+              return simplyDataApi.listBaseComponents();
+            },
+
+            getComponent : function(component) {
+              return simplyDataApi.getComponent(component);
+            },
+
+            saveComponent : function(component) {
+              var promises = [];
+              for (var name in component.parts) {
+                if (component.parts[name].length) { 
+                  promises.push(simplyDataApi.saveComponentPart(component.id, name, JSON.stringify(component.parts[name])));
+                } else {
+                  editor.pageData.parts.forEach(function(part) {
+                    if (part.id == name) {
+                      promises.push(simplyDataApi.deleteComponentPart(component.id, name));
+                    }
+                  });
+                }
+              };
+            
+              var meta = clone(component);
+              delete meta.parts;
+              promises.push(simplyDataApi.saveComponentPart(meta.id, "meta", JSON.stringify(meta)));
+            
+              return Promise.all(promises)
+                .then(function() {
+                return true;
+              });
+            },
+
+            deleteComponent : function(component) {
+                return simplyDataApi.deleteComponent(component);
+            },
+
+            listComponents  : function() {
+              return simplyDataApi.listComponents();
+            },
+
+            getPage : function(component) {
+              return simplyDataApi.getPage(component);
+            },
+
+            savePage : function(component) {
+              var promises = [];
+              for (var name in component.parts) {
+                if (component.parts[name].length) { 
+                  promises.push(simplyDataApi.savePagePart(component.id, name, JSON.stringify(component.parts[name])));
+                } else {
+                  editor.pageData.parts.forEach(function(part) {
+                    if (part.id == name) {
+                      promises.push(simplyDataApi.deletePagePart(component.id, name));
+                    }
+                  });
+                }
+              };
+            
+              var meta = clone(component);
+              delete meta.parts;
+              promises.push(simplyDataApi.savePagePart(meta.id, "meta", JSON.stringify(meta)));
+            
+              return Promise.all(promises)
+                .then(function() {
+                return true;
+              });
+            },
+
+            deletePage : function(component) {
+              return simplyDataApi.deletePage(component);
+            },
+
+            listPages : function() {
+              return simplyDataApi.listPages();
+            },
+
+            saveAppHtml : function(appHtml) {
+              return simplyDataApi.saveAppHtml(appHtml);
+            },
+
+            getBaseComponents : function() {
+              var promises = [];
+              return simplyApp.actions.listBaseComponents()
+                .then(function(baseComponents) {
+                baseComponents.forEach(function(baseComponent) {
+                  promises.push(simplyApp.actions.getBaseComponent(baseComponent.id));
+                });
+              })
+                .then(function() {
+                return Promise.all(promises);
+              });
+            },
+
+            getComponents : function() {
+              var promises = [];
+              return simplyApp.actions.listComponents()
+                .then(function(components) {
+                components.forEach(function(component) {
+                  promises.push(simplyApp.actions.getComponent(component.id));
+                });
+              })
+                .then(function() {
+                return Promise.all(promises);
+              });
+            },
+
+            getPages : function() {
+              var promises = [];
+              return simplyApp.actions.listPages()
+                .then(function(pages) {
+                pages.forEach(function(page) {
+                  promises.push(simplyApp.actions.getPage(page.id));
+                });
+              })
+                .then(function() {
+                return Promise.all(promises);
+              });
+            },
+
+            getAppData : function() {
+              var appData = {
+              };
+              var promises = [
+                simplyApp.actions.getBaseComponents(),
+                simplyApp.actions.getComponents(),
+                simplyApp.actions.getPages()
+              ];
+              return Promise.all(promises)
+                .then(function(appComponents) {
+                appComponents.forEach(function(appComponent) {
+                  appComponent.forEach(function(component) {
+                    component.forEach(function(part) {
+                      if (part.id == "meta") {
+                        return;
+                      };
+            
+                      if (typeof appData[part.id] === "undefined") {
+                        appData[part.id] = [];
+                      }
+                      parts = JSON.parse(part.contents);
+                      parts.forEach(function(entry) {
+                        appData[part.id].push(entry);
+                      });
                     });
                   });
                 });
-              });
-            })
-              .then(function() {
-              if (appData["routes"]) {
-                appData["routes"].sort(function(a, b) {
-                  if (a.route.length > b.route.length) {
-                    return -1;
-                  } else if (a.route.length < b.route.length) {
-                    return 1;
-                  } else {
-                    return 0;
-                  }
-                });
-              }
-          
-              return appData;
-            });
-          }
-
-        },
-        /* /Actions */
-
-        /* Commands */
-        commands: {
-
-          codeMirror : function(el) {
-            if (el.parentNode.hasAttribute("open")) {
-              el.parentNode.removeAttribute("open");
-            } else {
-              el.parentNode.setAttribute("open", "");
-            }
-            simplyApp.commands.codeMirrorInit();
-          },
-
-          codeMirrorInit : function() {
-            var textareas = document.querySelectorAll(".sb-component[open] textarea[data-codemirror-mode]:not([style])");
-            textareas.forEach(function(textarea) {
-              var mode = "javascript";
-              if (textarea.hasAttribute("data-codemirror-mode")) {
-                mode = textarea.getAttribute("data-codemirror-mode");
-              }
-              switch (mode) {
-                case "css":
-                  // no change needed
-                  break;
-                case "html":
-                  mode = {
-                    name: "html",
-                    htmlMode : true,
-                    matchClosing : true
-                  }
-                  break;
-                case "htmlmixed":
-                  mode = {
-                    name: "htmlmixed",
-                    tags: {
-                      style: [[null, null, "css"]],
-                      script: [[null, null, "javascript"]]
+              })
+                .then(function() {
+                if (appData["routes"]) {
+                  appData["routes"].sort(function(a, b) {
+                    if (a.route.length > b.route.length) {
+                      return -1;
+                    } else if (a.route.length < b.route.length) {
+                      return 1;
+                    } else {
+                      return 0;
                     }
-                  };
-                  break;
-                case "javascript":
-                  // no change needed
-                  break;
-                case "json":
-                  mode = {
-                    name : "javascript",
-                    json : true
-                  };
-                  break;
-                default:
-                  mode = "javascript";
-                  break;
-              }
-              var cm = CodeMirror.fromTextArea(textarea, {
-                lineNumbers: true,
-                theme: "base16-dark",
-                mode: mode
+                  });
+                }
+            
+                return appData;
               });
-              cm.on("change", function(event) {
-                cm.getTextArea().dataBinding.set(cm.getValue());
-              });
-            });
-          },
-
-          addAction : function(el) {
-            editor.pageData.component.parts.actions.push({});
-          },
-
-          addBodyHtml : function(el) {
-            editor.pageData.component.parts.bodyHtml.push({});
-          },
-
-          addCommand : function(el) {
-            editor.pageData.component.parts.commands.push({});
-          },
-
-          addComponentCss : function(el) {
-            editor.pageData.component.parts.componentCss.push({});
-          },
-
-          addComponentTemplate : function(el) {
-            editor.pageData.component.parts.componentTemplates.push({});
-          },
-
-          addDataApiMethod : function(el) {
-            editor.pageData.component.parts.dataApi.push({});
-          },
-
-          addDataSource : function(el) {
-            editor.pageData.component.parts.dataSources.push({});
-          },
-
-          addFootHtml : function(el) {
-            editor.pageData.component.parts.footHtml.push({});
-          },
-
-          addHeadHtml : function(el) {
-            editor.pageData.component.parts.headHtml.push({});
-          },
-
-          addPageCss : function(el) {
-            editor.pageData.component.parts.pageCss.push({});
-          },
-
-          addPageTemplate : function(el) {
-            editor.pageData.component.parts.pageTemplates.push({});
-          },
-
-          addTest : function(el) {
-            el.previousElementSibling.dataBinding.config.data.tests.push({});
-          },
-
-          addRawApiMethod : function(el) {
-            editor.pageData.component.parts.rawApi.push({});
-          },
-
-          addRoute : function(el) {
-            editor.pageData.component.parts.routes.push({});
-          },
-
-          addTransformer : function(el) {
-            editor.pageData.component.parts.transformers.push({});
-          },
-
-          deleteEntry : function(el) {
-            var target = el;
-            while (!target.hasAttribute("data-simply-list-item")) {
-              target = target.parentNode;
             }
-            var parent = target.parentNode;
-            target.parentNode.removeChild(target);
-          },
 
-          autoRunTests : function(el) {
-            var testRunners = document.querySelectorAll(".sb-component[open] iframe.qunit");
-            testRunners.forEach(function(testRunner) {
-              testRunner.contentWindow.document.testRunner = testRunner;
-              testRunner.contentWindow.document.open();
-              testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
-              testRunner.contentWindow.document.close();
-            });
           },
+          /* /Actions */
 
-          saveBaseComponent : function() {
-            simplyApp.actions.saveBaseComponent(editor.pageData.component)
-              .then(function() {
-              editor.pageData.alerts.unshift({
-                "data-simply-template" : "info",
-                "message" : "BaseComponent saved.",
-                "state" : "new"
+          /* Commands */
+          commands: {
+
+            codeMirrorInit : function() {
+              var textareas = document.querySelectorAll(".sb-component[open] textarea[data-codemirror-mode]:not([style])");
+              textareas.forEach(function(textarea) {
+                var mode = "javascript";
+                if (textarea.hasAttribute("data-codemirror-mode")) {
+                  mode = textarea.getAttribute("data-codemirror-mode");
+                }
+                switch (mode) {
+                  case "css":
+                    // no change needed
+                    break;
+                  case "html":
+                    mode = {
+                      name: "html",
+                      htmlMode : true,
+                      matchClosing : true
+                    }
+                    break;
+                  case "htmlmixed":
+                    mode = {
+                      name: "htmlmixed",
+                      tags: {
+                        style: [[null, null, "css"]],
+                        script: [[null, null, "javascript"]]
+                      }
+                    };
+                    break;
+                  case "javascript":
+                    // no change needed
+                    break;
+                  case "json":
+                    mode = {
+                      name : "javascript",
+                      json : true
+                    };
+                    break;
+                  default:
+                    mode = "javascript";
+                    break;
+                }
+                var cm = CodeMirror.fromTextArea(textarea, {
+                  lineNumbers: true,
+                  theme: "base16-dark",
+                  mode: mode
+                });
+                cm.on("change", function(event) {
+                  cm.getTextArea().dataBinding.set(cm.getValue());
+                });
               });
-            });
-          },
+            },
 
-          deleteBaseComponent : function() {
-            simplyApp.actions.deleteBaseComponent(
-              editor.pageData.component.id
-            )
-              .then(function() {
-              editor.pageData.alerts.unshift({
-                "data-simply-template" : "info",
-                "message" : "BaseComponent deleted.",
-                "state" : "new"
+            addAction : function(el) {
+              editor.pageData.component.parts.actions.push({});
+            },
+
+            addBodyHtml : function(el) {
+              editor.pageData.component.parts.bodyHtml.push({});
+            },
+
+            addCommand : function(el) {
+              editor.pageData.component.parts.commands.push({});
+            },
+
+            addComponentCss : function(el) {
+              editor.pageData.component.parts.componentCss.push({});
+            },
+
+            addComponentTemplate : function(el) {
+              editor.pageData.component.parts.componentTemplates.push({});
+            },
+
+            addDataApiMethod : function(el) {
+              editor.pageData.component.parts.dataApi.push({});
+            },
+
+            addDataSource : function(el) {
+              editor.pageData.component.parts.dataSources.push({});
+            },
+
+            addFootHtml : function(el) {
+              editor.pageData.component.parts.footHtml.push({});
+            },
+
+            addHeadHtml : function(el) {
+              editor.pageData.component.parts.headHtml.push({});
+            },
+
+            addPageCss : function(el) {
+              editor.pageData.component.parts.pageCss.push({});
+            },
+
+            addPageTemplate : function(el) {
+              editor.pageData.component.parts.pageTemplates.push({});
+            },
+
+            addTest : function(el) {
+              el.previousElementSibling.dataBinding.config.data.tests.push({});
+            },
+
+            addRawApiMethod : function(el) {
+              editor.pageData.component.parts.rawApi.push({});
+            },
+
+            addRoute : function(el) {
+              editor.pageData.component.parts.routes.push({});
+            },
+
+            addTransformer : function(el) {
+              editor.pageData.component.parts.transformers.push({});
+            },
+
+            deleteEntry : function(el) {
+              var target = el;
+              while (!target.hasAttribute("data-simply-list-item")) {
+                target = target.parentNode;
+              }
+              var parent = target.parentNode;
+              target.parentNode.removeChild(target);
+            },
+
+            initEditors : function(el) {
+              if (el.parentNode.hasAttribute("open")) {
+                el.parentNode.removeAttribute("open");
+              } else {
+                el.parentNode.setAttribute("open", "");
+              }
+              simplyApp.commands.codeMirrorInit();
+              simplyApp.commands.autoRunTests();
+            },
+
+            autoRunTests : function(el) {
+              var testRunners = document.querySelectorAll(".sb-component[open] iframe.qunit");
+              testRunners.forEach(function(testRunner) {
+                testRunner.contentWindow.document.testRunner = testRunner;
+                testRunner.contentWindow.document.open();
+                testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
+                testRunner.contentWindow.document.close();
               });
-              document.location.hash="base/";
-            });
-          },
+            },
 
-          createBaseComponent : function() {
-            var newComponent = editor.pageData.newComponent;
-            simplyApp.actions.saveBaseComponent(newComponent)
-              .then(function() {
-              editor.pageData.alerts.unshift({
-                "data-simply-template" : "info",
-                "message" : "BaseComponent created.",
-                "state" : "new"
-              });
-              document.location.hash="base/" + newComponent.id;
-            });
-          },
-
-          saveComponent : function() {
-              simplyApp.actions.saveComponent(editor.pageData.component)
-              .then(function() {
+            saveBaseComponent : function() {
+              simplyApp.actions.saveBaseComponent(editor.pageData.component)
+                .then(function() {
                 editor.pageData.alerts.unshift({
                   "data-simply-template" : "info",
-                  "message" : "Component saved.",
+                  "message" : "BaseComponent saved.",
                   "state" : "new"
                 });
               });
-          },
+            },
 
-          deleteComponent : function() {
-              simplyApp.actions.deleteComponent(
-                  editor.pageData.component.id
+            deleteBaseComponent : function() {
+              simplyApp.actions.deleteBaseComponent(
+                editor.pageData.component.id
               )
-              .then(function() {
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "BaseComponent deleted.",
+                  "state" : "new"
+                });
+                document.location.hash="base/";
+              });
+            },
+
+            createBaseComponent : function() {
+              var newComponent = editor.pageData.newComponent;
+              simplyApp.actions.saveBaseComponent(newComponent)
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "BaseComponent created.",
+                  "state" : "new"
+                });
+                document.location.hash="base/" + newComponent.id;
+              });
+            },
+
+            saveComponent : function() {
+                simplyApp.actions.saveComponent(editor.pageData.component)
+                .then(function() {
                   editor.pageData.alerts.unshift({
-                      "data-simply-template" : "info",
-                      "message" : "Component deleted.",
-                      "state" : "new"
+                    "data-simply-template" : "info",
+                    "message" : "Component saved.",
+                    "state" : "new"
                   });
-                  document.location.hash="components/";
+                });
+            },
+
+            deleteComponent : function() {
+                simplyApp.actions.deleteComponent(
+                    editor.pageData.component.id
+                )
+                .then(function() {
+                    editor.pageData.alerts.unshift({
+                        "data-simply-template" : "info",
+                        "message" : "Component deleted.",
+                        "state" : "new"
+                    });
+                    document.location.hash="components/";
+                });
+            },
+
+            createComponent : function() {
+              var newComponent = editor.pageData.newComponent;
+              simplyApp.actions.saveComponent(newComponent)
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Component created.",
+                  "state" : "new"
+                });
+                document.location.hash="components/" + newComponent.id;
               });
+            },
+
+            savePage : function() {
+              simplyApp.actions.savePage(editor.pageData.component)
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Page saved.",
+                  "state" : "new"
+                });
+              });
+            },
+
+            deletePage : function() {
+              simplyApp.actions.deletePage(
+                editor.pageData.component.id
+              )
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Page deleted.",
+                  "state" : "new"
+                });
+                document.location.hash="pages/";
+              });
+            },
+
+            createPage : function() {
+              var newComponent = editor.pageData.newComponent;
+              simplyApp.actions.savePage(newComponent)
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Page created.",
+                  "state" : "new"
+                });
+                document.location.hash="pages/" + newComponent.id;
+              });
+            },
+
+            saveAppHtml : function() {
+              var appHtml = document.querySelector(".sb-preview").innerText;
+              simplyApp.actions.saveAppHtml(appHtml)
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "App published!",
+                  "state" : "new"
+                });
+              });
+            }
+
           },
+          /* /Commands */
 
-          createComponent : function() {
-            var newComponent = editor.pageData.newComponent;
-            simplyApp.actions.saveComponent(newComponent)
-              .then(function() {
-              editor.pageData.alerts.unshift({
-                "data-simply-template" : "info",
-                "message" : "Component created.",
-                "state" : "new"
-              });
-              document.location.hash="components/" + newComponent.id;
-            });
-          },
+          /* Routes */
+          routes: {
 
-          savePage : function() {
-            simplyApp.actions.savePage(editor.pageData.component)
-              .then(function() {
-              editor.pageData.alerts.unshift({
-                "data-simply-template" : "info",
-                "message" : "Page saved.",
-                "state" : "new"
-              });
-            });
-          },
+            "#components/:component" : function(params) {
+                simplyApp.actions.getComponent(params.component)
+                .then(function(parts) {
+                var component = {
+                    id : params.component
+                };
+            
+                parts = parts.filter(function(part) {
+                    if (part.id == "meta") {
+                    component = JSON.parse(part.contents);
+                    component.id = params.component;
+                    return false;
+                    }
+                    return true;
+                });
+                if (typeof component.parts === "undefined") {
+                    component.parts = {};
+                }
+                var count = {};
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                  count[part.id] = component.parts[part.id].length;
+                });
+                editor.pageData.component = component;
+                editor.pageData.parts = parts;
+                editor.pageData.count = count;
+                editor.pageData.page = "Edit component";
+                });
+            },
 
-          deletePage : function() {
-            simplyApp.actions.deletePage(
-              editor.pageData.component.id
-            )
-              .then(function() {
-              editor.pageData.alerts.unshift({
-                "data-simply-template" : "info",
-                "message" : "Page deleted.",
-                "state" : "new"
-              });
-              document.location.hash="pages/";
-            });
-          },
-
-          createPage : function() {
-            var newComponent = editor.pageData.newComponent;
-            simplyApp.actions.savePage(newComponent)
-              .then(function() {
-              editor.pageData.alerts.unshift({
-                "data-simply-template" : "info",
-                "message" : "Page created.",
-                "state" : "new"
-              });
-              document.location.hash="pages/" + newComponent.id;
-            });
-          },
-
-          saveAppHtml : function() {
-            var appHtml = document.querySelector(".sb-preview").innerText;
-            simplyApp.actions.saveAppHtml(appHtml)
-              .then(function() {
-              editor.pageData.alerts.unshift({
-                "data-simply-template" : "info",
-                "message" : "App published!",
-                "state" : "new"
-              });
-            });
-          }
-
-        },
-        /* /Commands */
-
-        /* Routes */
-        routes: {
-
-      "#components/:component" : function(params) {
-              simplyApp.actions.getComponent(params.component)
-              .then(function(parts) {
-              var component = {
+            "#pages/:component" : function(params) {
+              simplyApp.actions.getPage(params.component)
+                .then(function(parts) {
+                var component = {
                   id : params.component
-              };
-          
-              parts = parts.filter(function(part) {
+                };
+            
+                parts = parts.filter(function(part) {
                   if (part.id == "meta") {
-                  component = JSON.parse(part.contents);
-                  component.id = params.component;
-                  return false;
+                    component = JSON.parse(part.contents);
+                    component.id = params.component;
+                    return false;
                   }
                   return true;
-              });
-              if (typeof component.parts === "undefined") {
+                });
+                if (typeof component.parts === "undefined") {
                   component.parts = {};
-              }
-              var count = {};
-              parts.forEach(function(part) {
-                component.parts[part.id] = JSON.parse(part.contents);
-                count[part.id] = component.parts[part.id].length;
-              });
-              editor.pageData.component = component;
-              editor.pageData.parts = parts;
-              editor.pageData.count = count;
-              editor.pageData.page = "Edit component";
-              });
-          },
-
-      "#pages/:component" : function(params) {
-            simplyApp.actions.getPage(params.component)
-              .then(function(parts) {
-              var component = {
-                id : params.component
-              };
-          
-              parts = parts.filter(function(part) {
-                if (part.id == "meta") {
-                  component = JSON.parse(part.contents);
-                  component.id = params.component;
-                  return false;
                 }
-                return true;
+                var count = {};
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                  count[part.id] = component.parts[part.id].length;
+                });
+                editor.pageData.component = component;
+                editor.pageData.parts = parts;
+                editor.pageData.count = count;
+                editor.pageData.page = "Edit page";
               });
-              if (typeof component.parts === "undefined") {
-                component.parts = {};
-              }
-              var count = {};
-              parts.forEach(function(part) {
-                component.parts[part.id] = JSON.parse(part.contents);
-                count[part.id] = component.parts[part.id].length;
-              });
-              editor.pageData.component = component;
-              editor.pageData.parts = parts;
-              editor.pageData.count = count;
-              editor.pageData.page = "Edit page";
-            });
-          },
+            },
 
-      "#base/:component" : function(params) {
-            simplyApp.actions.getBaseComponent(params.component)
-              .then(function(parts) {
-              var component = {
-                id : params.component
-              };
-          
-              parts = parts.filter(function(part) {
-                if (part.id == "meta") {
-                  component = JSON.parse(part.contents);
-                  component.id = params.component;
-                  return false;
+            "#base/:component" : function(params) {
+              simplyApp.actions.getBaseComponent(params.component)
+                .then(function(parts) {
+                var component = {
+                  id : params.component
+                };
+            
+                parts = parts.filter(function(part) {
+                  if (part.id == "meta") {
+                    component = JSON.parse(part.contents);
+                    component.id = params.component;
+                    return false;
+                  }
+                  return true;
+                });
+                if (typeof component.parts === "undefined") {
+                  component.parts = {};
                 }
-                return true;
+                var count = {};
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                  count[part.id] = component.parts[part.id].length;
+                });
+                editor.pageData.component = component;
+                editor.pageData.parts = parts;
+                editor.pageData.count = count;
+                editor.pageData.page = "Edit base component";
               });
-              if (typeof component.parts === "undefined") {
-                component.parts = {};
-              }
-              var count = {};
-              parts.forEach(function(part) {
-                component.parts[part.id] = JSON.parse(part.contents);
-                count[part.id] = component.parts[part.id].length;
+            },
+
+            "#components" : function() {
+                simplyApp.actions.listComponents()
+                .then(function(components) {
+                    editor.pageData.components = components;
+                    editor.pageData.page = "List components";
+                });
+            },
+
+            "#publish" : function() {
+              editor.pageData.app = {};
+              simplyApp.actions.getAppData()
+                .then(function(appData) {
+                editor.pageData.app = appData;
+                editor.pageData.page = "Publish App HTML";
               });
-              editor.pageData.component = component;
-              editor.pageData.parts = parts;
-              editor.pageData.count = count;
-              editor.pageData.page = "Edit base component";
-            });
-          },
+            },
 
-      "#components" : function() {
-              simplyApp.actions.listComponents()
-              .then(function(components) {
-                  editor.pageData.components = components;
-                  editor.pageData.page = "List components";
+            "#pages" : function() {
+              simplyApp.actions.listPages()
+                .then(function(components) {
+                editor.pageData.components = components;
+                editor.pageData.page = "Pages";
               });
-          },
+            },
 
-      "#publish" : function() {
-            editor.pageData.app = {};
-            simplyApp.actions.getAppData()
-              .then(function(appData) {
-              editor.pageData.app = appData;
-              editor.pageData.page = "Publish App HTML";
-            });
-          },
-
-      "#pages" : function() {
-            simplyApp.actions.listPages()
-              .then(function(components) {
-              editor.pageData.components = components;
-              editor.pageData.page = "Pages";
-            });
-          },
-
-      "#base" : function() {
-            simplyApp.actions.listBaseComponents()
-              .then(function(components) {
-              editor.pageData.components = components;
-              editor.pageData.page = "Base components";
-            });
-          },
-
-      "/" : function() {
-              simplyApp.actions.listComponents()
-              .then(function(components) {
-                  editor.pageData.components = components;
-                  editor.pageData.page = "List components";
+            "#base" : function() {
+              simplyApp.actions.listBaseComponents()
+                .then(function(components) {
+                editor.pageData.components = components;
+                editor.pageData.page = "Base components";
               });
+            },
+
+            "/" : function() {
+                simplyApp.actions.listComponents()
+                .then(function(components) {
+                    editor.pageData.components = components;
+                    editor.pageData.page = "List components";
+                });
+            }
+
+          /* /Routes */
           }
+        });
 
-        /* /Routes */
+        function clone(ob) {
+          return JSON.parse(JSON.stringify(ob));
+        }
+
+        function updateDataSource(name) {
+          document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
+            editor.list.applyDataSource(list, name);
+            list.dataBindingPaused = 0;
+          });
         }
       });
-
-      function clone(ob) {
-        return JSON.parse(JSON.stringify(ob));
-      }
-
-      function updateDataSource(name) {
-        document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
-          editor.list.applyDataSource(list, name);
-          list.dataBindingPaused = 0;
-        });
-      }
-    });
-  </script>
+    </script>
   </head>
   <body>
     <!-- Body HTML -->
@@ -1067,12 +1068,11 @@
     
 
   <!-- /Body HTML -->
-
   <!-- Component HTML templates -->
 
   <template id="componentActions">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
+        <summary data-simply-command="initEditors" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
           <span data-simply-field="count.actions" data-simply-content="attributes" data-simply-attributes="data-count">
             Actions
           </span>
@@ -1105,7 +1105,7 @@
 
   <template id="componentBodyHtml">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="These are added to the top of the &lt;body&gt; of the HTML">
+        <summary data-simply-command="initEditors" title="These are added to the top of the &lt;body&gt; of the HTML">
           <span data-simply-field="count.bodyHtml" data-simply-content="attributes" data-simply-attributes="data-count">
             Additional body HTML
           </span>
@@ -1136,7 +1136,7 @@
 
   <template id="componentCommands">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
+        <summary data-simply-command="initEditors" title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
           <span data-simply-field="count.commands" data-simply-content="attributes" data-simply-attributes="data-count">
             Commands
           </span>
@@ -1169,7 +1169,7 @@
 
   <template id="componentComponentCss">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="Set component CSS - this CSS is globally available.">
+        <summary data-simply-command="initEditors" title="Set component CSS - this CSS is globally available.">
           <span data-simply-field="count.componentCss" data-simply-content="attributes" data-simply-attributes="data-count">
             Component CSS collections
           </span>
@@ -1201,7 +1201,7 @@
 
   <template id="componentComponentTemplate">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="These templates are used to build up page templates.">
+        <summary data-simply-command="initEditors" title="These templates are used to build up page templates.">
           <span data-simply-field="count.componentTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
             Component HTML template
           </span>
@@ -1233,7 +1233,7 @@
 
   <template id="componentDataApi">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="The Data API layer provides functions to load en store data types. Makes use of the Raw API and provides data for actions">
+        <summary data-simply-command="initEditors" title="The Data API layer provides functions to load en store data types. Makes use of the Raw API and provides data for actions">
           <span data-simply-field="count.dataApi" data-simply-content="attributes" data-simply-attributes="data-count">
             Data API
           </span>
@@ -1264,7 +1264,7 @@
 
   <template id="componentDataSources">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="Data sources provide list information from an external data source. Use this to provide lists that are not part of the subject of the page. Used as data-simply-data on data-simply-lists">
+        <summary data-simply-command="initEditors" title="Data sources provide list information from an external data source. Use this to provide lists that are not part of the subject of the page. Used as data-simply-data on data-simply-lists">
           <span data-simply-field="count.dataSources" data-simply-content="attributes" data-simply-attributes="data-count">
             Data sources
           </span>
@@ -1304,7 +1304,7 @@
 
   <template id="componentFootHtml">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="These templates are added just before the &lt;/body&gt; in the HTML">
+        <summary data-simply-command="initEditors" title="These templates are added just before the &lt;/body&gt; in the HTML">
           <span data-simply-field="count.footHtml" data-simply-content="attributes" data-simply-attributes="data-count">
             Additional foot HTML
           </span>
@@ -1335,7 +1335,7 @@
 
   <template id="componentHeadHtml">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="These are added to the &lt;head&gt; section of the HTML">
+        <summary data-simply-command="initEditors" title="These are added to the &lt;head&gt; section of the HTML">
           <span data-simply-field="count.headHtml" data-simply-content="attributes" data-simply-attributes="data-count">
             Additional head HTML
           </span>
@@ -1366,7 +1366,7 @@
 
   <template id="componentPageCss">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="Set page specific CSS - this CSS is only used for this page and is removed when we are on another page.">
+        <summary data-simply-command="initEditors" title="Set page specific CSS - this CSS is only used for this page and is removed when we are on another page.">
           <span data-simply-field="count.pageCss" data-simply-content="attributes" data-simply-attributes="data-count">
             Page CSS collections
           </span>
@@ -1397,7 +1397,7 @@
 
   <template id="componentPageTemplate">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="These templates are used in routes to set the HTML of the requested page.">
+        <summary data-simply-command="initEditors" title="These templates are used in routes to set the HTML of the requested page.">
           <span data-simply-field="count.pageTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
             Page HTML template
           </span>
@@ -1589,7 +1589,7 @@
 
   <template id="componentRawApi">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="The Raw API layer provides lower level functions to access an API. It handles things like authentication, connection, encoding and the likes. It exposes 'get', 'post' methods.">
+        <summary data-simply-command="initEditors" title="The Raw API layer provides lower level functions to access an API. It handles things like authentication, connection, encoding and the likes. It exposes 'get', 'post' methods.">
           <span data-simply-field="count.rawApi" data-simply-content="attributes" data-simply-attributes="data-count">
             Raw API
           </span>
@@ -1620,7 +1620,7 @@
 
   <template id="componentRoutes">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="Routes provide a translation from a URL to something the app should do. Routes make use of actions to fetch or store data">
+        <summary data-simply-command="initEditors" title="Routes provide a translation from a URL to something the app should do. Routes make use of actions to fetch or store data">
           <span data-simply-field="count.routes" data-simply-content="attributes" data-simply-attributes="data-count">
             Routes
           </span>
@@ -1651,7 +1651,7 @@
 
   <template id="componentTransformers">
       <details class="sb-component">
-        <summary data-simply-command="codeMirror" title="Transformers provide a last moment change to data, just before it is rendered. Use as a value of data-simply-transform on a data-simply-field">
+        <summary data-simply-command="initEditors" title="Transformers provide a last moment change to data, just before it is rendered. Use as a value of data-simply-transform on a data-simply-field">
           <span data-simply-field="count.transformers" data-simply-content="attributes" data-simply-attributes="data-count">
             Transformers
           </span>
@@ -1682,6 +1682,10 @@
         </div>
         <button data-simply-command="addTransformer">Add transformer</button>
       </details>
+  </template>
+
+  <template id="header">
+      <!-- header -->
   </template>
 
   <template id="componentHtmlValidator">
@@ -1861,17 +1865,17 @@
     </template>
 
     <template data-simply-template="Publish App HTML">
-                <style>
-                  .sb-preview [data-simply-list-item]:last-child .trailingComma {
-                    display: none;
-                  }
-                </style>
-                <main>
-                  <h1>App HTML preview</h1>
-                  <div class="field">
-                    <button data-simply-command="saveAppHtml">Publish App</button>
-                  </div>
-                  <div class="sb-preview">
+        <style>
+          .sb-preview [data-simply-list-item]:last-child .trailingComma {
+            display: none;
+          }
+        </style>
+        <main>
+          <h1>App HTML preview</h1>
+          <div class="field">
+            <button data-simply-command="saveAppHtml">Publish App</button>
+          </div>
+          <div class="sb-preview">
         <pre>
         &lt;!DOCTYPE HTML>
         &lt;html lang="nl">
@@ -1915,101 +1919,99 @@
               var simplyApp = {};
         
               window.addEventListener("simply-content-loaded", function() {
-              simply.bind = false;
+                simply.bind = false;
         </pre>
         <pre>
-              /* Raw API */
-              var simplyRawApi = {
+                /* Raw API */
+                var simplyRawApi = {
         </pre>
                     <div data-simply-list="app.rawApi">
                       <template>
         <pre class="rawApiMethod">
-                <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=8></span><span class="trailingComma">,</span>
+                  <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
         </pre>
                       </template>
                     </div>
         <pre>
-              };
-              /* End of Raw API */
+                };
+                /* End of Raw API */
         </pre>
         <pre>
-              /* Data API */
-              simplyDataApi = {
+                /* Data API */
+                simplyDataApi = {
         </pre>
                     <div data-simply-list="app.dataApi">
                       <template>
         <pre class="rawApiMethod">
-                <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=8></span><span class="trailingComma">,</span>
+                  <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
         </pre>
                       </template>
                     </div>
         <pre>
-              };
-              /* End of Data API */
+                };
+                /* End of Data API */
         </pre>
         
         <pre>
-              simplyApp = simply.app({
-                /* Actions */
-                actions: {
+                simplyApp = simply.app({
+                  /* Actions */
+                  actions: {
         </pre>
                     <div data-simply-list="app.actions">
                       <template>
         <pre class="action">
-                  <span data-simply-field="action"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
+                    <span data-simply-field="action"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
         </pre>
                       </template>
                     </div>
         <pre>
-                },
-                /* /Actions */
+                  },
+                  /* /Actions */
         </pre>
-        
-        
         <pre>
-                /* Commands */
-                commands: {
+                  /* Commands */
+                  commands: {
         </pre>
                     <div data-simply-list="app.commands">
                       <template>
         <pre class="command">
-                  <span data-simply-field="command"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
+                    <span data-simply-field="command"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
         </pre>
                       </template>
                     </div>
         <pre>
-                },
-                /* /Commands */
+                  },
+                  /* /Commands */
         </pre>
         <pre>
-                /* Routes */
-                routes: {
+                  /* Routes */
+                  routes: {
         </pre>
                     <div data-simply-list="app.routes">
                       <template>
         <pre class="route">
-              "<span data-simply-field="route"></span>" : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
+                    "<span data-simply-field="route"></span>" : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
         </pre>
                       </template>
                     </div>
         <pre>
-                /* /Routes */
-                }
-              });
+                  /* /Routes */
+                  }
+                });
         </pre>
         <pre>
-              function clone(ob) {
-                return JSON.parse(JSON.stringify(ob));
-              }
+                function clone(ob) {
+                  return JSON.parse(JSON.stringify(ob));
+                }
         
-              function updateDataSource(name) {
-                document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
-                  editor.list.applyDataSource(list, name);
-                  list.dataBindingPaused = 0;
-                });
-              }
-            });
-          &lt;/script&gt;
+                function updateDataSource(name) {
+                  document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
+                    editor.list.applyDataSource(list, name);
+                    list.dataBindingPaused = 0;
+                  });
+                }
+              });
+            &lt;/script&gt;
           &lt;/head>
           &lt;body>
             &lt;!-- Body HTML -->
@@ -2024,8 +2026,6 @@
                     </div>
         <pre>
           &lt;!-- /Body HTML -->
-        </pre>
-        <pre>
           &lt;!-- Component HTML templates -->
         </pre>
                     <div data-simply-list="app.componentTemplates">
@@ -2116,11 +2116,11 @@
           &lt;/body>
         &lt;/html>
         </pre>
-                  </div>
-                  <div class="field">
-                    <button data-simply-command="saveAppHtml">Publish App</button>
-                  </div>
-                </main>
+          </div>
+          <div class="field">
+            <button data-simply-command="saveAppHtml">Publish App</button>
+          </div>
+        </main>
     </template>
 
     <!-- /Page HTML templates -->
@@ -2252,6 +2252,23 @@
   </script>
 
   <!-- Foot HTML -->
+
+  <!-- Auto run tests -->
+
+    <script>
+      document.addEventListener("simply-data-changed", function(event) {
+        if (
+          (event.data.dataBinding.parentKey == "/component/parts/") ||
+          (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
+        ) {
+          window.setTimeout(
+            simplyApp.commands.autoRunTests,
+            500
+          );
+        }
+      });
+    </script>
+    
 
   <!-- Codemirror base -->
 

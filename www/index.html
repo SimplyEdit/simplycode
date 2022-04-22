@@ -934,33 +934,37 @@
   </head>
   <body>
     <!-- Body HTML -->
-    <template id="header">
-      <style>
-        .simply-toasts {
-          position: relative;
-          z-index: 101;
-        }
-      </style>
-      <div class="simply-toasts">
-        <ul class="ds-toasts ds-space" data-simply-list="alerts">
-          <template data-simply-template="error">
-            <li class="ds-toast ds-toast-error ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-              <div class="ds-space" data-simply-field="message"></div>
-            </li>
-          </template>
-          <template data-simply-template="warning">
-            <li class="ds-toast ds-toast-warning ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-              <div class="ds-space" data-simply-field="message"></div>
-            </li>
-          </template>
-          <template data-simply-template="info">
-            <li class="ds-toast ds-toast-info ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-              <div class="ds-space" data-simply-field="message"></div>
-            </li>
-          </template>
-        </ul>
-      </div>
-    </template>
+    <!-- HTML structure -->
+
+    <div class="simply-toasts">
+      <ul class="ds-toasts ds-space" data-simply-list="alerts">
+        <template data-simply-template="error">
+          <li class="ds-toast ds-toast-error ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+            <div class="ds-space" data-simply-field="message"></div>
+          </li>
+        </template>
+        <template data-simply-template="warning">
+          <li class="ds-toast ds-toast-warning ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+            <div class="ds-space" data-simply-field="message"></div>
+          </li>
+        </template>
+        <template data-simply-template="info">
+          <li class="ds-toast ds-toast-info ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+            <div class="ds-space" data-simply-field="message"></div>
+          </li>
+        </template>
+      </ul>
+    </div>
+
+    <!-- Toast styles -->
+
+    <style>
+      .simply-toasts {
+        position: relative;
+        z-index: 101;
+      }
+    </style>
+
     <!-- /Body HTML -->
     <!-- Component HTML templates -->
     <template id="componentActions">
@@ -1557,6 +1561,9 @@
         <button data-simply-command="addTransformer">Add transformer</button>
       </details>
     </template>
+    <template id="header">
+      <!-- header -->
+    </template>
     <template id="componentHtmlValidator">
       <div data-simply-field="code" data-simply-transformer="validateHtml"></div>
       <div class="sb-html-messages" data-simply-list="validateResult.messages">
@@ -1884,8 +1891,6 @@
             </div>
 <pre>
   &lt;!-- /Body HTML -->
-</pre>
-<pre>
   &lt;!-- Component HTML templates -->
 </pre>
             <div data-simply-list="app.componentTemplates">
