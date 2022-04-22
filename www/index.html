@@ -2138,6 +2138,10 @@
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
           simplyApp.commands.codeMirrorInit();
+          window.setTimeout(
+             simplyApp.commands.codeMirrorInit,
+             250
+          );
         }
       });
     </script>
