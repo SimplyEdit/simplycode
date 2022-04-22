@@ -1,0 +1,1 @@
+[{"name":"QUnit iframe","code":".qunit-code {\n  display: none;\n}\niframe.qunit {\n  border: 0;\n  width: 100%;\n  height: 0px;\n}"}]
