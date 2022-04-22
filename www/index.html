@@ -3,6 +3,16 @@
   <head>
     <!-- Component CSS -->
     <style>
+      /* QUnit iframe */
+      .qunit-code {
+        display: none;
+      }
+      iframe.qunit {
+        border: 0;
+        width: 100%;
+        height: 0px;
+      }
+
       /* code-method block */
       .sb-code-method {
         width: 100%;
@@ -39,14 +49,7 @@
         grid-template-columns: 1fr 6fr 1fr;
         gap: 10px;
       }
-      .qunit-code {
-        display: none;
-      }
-      iframe.qunit {
-        border: 0;
-        width: 100%;
-        height: 0px;
-      }
+      /* HTML validator */
       .sb-html-valid,
       .sb-html-invalid {
         padding: 4px 10px;
@@ -660,6 +663,15 @@
               var parent = target.parentNode;
               target.parentNode.removeChild(target);
             },
+            autoRunTests : function(el) {
+              var testRunners = document.querySelectorAll(".sb-component[open] iframe.qunit");
+              testRunners.forEach(function(testRunner) {
+                testRunner.contentWindow.document.testRunner = testRunner;
+                testRunner.contentWindow.document.open();
+                testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
+                testRunner.contentWindow.document.close();
+              });
+            },
             saveBaseComponent : function() {
               simplyApp.actions.saveBaseComponent(editor.pageData.component)
               .then(function() {
@@ -765,15 +777,6 @@
                 document.location.hash="pages/" + newComponent.id;
               });
             },
-            autoRunTests : function(el) {
-              var testRunners = document.querySelectorAll(".sb-component[open] iframe.qunit");
-              testRunners.forEach(function(testRunner) {
-                testRunner.contentWindow.document.testRunner = testRunner;
-                testRunner.contentWindow.document.open();
-                testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
-                testRunner.contentWindow.document.close();
-              });
-            },
             saveAppHtml : function() {
               var appHtml = document.querySelector(".sb-preview").innerText;
               simplyApp.actions.saveAppHtml(appHtml)
@@ -805,16 +808,7 @@
                   return true;
                 });
                 if (typeof component.parts === "undefined") {
-                  component.parts = {
-                    dataApi : [],
-                     routes : [],
-                    actions : [],
-                    commands : [],
-                    transformers : [],
-                    dataSources : [],
-                    componentCss : [],
-                    componentTemplates : []
-                  };
+                  component.parts = {};
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -843,16 +837,7 @@
                   return true;
                 });
                 if (typeof component.parts === "undefined") {
-                  component.parts = {
-                    dataApi : [],
-                     routes : [],
-                    actions : [],
-                    commands : [],
-                    transformers : [],
-                    dataSources : [],
-                    pageCss : [],
-                    pageTemplates : []
-                  };
+                  component.parts = {};
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -881,14 +866,7 @@
                   return true;
                 });
                 if (typeof component.parts === "undefined") {
-                  component.parts = {
-                    rawApi : [],
-                     routes : [],
-                    actions : [],
-                    headHtml : [],
-                    bodyHtml : [],
-                    footHtml : []
-                  };
+                  component.parts = {};
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -994,24 +972,22 @@
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.actions">
           <template>
-            <div>
-              <div class="sb-part">
-                <div class="sb-properties">
-                  <label>Action</label>
-                  <input data-simply-field="action" placeholder="Action name, eg getItemList">
+            <div class="sb-part">
+              <div class="sb-properties">
+                <label>Action</label>
+                <input data-simply-field="action" placeholder="Action name, eg getItemList">
+              </div>
+              <div class="sb-editors">
+                <div class="sb-editor-code">
+                  <label>Code</label>
+                  <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                  <div is="simply-component" rel="componentQUnitActionRunner"></div>
                 </div>
-                <div class="sb-editors">
-                  <div class="sb-editor-code">
-                    <label>Code</label>
-                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                    <div is="simply-component" rel="componentQUnitActionRunner"></div>
-                  </div>
-                  <div is="simply-component" rel="componentQUnitTests"></div>
-                </div>
-                <div class="sb-options">
-                  <label>Options</label>
-                  <button data-simply-command="deleteEntry">Delete action</button>
-                </div>
+                <div is="simply-component" rel="componentQUnitTests"></div>
+              </div>
+              <div class="sb-options">
+                <label>Options</label>
+                <button data-simply-command="deleteEntry">Delete action</button>
               </div>
             </div>
           </template>
@@ -1129,15 +1105,7 @@
                 <div class="sb-editor-code">
                   <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
-                  <div data-simply-field="code" data-simply-transformer="validateHtml"></div>
-                  <div class="sb-html-messages" data-simply-list="validateResult.messages">
-                    <template>
-                      <div class="sb-html-message">
-                        <span data-simply-field="message"></span><br>
-                        <span data-simply-field="extract" data-simply-transformer="escapeHtml"></span> on line <span data-simply-field="firstLine"></span> <span data-simply-field="lastLine"></span>
-                      </div>
-                    </template>
-                  </div>
+                  <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
               </div>
               <div class="sb-options">
@@ -1384,11 +1352,12 @@
 <pre>
   &lt;/head>
   &lt;body>
+</pre>
 <pre class="body">
-<pre>
   &lt;div id="qunit">&lt;/div>
   &lt;div id="qunit-fixture">&lt;/div>
   &lt;script src="//code.jquery.com/qunit/qunit-1.19.0.js">&lt;/script>
+</pre>
 <pre class="commands">
   &lt;script>
     var commands = {
@@ -1421,7 +1390,6 @@
 <pre>
   &lt;/script>
 </pre>
-</pre>
 <pre>
 &lt;/body>
 &lt;/html>
@@ -1453,8 +1421,8 @@
 <pre>
   &lt;/head>
   &lt;body>
+</pre>
 <pre class="body">
-<pre>
   &lt;div id="qunit">&lt;/div>
   &lt;div id="qunit-fixture">&lt;/div>
   &lt;script src="//code.jquery.com/qunit/qunit-1.19.0.js">&lt;/script>
@@ -1487,7 +1455,6 @@
             </div>
 <pre>
   &lt;/script>
-</pre>
 </pre>
 <pre>
 &lt;/body>
@@ -1589,6 +1556,17 @@
         </div>
         <button data-simply-command="addTransformer">Add transformer</button>
       </details>
+    </template>
+    <template id="componentHtmlValidator">
+      <div data-simply-field="code" data-simply-transformer="validateHtml"></div>
+      <div class="sb-html-messages" data-simply-list="validateResult.messages">
+        <template>
+          <div class="sb-html-message">
+            <span data-simply-field="message"></span><br>
+            <span data-simply-field="extract" data-simply-transformer="escapeHtml"></span> on line <span data-simply-field="firstLine"></span> <span data-simply-field="lastLine"></span>
+          </div>
+        </template>
+      </div>
     </template>
     <template id="navigation">
       <nav>
@@ -2013,6 +1991,38 @@
     <script>
       /* Transformers */
       editor.transformers = {
+        "validateHtml" : {
+          render : function(data) {
+            this.simplyData = data;
+            var element = this;
+            let htmlData = "<!doctype html><html lang='en'><head><title>Test</title></head><body>" + data + "</body></html>";
+            fetch("https://validator.w3.org/nu/?out=json", {
+              mode : 'cors',
+              headers: {
+                 "Content-type" : "text/html; charset=utf-8"
+              },
+              method: "POST",
+              body: htmlData
+            })
+            .then(function(result) {
+              return result.json();
+            })
+            .then(function(validateResult) {
+              element.dataBinding.config.data.validateResult = validateResult;
+              if(validateResult.messages.length) {
+                element.className = "sb-html-invalid";
+                element.innerHTML = "HTML validation failed:";
+              } else {
+                element.innerHTML = "HTML validated!";
+                element.className = "sb-html-valid";
+              }
+            });
+            return "Validating...";
+          },
+          extract : function(data) {
+            return this.simplyData;
+          }
+        },
         "baseComponentLink" : {
           render : function(data) {
             this.simplyData = data;
@@ -2075,38 +2085,6 @@
             var dataDiv = document.createElement("div");
             dataDiv.appendChild(document.createTextNode(data));
             return dataDiv.innerHTML;
-          },
-          extract : function(data) {
-            return this.simplyData;
-          }
-        },
-        "validateHtml" : {
-          render : function(data) {
-            this.simplyData = data;
-            var element = this;
-            let htmlData = "<!doctype html><html lang='en'><head><title>Test</title></head><body>" + data + "</body></html>";
-            fetch("https://validator.w3.org/nu/?out=json", {
-              mode : 'cors',
-              headers: {
-                 "Content-type" : "text/html; charset=utf-8"
-              },
-              method: "POST",
-              body: htmlData
-            })
-            .then(function(result) {
-              return result.json();
-            })
-            .then(function(validateResult) {
-              element.dataBinding.config.data.validateResult = validateResult;
-              if(validateResult.messages.length) {
-                element.className = "sb-html-invalid";
-                element.innerHTML = "HTML validation failed:";
-              } else {
-                element.innerHTML = "HTML validated!";
-                element.className = "sb-html-valid";
-              }
-            });
-            return "Validating...";
           },
           extract : function(data) {
             return this.simplyData;
