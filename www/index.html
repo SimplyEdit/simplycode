@@ -2146,7 +2146,13 @@
       document.addEventListener("simply-data-changed", function(event) {
         if (event.data.dataBinding.parentKey == "/component/parts/") {
           var list = event.data.arguments[0];
-          editor.pageData.count[list] = event.data.arguments[1].length;
+          var length;
+          if (typeof(event.data.arguments[1]) === "undefined") {
+             length = 0;
+          } else {
+             length = event.data.arguments[1].length;
+          }
+          editor.pageData.count[list] = length;
         }
       });
     </script>
