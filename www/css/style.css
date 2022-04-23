@@ -216,7 +216,7 @@ li.ds-toast-warning {
 
 body {
   display: grid; 
-  grid-template-columns: 1fr 2fr 2fr; 
+  grid-template-columns: 210px 2fr 2fr; 
   grid-template-rows: 56px 2fr 2fr; 
   gap: 0px 0px; 
   grid-template-areas: 

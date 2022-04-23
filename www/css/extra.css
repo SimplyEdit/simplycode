@@ -4,7 +4,7 @@ html, body {
 	width: 100%;
 }
 main {
-	padding: 0px 30px;
+	padding: 0px 15px;
 }
 [data-simply-command] {
 	cursor: pointer; /* Dear iOS, why don't you have a click event when the cursor is not a pointer? */
