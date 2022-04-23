@@ -23,7 +23,7 @@
 	--font-size: 14px;
 	--line-height: 1.5em;
 	--color: #7f8185;
-	--background: #fff;
+	--background: #333;
 }
 
 /* general styling on default elements */
@@ -42,14 +42,16 @@ h1 {
 	font-size: 2.4em;
 	font-weight: 300;
 	line-height: 1.1em;
-	margin: 0.5em 0;
+	margin: 0;
+    margin-bottom: 0.5em;
 }
 
 h2 {
 	font-size: 1.6em;
 	font-weight: 400;
 	line-height: 1.1em;
-	margin: 0.5em 0;
+	margin: 0;
+    margin-bottom: 0.5em;
 }
 
 * {
@@ -59,6 +61,13 @@ h2 {
 img {
 	display: block;
 	max-width: 100%;
+}
+
+a {
+    color: var(--highlight-dark);
+}
+a:visited {
+    color: var(--support-dark);
 }
 
 /* custom styling for custom elements */
@@ -197,4 +206,81 @@ li.ds-toast-warning {
 .ds-toast-autohide:not(.ds-toast-animated)[data-state="shown"] {
     animation: ds-toast-move var(--ds-toast-show-duration), ds-toast-hide var(--ds-toast-hide-duration) forwards;
     animation-delay: 0s, var(--ds-toast-hide-delay);
+}
+
+body {
+  display: grid; 
+  grid-template-columns: 1fr 2fr 2fr; 
+  grid-template-rows: 64px 2fr 2fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "header header header"
+    "nav pane pane"
+    "nav pane pane"
+}
+body > header {
+    grid-area: header;
+}
+body > nav {
+    grid-area: nav;
+}
+body > div.main {
+    grid-area: pane;
+}
+nav ul ul .sb-expand {
+    display: none;
+}
+nav ul {
+    list-style: none;
+    padding: 0 1.7em;
+    margin: 0 0.5em;
+}
+nav > ul > li[data-simply-command=expandMenu][open]::before {
+    content: "[-] ";
+    font-family: monospace;
+}
+nav > ul > li[data-simply-command=expandMenu]::before {
+    content: "[+] ";
+    font-family: monospace;
+}
+.sb-part {
+    margin-top: 10px;
+}
+
+.sb-part-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.sb-part-header .sb-options {
+    text-align: right;
+}
+.sb-part .sb-tab {
+    padding: 10px 5px;
+    margin: 0;
+    background-color: #151515;
+    color: #ddd;
+    border: 0;
+    text-align: center;
+    margin-right: 5px;
+}
+.sb-part .sb-tab input[type=radio] {
+    display: none;
+}
+.sb-part .sb-tab input[type=radio]:checked ~ span {
+    font-weight: bold;
+    border-bottom: 2px solid var(--support-dark);
+}
+.sb-part .sb-editor-code {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+.sb-part .sb-editor-code.sb-dual {
+    grid-template-columns: 1fr 1fr;
+}
+.sb-test-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.sb-test-header .sb-options {
+    text-align: right;
 }

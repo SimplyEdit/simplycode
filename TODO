@@ -28,7 +28,6 @@ TODO:
 
 [Tests]
 - Add a place to add tests next to the code.
-- Add html validator to pageHtml, bodyHtml etc;
 - Add QUnit validator to transformers, routes?
 
 ====================================
@@ -129,6 +128,7 @@ Done:
 [v] Integrate QUnit for actions
 [v] Fix QUnit iframe height to follow the iframe content height;
 [v] Integrate validator.w3.org for HTML
+[v] Add html validator to pageHtml, bodyHtml etc;
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky

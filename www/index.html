@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="nl">
   <head>
+    </style>
     <!-- Component CSS -->
     <style>
       /* QUnit iframe */
@@ -23,31 +24,13 @@
       .sb-component summary span[data-count]:after {
         content: '(' attr(data-count) ')';
       }
+      .sb-component summary span[data-count=""],
       .sb-component summary span[data-count="0"] {
         font-weight: normal;
       }
+      .sb-component summary span[data-count=""]:after,
       .sb-component summary span[data-count="0"]:after {
         content: '';
-      }
-
-      .sb-part {
-        display: grid;
-        grid-template-columns: 1fr 6fr 1fr;
-        gap: 10px;
-      }
-      .sb-part label {
-        display: block;
-      }
-      .sb-editors {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .sb-test {
-        display: grid;
-        grid-template-columns: 1fr 6fr 1fr;
-        gap: 10px;
       }
       /* HTML validator */
       .sb-html-valid,
@@ -361,13 +344,52 @@
               }
               throw new Error("saveAppHtml failed", response.status);
             });
-          }
+          },
+          browse : function(path) {
+            return simplyRawApi.get(path)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("browse failed", response.status);
+            });
+          },
+
         };
         /* End of Data API */
 
         simplyApp = simply.app({
           /* Actions */
           actions: {
+            getMainMenu : function() {
+              return new Promise(function(resolve, reject) {
+                return resolve(
+	              [
+	                {
+	                   item : {
+	                     innerHTML : "Base components",
+	                     href : "#base",
+                         "data-path" : "base-components"
+	                   }
+	                },
+	                {
+	                   item : {
+	                     innerHTML : "Components",
+	                     href : "#components",
+                         "data-path" : "components"
+	                   }
+	                },
+	                {
+	                   item : {
+	                     innerHTML : "Pages",
+	                     href : "#pages",
+                         "data-path" : "pages"
+	                   }
+	                }
+	              ]
+                );
+              });
+            },
             saveBaseComponent : function(component) {
               var promises = [];
               for (var name in component.parts) {
@@ -546,11 +568,44 @@
 
                 return appData;
               });
+            },
+            browse : function(path) {
+              return simplyDataApi.browse(path);
             }
           },
           /* /Actions */
           /* Commands */
           commands: {
+            collapseMenu : function(el) {
+              if (!el.hasAttribute("open")) {
+                return simplyApp.commands.expandMenu(el);
+              }
+              el.removeAttribute("open");
+              el.querySelector("ul").dataBinding.set([]);
+            },
+            expandMenu : function(el) {
+              if (el.hasAttribute("open")) {
+                return simplyApp.commands.collapseMenu(el);
+              }
+              el.setAttribute("open", "");
+              var path = el.querySelector("a").getAttribute("data-path");
+              var link =  el.querySelector("a").href;
+              simplyApp.actions.browse(path)
+              .then(function(components) {
+                var menu = [];
+                components.forEach(function(component) {
+                  menu.push(
+                    {
+                      item : {
+                        innerHTML : component.id,
+                        href : link + "/" + component.id
+                      }
+                    }
+                  );
+                });
+                el.querySelector("ul").dataBinding.set(menu);
+              });
+            },
             codeMirrorInit : function() {
               var textareas = document.querySelectorAll(".sb-component[open] textarea[data-codemirror-mode]:not([style])");
               textareas.forEach(function(textarea) {
@@ -808,7 +863,16 @@
                   return true;
                 });
                 if (typeof component.parts === "undefined") {
-                  component.parts = {};
+                  component.parts = {
+                    componentTemplates : [],
+                    componentCss : [],
+                    commands : [],
+                    actions : [],
+                    dataApi : [],
+                    routes : [],
+                    transformers : [],
+                    dataSources : []
+                  };
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -837,7 +901,16 @@
                   return true;
                 });
                 if (typeof component.parts === "undefined") {
-                  component.parts = {};
+                  component.parts = {
+                    pageTemplates : [],
+                    pageCss : [],
+                    commands : [],
+                    actions : [],
+                    dataApi : [],
+                    routes : [],
+                    transformers : [],
+                    dataSources : []
+                  };
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -866,7 +939,15 @@
                   return true;
                 });
                 if (typeof component.parts === "undefined") {
-                  component.parts = {};
+                  component.parts = {
+                    headHtml : [],
+                    bodyHtml : [],
+                    footHtml : [],
+                    commands : [],
+                    actions : [],
+                    routes : [],
+                    rawApi : []
+                  };
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -977,21 +1058,34 @@
         <div class="sb-code-method" data-simply-list="component.parts.actions">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Action</label>
-                <input data-simply-field="action" placeholder="Action name, eg getItemList">
-              </div>
-              <div class="sb-editors">
-                <div class="sb-editor-code">
-                  <label>Code</label>
-                  <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                  <div is="simply-component" rel="componentQUnitActionRunner"></div>
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="action" placeholder="Action name, eg getItemList">
+                  <label class="sb-tab">
+                    <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
+                    <span>Code</span>
+                  </label>
+                  <label class="sb-tab">
+                    <input type="radio" name="actionEditor" value="tests" data-simply-field="editor">
+                    <span>Tests</span>
+                  </label>
                 </div>
-                <div is="simply-component" rel="componentQUnitTests"></div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete action</button>
+                </div>
               </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete action</button>
+              <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+                <template data-simply-template="code">
+                  <div class="sb-editor-code">
+                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                    <div is="simply-component" rel="componentQUnitActionRunner"></div>
+                  </div>
+                </template>
+                <template data-simply-template="tests">
+                  <div class="sb-editor-code">
+                    <div is="simply-component" rel="componentQUnitTests"></div>
+                  </div>
+                </template>
               </div>
             </div>
           </template>
@@ -1009,20 +1103,19 @@
         <div class="sb-code-method" data-simply-list="component.parts.bodyHtml">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Name</label>
-                <input data-simply-field="name" placeholder="Name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete HTML</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
                   <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1040,21 +1133,34 @@
         <div class="sb-code-method" data-simply-list="component.parts.commands">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Command</label>
-                <input data-simply-field="command" placeholder="Command name, eg getItemList">
-              </div>
-              <div class="sb-editors">
-                <div class="sb-editor-code">
-                  <label>Code</label>
-                  <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                  <div is="simply-component" rel="componentQUnitCommandRunner"></div>
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="command" placeholder="Command name, eg getItemList">
+                  <label class="sb-tab">
+                    <input type="radio" name="commandEditor" checked value="code" data-simply-field="editor">
+                    <span>Code</span>
+                  </label>
+                  <label class="sb-tab">
+                    <input type="radio" name="commandEditor" value="tests" data-simply-field="editor">
+                    <span>Tests</span>
+                  </label>
                 </div>
-                <div is="simply-component" rel="componentQUnitTests"></div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete action</button>
+                </div>
               </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
+              <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+                <template data-simply-template="code">
+                  <div class="sb-editor-code">
+                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                    <div is="simply-component" rel="componentQUnitCommandRunner"></div>
+                  </div>
+                </template>
+                <template data-simply-template="tests">
+                  <div class="sb-editor-code">
+                    <div is="simply-component" rel="componentQUnitTests"></div>
+                  </div>
+                </template>
               </div>
             </div>
           </template>
@@ -1072,19 +1178,18 @@
         <div class="sb-code-method" data-simply-list="component.parts.componentCss">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>CSS collection</label>
-                <input data-simply-field="name" placeholder="Name this CSS collection">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name this CSS collection">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete CSS</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Styles</label>
                   <textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1102,20 +1207,19 @@
         <div class="sb-code-method" data-simply-list="component.parts.componentTemplates">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Component template</label>
-                <input data-simply-field="component" placeholder="Component name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="component" placeholder="Component name">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete HTML</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
                   <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1133,19 +1237,18 @@
         <div class="sb-code-method" data-simply-list="component.parts.dataApi">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Method</label>
-                <input data-simply-field="method" placeholder="API method name, eg getItemList">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="method" placeholder="API method name, eg getItemList">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete method</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1163,19 +1266,19 @@
         <div class="sb-code-method" data-simply-list="component.parts.dataSources">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Data source</label>
-                <input data-simply-field="dataSource" placeholder="Data source name, eg itemList">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="dataSource" placeholder="Data source name, eg itemList">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete data source</button>
+                </div>
+              </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1201,20 +1304,20 @@
         <div class="sb-code-method" data-simply-list="component.parts.footHtml">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Name</label>
-                <input data-simply-field="name" placeholder="Name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete HTML</button>
+                </div>
+              </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
                   <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1232,20 +1335,19 @@
         <div class="sb-code-method" data-simply-list="component.parts.headHtml">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Name</label>
-                <input data-simply-field="name" placeholder="Name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete head HTML</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
                   <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1263,19 +1365,18 @@
         <div class="sb-code-method" data-simply-list="component.parts.pageCss">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>CSS collection</label>
-                <input data-simply-field="name" placeholder="Name this CSS collection">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name this CSS collection">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete CSS</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Styles</label>
                   <textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1293,20 +1394,19 @@
         <div class="sb-code-method" data-simply-list="component.parts.pageTemplates">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Page</label>
-                <input data-simply-field="page" placeholder="Page name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="page" placeholder="Page name">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete HTML</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
                   <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1319,17 +1419,16 @@
         <div class="sb-tests" data-simply-list="tests">
           <template>
             <div class="sb-test">
-              <div class="sb-test-properties">
-                <label>Test</label>
-                <input data-simply-field="name" placeholder="Test name">
+              <div class="sb-test-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Test name">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete test</button>
+                </div>
               </div>
               <div class="sb-test-editor">
-                <label>Test code</label>
                 <textarea data-codemirror-mode="javascript" data-simply-field="test-code" placeholder="function() {...}"></textarea>
-              </div>
-              <div class="sb-test-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete test</button>
               </div>
             </div>
            </template>
@@ -1482,19 +1581,18 @@
         <div class="sb-code-method" data-simply-list="component.parts.rawApi">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Method</label>
-                <input data-simply-field="method" placeholder="API method name, eg getItemList">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="method" placeholder="API method name, eg getItemList">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete method</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1512,19 +1610,18 @@
         <div class="sb-code-method" data-simply-list="component.parts.routes">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Route</label>
-                <input data-simply-field="route" placeholder="#route/:variable">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="route" placeholder="#route/:variable">
+                </div>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete route</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
@@ -1542,23 +1639,34 @@
         <div class="sb-code-method" data-simply-list="component.parts.transformers">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Method</label>
-                <input data-simply-field="transformer" placeholder="Transformer name, eg itemNameFromId">
-              </div>
-              <div class="sb-editors">
-                <div class="sb-editor-code">
-                  <label title="Render code transforms the data from what is stored into what the user sees">Render code</label>
-                  <textarea data-codemirror-mode="javascript" data-simply-field="render-code" placeholder="function() {...}"></textarea>
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="transformer" placeholder="Transformer name, eg itemNameFromId">
+                  <label class="sb-tab" title="Render code transforms the data from what is stored into what the user sees. Extract takes the data as provided from the DOM and transforms it for storage">
+                    <input type="radio" checked name="transformerEditor" value="code" data-simply-field="editor">
+                    <span>Render/Extract</span>
+                  </label>
+                  <label class="sb-tab">
+                    <input type="radio" name="transformerEditor" value="tests" data-simply-field="editor">
+                    <span>Tests</span>
+                  </label>
                 </div>
-                <div class="sb-editor-code">
-                  <label title="Extract takes the data as provided from the DOM and transforms it for storage">Extract code</label>
-                  <textarea data-codemirror-mode="javascript" data-simply-field="extract-code" placeholder="function() {...}"></textarea>
+                <div class="sb-options">
+                  <button data-simply-command="deleteEntry">Delete transformer</button>
                 </div>
               </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
+              <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+                <template data-simply-template="code">
+                  <div class="sb-editor-code sb-dual">
+                    <textarea data-codemirror-mode="javascript" data-simply-field="render-code" placeholder="function() {...}"></textarea>
+                    <textarea data-codemirror-mode="javascript" data-simply-field="extract-code" placeholder="function() {...}"></textarea>
+                  </div>
+                </template>
+                <template data-simply-template="tests">
+                  <div class="sb-editor-code">
+                    <div is="simply-component" rel="componentQUnitTests"></div>
+                  </div>
+                </template>
               </div>
             </div>
           </template>
@@ -1567,6 +1675,7 @@
       </details>
     </template>
     <template id="header">
+      <nav><a href="#publish">Publish</a></nav>
       <!-- header -->
     </template>
     <template id="componentHtmlValidator">
@@ -1580,20 +1689,21 @@
         </template>
       </div>
     </template>
-    <template id="navigation">
-      <nav>
-        <li><a href="#base">Base components</a></li>
-        <li><a href="#components">Components</a></li>
-        <li><a href="#pages">Pages</a></li>
-        <li><a href="#publish">Publish App HTML</a></li>
-      </nav>
+    <template id="menu">
+       <ul data-simply-list="menu">
+          <template>
+             <li data-simply-command="expandMenu"><a data-simply-command="navigate" href="#" data-simply-field="item"></a><div is="simply-component" rel="menu"></li>
+          </template>
+       </ul>
     </template>
     <!-- /Component HTML templates -->
 
-    <header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
+    <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
       <template data-simply-template='Header' rel="header"></template>
     </header>
-    <div is="simply-component" rel="navigation"></div>
+    <nav>
+      <div is="simply-component" rel="menu"></div>
+    </nav>
     <!-- FIXME: hier main van maken -->
     <div class="main" data-simply-field="page" data-simply-content="template">
       <!-- Page HTML templates -->
@@ -2181,6 +2291,14 @@
           }
           purgeTimer = window.setTimeout(purgeToasts, 200);
         }
+      });
+    </script>
+    <script>
+      window.addEventListener("simply-content-loaded", function() {
+        simplyApp.actions.getMainMenu()
+        .then(function(menu) {
+          editor.pageData.menu = menu;
+        });
       });
     </script>
     <!-- /Foot HTML -->
