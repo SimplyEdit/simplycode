@@ -1,100 +1,106 @@
 @import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,700,700i');
 
 :root {
-	--highlight-dark: #f16623;
-	--highlight-light: #ff8003;
-	--highlight-color: #fff;
-	--highlight-background: linear-gradient( to left, var(--highlight-light), var(--highlight-dark) );
+    --highlight-dark: #f16623;
+    --highlight-light: #ff8003;
+    --highlight-color: #fff;
+    --highlight-background: linear-gradient( to left, var(--highlight-light), var(--highlight-dark) );
 
-	--support-dark: #2ba3b0;
-	--support-light: #4fb7c2;
-	--support-color: #fff;
-	--support-background: linear-gradient( to left, var(--support-light), var(--support-dark) );
+    --support-dark: #444;
+    --support-light: #484848;
+    --support-color: #eee;
+    --support-background: linear-gradient( to left, var(--support-light), var(--support-dark) );
 
-	--grey-dark: #38393c;
-	--grey-medium: #7f8185;
-	--grey-light: #e9ebec;
-	--grey-dark: #38393c;
-	--black: #000;
-	--white: #fff;
-	--grey-background: var(--grey-dark);
+    --grey-dark: #38393c;
+    --grey-medium: #7f8185;
+    --grey-light: #e9ebec;
+    --grey-dark: #38393c;
+    --black: #000;
+    --white: #fff;
+    --grey-background: var(--grey-dark);
 
-	--font-family: 'Alegreya Sans', sans-serif;
-	--font-size: 14px;
-	--line-height: 1.5em;
-	--color: #7f8185;
-	--background: #333;
+    --font-family: 'Alegreya Sans', sans-serif;
+    --font-size: 14px;
+    --line-height: 1.5em;
+    --color: #7f8185;
+    --background: #333;
 }
 
 /* general styling on default elements */
 
 html, body {
-	margin: 0;
-	padding: 0;
-	font-family: var(--font-family);
-	font-size: var(--font-size);
-	line-height: var(--line-height);
-	color: var(--color); 
-	background-color: var(--background);
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    color: var(--color); 
+    background-color: var(--background);
 }
-
+body {
+    overflow-y: scroll;
+}
 h1 {
-	font-size: 2.4em;
-	font-weight: 300;
-	line-height: 1.1em;
-	margin: 0;
+    font-size: 2em;
+    font-weight: 300;
+    line-height: 1.1em;
+    margin: 0;
     margin-bottom: 0.5em;
 }
 
 h2 {
-	font-size: 1.6em;
-	font-weight: 400;
-	line-height: 1.1em;
-	margin: 0;
+    font-size: 1.6em;
+    font-weight: 400;
+    line-height: 1.1em;
+    margin: 0;
     margin-bottom: 0.5em;
 }
 
 * {
-	box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 img {
-	display: block;
-	max-width: 100%;
+    display: block;
+    max-width: 100%;
 }
 
 a {
     color: var(--highlight-dark);
 }
 a:visited {
-    color: var(--support-dark);
+    color: var(--highlight-dark);
 }
 
 /* custom styling for custom elements */
 
-.button {
-	padding: 0.5em 0.75em;
-	margin: 0.625em;
-	background: var(--support-background);
-	color: var(--support-color);
+.sb-button {
+    background: var(--support-background);
+    color: var(--support-color);
+    padding: 0.3em 0.5em;
+    margin: 0 0.3em;
+    border: 1px solid #ccc;
 }
-.button:first-child {
-	margin-left: 0;
+.sb-button {
 }
-.button:last-child {
-	margin-right: 0;
+
+.sb-button:first-child {
+    margin-left: 0;
 }
-.button.highlight {
-	background: var(--highlight-background);
-	color: var(--highlight-color);
+.sb-button:last-child {
+    margin-right: 0;
+}
+.sb-button.highlight {
+    background: var(--highlight-background);
+    color: var(--highlight-color);
 }
 
 .text-content {
-	padding: 2.2375em;
-	max-width: 50em;
+    padding: 2.2375em;
+    max-width: 50em;
 }
 .text-content *:first-child {
-	margin-top: 0;
+    margin-top: 0;
 }
 
 
@@ -229,12 +235,17 @@ body > div.main {
 }
 nav ul ul .sb-expand {
     display: none;
+    padding: 0 1.7em;
 }
 nav ul {
     list-style: none;
-    padding: 0 1.7em;
     margin: 0 0.5em;
+    padding: 0;
 }
+nav ul ul {
+    padding: 0 1.7em;
+}
+
 nav > ul > li[data-simply-command=expandMenu][open]::before {
     content: "[-] ";
     font-family: monospace;
@@ -268,7 +279,7 @@ nav > ul > li[data-simply-command=expandMenu]::before {
 }
 .sb-part .sb-tab input[type=radio]:checked ~ span {
     font-weight: bold;
-    border-bottom: 2px solid var(--support-dark);
+    border-bottom: 2px solid var(--support-background);
 }
 .sb-part .sb-editor-code {
     display: grid;
@@ -283,4 +294,28 @@ nav > ul > li[data-simply-command=expandMenu]::before {
 }
 .sb-test-header .sb-options {
     text-align: right;
+}
+.sb-component summary {
+    font-size: 1.2em;
+}
+.sb-component {
+    margin: 10px 0px;
+}
+.sb-header {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    vertical-align: middle;
+}
+.sb-header .sb-controls {
+    text-align: right;
+}
+.sb-header h1 span {
+    white-space: nowrap;
+}
+.sb-component summary .sb-controls {
+    display: none;
+    margin-left: 1em;
+}
+.sb-component[open] summary .sb-controls {
+    display: inline-block;
 }
