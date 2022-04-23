@@ -21,10 +21,10 @@ TODO:
   Or will a project have a UUID as a 'key' for it?
 
 [Code improvements]
-- Improve styling: at least for the buttons and navigation. Reuse simply-edit backend style?
-- Add tabs for editors so we can have more of them: specs, tests, sample data, preview? etc;
-- Replace count items with CSS counters
 - Should HTML preview be a highlighted look (using static codemirror view) instead?
+- Fix styling for 'add page' forms
+- Fix styling for description
+- Fix styling for tests within tabs
 
 [Tests]
 - Add a place to add tests next to the code.
@@ -73,6 +73,7 @@ Misc backlogged ideas in categories:
   Tags for browsing/selecting code bits?
   Overall improvements in code navigation
 - Documentation, sample applications
+- Set focus to the name input of a newly added part after adding a command/action/etc
 
 [Developer collaboration]
 - How can we do git and/or versioning?
@@ -129,8 +130,14 @@ Done:
 [v] Fix QUnit iframe height to follow the iframe content height;
 [v] Integrate validator.w3.org for HTML
 [v] Add html validator to pageHtml, bodyHtml etc;
+[v] Add tabs for editors so we can have more of them: specs, tests, sample data, preview? etc;
+[v] Improve styling: at least for the buttons and navigation.
+[v] Fix styling for 'publish'
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
 [v] after deleting a part, codemirror needs to reinitialize;
 [v] chrome doesn't render the simply-components
+
+Won't fix:
+[x] Replace count items with CSS counters - Won't fix: turns out not to be a trivial fix. 
