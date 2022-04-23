@@ -86,6 +86,7 @@ Misc backlogged ideas in categories:
 - Raw API: split out methods and properties
 - Sample app that is not simply-build
 - Includes for commands/actions/etc from other components, to make it clear that it is referenced (deleteEntry)
+- fix styling for mobile view (hamburger menu, overflows etc)
 
 Done:
 [v] Add syntax highlighting for HTML, HTML mixed mode etc.
