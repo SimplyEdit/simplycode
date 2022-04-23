@@ -40,6 +40,9 @@ html, body {
 body {
     overflow-y: scroll;
 }
+body:last-child {
+    margin-bottom: 1.5em;
+}
 h1 {
     font-size: 2em;
     font-weight: 300;
