@@ -74,14 +74,14 @@ a:visited {
 
 /* custom styling for custom elements */
 
-.sb-button {
+.sb-button,
+a.sb-button {
     background: var(--support-background);
     color: var(--support-color);
     padding: 0.3em 0.5em;
     margin: 0 0.3em;
     border: 1px solid #ccc;
-}
-.sb-button {
+    text-decoration: none;
 }
 
 .sb-button:first-child {
@@ -217,7 +217,7 @@ li.ds-toast-warning {
 body {
   display: grid; 
   grid-template-columns: 1fr 2fr 2fr; 
-  grid-template-rows: 64px 2fr 2fr; 
+  grid-template-rows: 56px 2fr 2fr; 
   gap: 0px 0px; 
   grid-template-areas: 
     "header header header"
@@ -318,4 +318,23 @@ nav > ul > li[data-simply-command=expandMenu]::before {
 }
 .sb-component[open] summary .sb-controls {
     display: inline-block;
+}
+header {
+    position: fixed;
+    padding: 8px 10px;
+    left: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    background-color: #404040;
+    border-bottom: 2px solid #2222;
+    vertical-align: middle;
+}
+header h1 {
+    margin: 0;
+}
+header .sb-controls {
+    padding-top: 5px;
+    padding-right: 5px;
+    text-align: right;
 }
