@@ -22,8 +22,6 @@ TODO:
 
 [Code improvements]
 - Should HTML preview be a highlighted look (using static codemirror view) instead?
-- Fix styling for 'add page' forms
-- Fix styling for description
 - Fix styling for tests within tabs
 
 [Tests]
@@ -132,7 +130,10 @@ Done:
 [v] Add html validator to pageHtml, bodyHtml etc;
 [v] Add tabs for editors so we can have more of them: specs, tests, sample data, preview? etc;
 [v] Improve styling: at least for the buttons and navigation.
-[v] Fix styling for 'publish'
+[v] Fix styling for 'publish' button
+[v] Fix styling for 'add page' forms
+[v] Fix styling for description
+[v] Fix styling for component overview
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
