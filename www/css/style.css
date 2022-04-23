@@ -217,7 +217,7 @@ li.ds-toast-warning {
 body {
   display: grid; 
   grid-template-columns: 210px 2fr 2fr; 
-  grid-template-rows: 56px 2fr 2fr; 
+  grid-template-rows: 60px 2fr 2fr; 
   gap: 0px 0px; 
   grid-template-areas: 
     "header header header"
@@ -255,7 +255,7 @@ nav > ul > li[data-simply-command=expandMenu]::before {
     font-family: monospace;
 }
 .sb-part {
-    margin-top: 10px;
+    margin-top: 1em;
 }
 
 .sb-part-header {
@@ -321,7 +321,7 @@ nav > ul > li[data-simply-command=expandMenu]::before {
 }
 header {
     position: fixed;
-    padding: 8px 10px;
+    padding: 8px 10px 6px 10px;
     left: 0;
     right: 0;
     display: grid;
@@ -329,6 +329,7 @@ header {
     background-color: #404040;
     border-bottom: 2px solid #2222;
     vertical-align: middle;
+    z-index: 1;
 }
 header h1 {
     margin: 0;
@@ -337,4 +338,23 @@ header .sb-controls {
     padding-top: 5px;
     padding-right: 5px;
     text-align: right;
+}
+.sb-editor-code textarea {
+    margin-top: -1px;
+}
+
+ul.sb-components-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 1em;
+}
+ul.sb-components-list li {
+    border: 1px solid #555;
+    background-color: #2a2a2a;
+    padding: 10px;
+    border-radius: 2px;
 }
