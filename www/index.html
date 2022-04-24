@@ -70,9 +70,9 @@
     <link rel="stylesheet" href="/css/extra.css">
     <!-- Forward to https -->
     <script>
-//      if (document.location.protocol == "http:") {
-  //      document.location.href = document.location.href.replace(/^http:/, "https:");
-    //  }
+      if (document.location.protocol == "http:") {
+        document.location.href = document.location.href.replace(/^http:/, "https:");
+      }
     </script>
     <!-- /Head HTML -->
     <script>
@@ -200,6 +200,15 @@
 
         /* Data API */
         simplyDataApi = {
+          browse : function(path) {
+            return simplyRawApi.get(path)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("browse failed", response.status);
+            });
+          },
           saveBaseComponentPart : function(component, part, contents) {
             return simplyRawApi.putRaw("base-components/" + component + "/" + part, {}, contents)
             .then(function(response) {
@@ -343,17 +352,7 @@
               }
               throw new Error("saveAppHtml failed", response.status);
             });
-          },
-          browse : function(path) {
-            return simplyRawApi.get(path)
-            .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("browse failed", response.status);
-            });
-          },
-
+          }
         };
         /* End of Data API */
 
@@ -388,6 +387,9 @@
 	              ]
                 );
               });
+            },
+            browse : function(path) {
+              return simplyDataApi.browse(path);
             },
             saveBaseComponent : function(component) {
               var promises = [];
@@ -567,51 +569,11 @@
 
                 return appData;
               });
-            },
-            browse : function(path) {
-              return simplyDataApi.browse(path);
             }
           },
           /* /Actions */
           /* Commands */
           commands: {
-            navigate : function(el) {
-              if (el.hasAttribute("href")) {
-                document.location.href = el.getAttribute("href");
-              } else if (el.querySelector("[href]")) {
-                document.location.href = el.querySelector("[href]").getAttribute("href");
-              }
-            },
-            collapseMenu : function(el) {
-              if (!el.hasAttribute("open")) {
-                return simplyApp.commands.expandMenu(el);
-              }
-              el.removeAttribute("open");
-              el.querySelector("ul").dataBinding.set([]);
-            },
-            expandMenu : function(el) {
-              if (el.hasAttribute("open")) {
-                return simplyApp.commands.collapseMenu(el);
-              }
-              el.setAttribute("open", "");
-              var path = el.querySelector("a").getAttribute("data-path");
-              var link =  el.querySelector("a").href;
-              simplyApp.actions.browse(path)
-              .then(function(components) {
-                var menu = [];
-                components.forEach(function(component) {
-                  menu.push(
-                    {
-                      item : {
-                        innerHTML : component.id,
-                        href : link + "/" + component.id
-                      }
-                    }
-                  );
-                });
-                el.querySelector("ul").dataBinding.set(menu);
-              });
-            },
             codeMirrorInit : function() {
               var textareas = document.querySelectorAll(".sb-component[open] textarea[data-codemirror-mode]:not([style])");
               textareas.forEach(function(textarea) {
@@ -734,6 +696,43 @@
                 testRunner.contentWindow.document.open();
                 testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
                 testRunner.contentWindow.document.close();
+              });
+            },
+            navigate : function(el) {
+              if (el.hasAttribute("href")) {
+                document.location.href = el.getAttribute("href");
+              } else if (el.querySelector("[href]")) {
+                document.location.href = el.querySelector("[href]").getAttribute("href");
+              }
+            },
+            collapseMenu : function(el) {
+              if (!el.hasAttribute("open")) {
+                return simplyApp.commands.expandMenu(el);
+              }
+              el.removeAttribute("open");
+              el.querySelector("ul").dataBinding.set([]);
+            },
+            expandMenu : function(el) {
+              if (el.hasAttribute("open")) {
+                return simplyApp.commands.collapseMenu(el);
+              }
+              el.setAttribute("open", "");
+              var path = el.querySelector("a").getAttribute("data-path");
+              var link =  el.querySelector("a").href;
+              simplyApp.actions.browse(path)
+              .then(function(components) {
+                var menu = [];
+                components.forEach(function(component) {
+                  menu.push(
+                    {
+                      item : {
+                        innerHTML : component.id,
+                        href : link + "/" + component.id
+                      }
+                    }
+                  );
+                });
+                el.querySelector("ul").dataBinding.set(menu);
               });
             },
             saveBaseComponent : function() {
@@ -1072,6 +1071,9 @@
           <span data-simply-field="count.actions" data-simply-content="attributes" data-simply-attributes="data-count">
             Actions
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addAction">Add action</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.actions">
           <template>
@@ -1108,7 +1110,6 @@
             </div>
           </template>
         </div>
-        <button class="sb-button" data-simply-command="addAction">Add action</button>
       </details>
     </template>
     <template id="componentBodyHtml">
@@ -1117,9 +1118,9 @@
           <span data-simply-field="count.bodyHtml" data-simply-content="attributes" data-simply-attributes="data-count">
             Additional body HTML
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addBodyHtml">Add body HTML</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.bodyHtml">
           <template>
@@ -1149,9 +1150,9 @@
           <span data-simply-field="count.commands" data-simply-content="attributes" data-simply-attributes="data-count">
             Commands
           </span>
-          <div class='sb-controls'>
+          <span class='sb-controls'>
             <button class="sb-button" data-simply-command="addCommand">Add command</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.commands">
           <template>
@@ -1196,9 +1197,9 @@
           <span data-simply-field="count.componentCss" data-simply-content="attributes" data-simply-attributes="data-count">
             Component CSS collections
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addComponentCss">Add CSS collection</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.componentCss">
           <template>
@@ -1227,9 +1228,9 @@
           <span data-simply-field="count.componentTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
             Component HTML template
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addComponentTemplate">Add component HTML template</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.componentTemplates">
           <template>
@@ -1259,9 +1260,9 @@
           <span data-simply-field="count.dataApi" data-simply-content="attributes" data-simply-attributes="data-count">
             Data API
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addDataApiMethod">Add method</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.dataApi">
           <template>
@@ -1290,9 +1291,9 @@
           <span data-simply-field="count.dataSources" data-simply-content="attributes" data-simply-attributes="data-count">
             Data sources
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addDataSource">Add data source</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.dataSources">
           <template>
@@ -1304,7 +1305,6 @@
                 <div class="sb-options">
                   <button class="sb-button" data-simply-command="deleteEntry">Delete data source</button>
                 </div>
-              </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
@@ -1330,9 +1330,9 @@
           <span data-simply-field="count.footHtml" data-simply-content="attributes" data-simply-attributes="data-count">
             Additional foot HTML
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addFootHtml">Add foot HTML</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.footHtml">
           <template>
@@ -1362,9 +1362,9 @@
           <span data-simply-field="count.headHtml" data-simply-content="attributes" data-simply-attributes="data-count">
             Additional head HTML
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
 	    <button class="sb-button" data-simply-command="addHeadHtml">Add head HTML</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.headHtml">
           <template>
@@ -1394,9 +1394,9 @@
           <span data-simply-field="count.pageCss" data-simply-content="attributes" data-simply-attributes="data-count">
             Page CSS collections
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addPageCss">Add CSS collection</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.pageCss">
           <template>
@@ -1425,9 +1425,9 @@
           <span data-simply-field="count.pageTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
             Page HTML template
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addPageTemplate">Add page HTML template</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.pageTemplates">
           <template>
@@ -1614,9 +1614,9 @@
           <span data-simply-field="count.rawApi" data-simply-content="attributes" data-simply-attributes="data-count">
             Raw API
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addRawApiMethod">Add method</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.rawApi">
           <template>
@@ -1645,9 +1645,9 @@
           <span data-simply-field="count.routes" data-simply-content="attributes" data-simply-attributes="data-count">
             Routes
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addRoute">Add route</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.routes">
           <template>
@@ -1676,9 +1676,9 @@
           <span data-simply-field="count.transformers" data-simply-content="attributes" data-simply-attributes="data-count">
             Transformers
           </span>
-          <div class="sb-controls">
+          <span class="sb-controls">
             <button class="sb-button" data-simply-command="addTransformer">Add transformer</button>
-          </div>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.transformers">
           <template>
@@ -1737,7 +1737,10 @@
     <template id="menu">
        <ul data-simply-list="menu">
           <template>
-             <li data-simply-command="expandMenu"><a data-simply-command="navigate" href="#" data-simply-field="item"></a><div is="simply-component" rel="menu"></li>
+             <li data-simply-command="expandMenu">
+               <a data-simply-command="navigate" href="#" data-simply-field="item"></a>
+               <div is="simply-component" rel="menu"></div>
+             </li>
           </template>
        </ul>
     </template>
@@ -1846,6 +1849,7 @@
                 <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
               </div>
             </div>
+          </div>
         </main>
       </template>
       <template data-simply-template="Edit page">
@@ -1894,6 +1898,7 @@
                 <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
               </div>
             </div>
+          </div>
         </main>
       </template>
       <template data-simply-template="Publish App HTML">
@@ -2073,10 +2078,12 @@
   &lt;!-- /Component HTML templates -->
 </pre>
 <pre>
-  &lt;header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
+  &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
     &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
   &lt;/header&gt;
-  &lt;div is="simply-component" rel="navigation"&gt;&lt;/div&gt;
+  &lt;nav&gt;
+    &lt;div is="simply-component" rel="menu"&gt;&lt;/div&gt;
+  &lt;/nav&gt;
   &lt;!-- FIXME: hier main van maken --&gt;
   &lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
 </pre>
@@ -2272,14 +2279,6 @@
       });
     </script>
     <!-- Foot HTML -->
-    <script>
-      window.addEventListener("simply-content-loaded", function() {
-        simplyApp.actions.getMainMenu()
-        .then(function(menu) {
-          editor.pageData.menu = menu;
-        });
-      });
-    </script>
     <!-- Auto run tests -->
     <script>
       document.addEventListener("simply-data-changed", function(event) {
@@ -2332,6 +2331,15 @@
           }
           editor.pageData.count[list] = length;
         }
+      });
+    </script>
+    <!-- Load main menu -->
+    <script>
+      window.addEventListener("simply-content-loaded", function() {
+        simplyApp.actions.getMainMenu()
+        .then(function(menu) {
+          editor.pageData.menu = menu;
+        });
       });
     </script>
     <!-- toastAnimation -->
