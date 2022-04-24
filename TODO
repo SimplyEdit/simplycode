@@ -1,5 +1,6 @@
 Bugs:
 - issue with codemirror width being weird. We need to lock down the table widths to get this working properly;
+- Element “style” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
 
 =====
 TODO:
@@ -23,6 +24,8 @@ TODO:
 [Code improvements]
 - Should HTML preview be a highlighted look (using static codemirror view) instead?
 - Fix styling for tests within tabs
+- Fix styling for toasts
+- Have a way to generate style.css and extra.css
 
 [Tests]
 - Add a place to add tests next to the code.
