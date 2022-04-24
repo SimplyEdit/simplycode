@@ -1,1 +1,1 @@
-[{"command":"addBodyHtml","code":"function(el) {\n  editor.pageData.component.parts.bodyHtml.push({});\n}","tests":[]}]
+[{"command":"addBodyHtml","code":"function(el) {\n  editor.pageData.component.parts.bodyHtml.push({});\n}","tests":[],"editor":"code"}]

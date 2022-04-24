@@ -1,1 +1,1 @@
-[{"command":"addComponentCss","code":"function(el) {\n  editor.pageData.component.parts.componentCss.push({});\n}","tests":[]}]
+[{"command":"addComponentCss","code":"function(el) {\n  editor.pageData.component.parts.componentCss.push({});\n}","tests":[],"editor":"code"}]

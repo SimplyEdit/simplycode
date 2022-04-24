@@ -23,31 +23,13 @@
       .sb-component summary span[data-count]:after {
         content: '(' attr(data-count) ')';
       }
+      .sb-component summary span[data-count=""],
       .sb-component summary span[data-count="0"] {
         font-weight: normal;
       }
+      .sb-component summary span[data-count=""]:after,
       .sb-component summary span[data-count="0"]:after {
         content: '';
-      }
-
-      .sb-part {
-        display: grid;
-        grid-template-columns: 1fr 6fr 1fr;
-        gap: 10px;
-      }
-      .sb-part label {
-        display: block;
-      }
-      .sb-editors {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .sb-test {
-        display: grid;
-        grid-template-columns: 1fr 6fr 1fr;
-        gap: 10px;
       }
       /* HTML validator */
       .sb-html-valid,
@@ -218,6 +200,15 @@
 
         /* Data API */
         simplyDataApi = {
+          browse : function(path) {
+            return simplyRawApi.get(path)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("browse failed", response.status);
+            });
+          },
           saveBaseComponentPart : function(component, part, contents) {
             return simplyRawApi.putRaw("base-components/" + component + "/" + part, {}, contents)
             .then(function(response) {
@@ -368,6 +359,38 @@
         simplyApp = simply.app({
           /* Actions */
           actions: {
+            getMainMenu : function() {
+              return new Promise(function(resolve, reject) {
+                return resolve(
+	              [
+	                {
+	                   item : {
+	                     innerHTML : "Base components",
+	                     href : "#base",
+                         "data-path" : "base-components"
+	                   }
+	                },
+	                {
+	                   item : {
+	                     innerHTML : "Components",
+	                     href : "#components",
+                         "data-path" : "components"
+	                   }
+	                },
+	                {
+	                   item : {
+	                     innerHTML : "Pages",
+	                     href : "#pages",
+                         "data-path" : "pages"
+	                   }
+	                }
+	              ]
+                );
+              });
+            },
+            browse : function(path) {
+              return simplyDataApi.browse(path);
+            },
             saveBaseComponent : function(component) {
               var promises = [];
               for (var name in component.parts) {
@@ -647,6 +670,9 @@
               editor.pageData.component.parts.transformers.push({});
             },
             deleteEntry : function(el) {
+              if (!confirm("Delete this?")) {
+                return;
+	      }
               var target = el;
               while (!target.hasAttribute("data-simply-list-item")) {
                 target = target.parentNode;
@@ -672,6 +698,43 @@
                 testRunner.contentWindow.document.close();
               });
             },
+            navigate : function(el) {
+              if (el.hasAttribute("href")) {
+                document.location.href = el.getAttribute("href");
+              } else if (el.querySelector("[href]")) {
+                document.location.href = el.querySelector("[href]").getAttribute("href");
+              }
+            },
+            collapseMenu : function(el) {
+              if (!el.hasAttribute("open")) {
+                return simplyApp.commands.expandMenu(el);
+              }
+              el.removeAttribute("open");
+              el.querySelector("ul").dataBinding.set([]);
+            },
+            expandMenu : function(el) {
+              if (el.hasAttribute("open")) {
+                return simplyApp.commands.collapseMenu(el);
+              }
+              el.setAttribute("open", "");
+              var path = el.querySelector("a").getAttribute("data-path");
+              var link =  el.querySelector("a").href;
+              simplyApp.actions.browse(path)
+              .then(function(components) {
+                var menu = [];
+                components.forEach(function(component) {
+                  menu.push(
+                    {
+                      item : {
+                        innerHTML : component.id,
+                        href : link + "/" + component.id
+                      }
+                    }
+                  );
+                });
+                el.querySelector("ul").dataBinding.set(menu);
+              });
+            },
             saveBaseComponent : function() {
               simplyApp.actions.saveBaseComponent(editor.pageData.component)
               .then(function() {
@@ -683,6 +746,9 @@
               });
             },
             deleteBaseComponent : function() {
+              if (!confirm("Delete base component?")) {
+                return;
+              }
               simplyApp.actions.deleteBaseComponent(
                 editor.pageData.component.id
               )
@@ -718,6 +784,9 @@
               });
             },
             deleteComponent : function() {
+              if (!confirm("Delete component?")) {
+                return;
+              }
               simplyApp.actions.deleteComponent(
                 editor.pageData.component.id
               )
@@ -753,6 +822,9 @@
               });
             },
             deletePage : function() {
+              if (!confirm("Delete page?")) {
+                return;
+              }
               simplyApp.actions.deletePage(
                 editor.pageData.component.id
               )
@@ -808,7 +880,16 @@
                   return true;
                 });
                 if (typeof component.parts === "undefined") {
-                  component.parts = {};
+                  component.parts = {
+                    componentTemplates : [],
+                    componentCss : [],
+                    commands : [],
+                    actions : [],
+                    dataApi : [],
+                    routes : [],
+                    transformers : [],
+                    dataSources : []
+                  };
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -837,7 +918,16 @@
                   return true;
                 });
                 if (typeof component.parts === "undefined") {
-                  component.parts = {};
+                  component.parts = {
+                    pageTemplates : [],
+                    pageCss : [],
+                    commands : [],
+                    actions : [],
+                    dataApi : [],
+                    routes : [],
+                    transformers : [],
+                    dataSources : []
+                  };
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -866,7 +956,15 @@
                   return true;
                 });
                 if (typeof component.parts === "undefined") {
-                  component.parts = {};
+                  component.parts = {
+                    headHtml : [],
+                    bodyHtml : [],
+                    footHtml : [],
+                    commands : [],
+                    actions : [],
+                    routes : [],
+                    rawApi : []
+                  };
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -937,20 +1035,20 @@
     <!-- HTML structure -->
 
     <div class="simply-toasts">
-      <ul class="ds-toasts ds-space" data-simply-list="alerts">
+      <ul class="simply-toasts simply-space" data-simply-list="alerts">
         <template data-simply-template="error">
-          <li class="ds-toast ds-toast-error ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-            <div class="ds-space" data-simply-field="message"></div>
+          <li class="simply-toast simply-toast-error simply-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+            <div class="simply-space" data-simply-field="message"></div>
           </li>
         </template>
         <template data-simply-template="warning">
-          <li class="ds-toast ds-toast-warning ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-            <div class="ds-space" data-simply-field="message"></div>
+          <li class="simply-toast simply-toast-warning simply-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+            <div class="simply-space" data-simply-field="message"></div>
           </li>
         </template>
         <template data-simply-template="info">
-          <li class="ds-toast ds-toast-info ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-            <div class="ds-space" data-simply-field="message"></div>
+          <li class="simply-toast simply-toast-info simply-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+            <div class="simply-space" data-simply-field="message"></div>
           </li>
         </template>
       </ul>
@@ -973,30 +1071,45 @@
           <span data-simply-field="count.actions" data-simply-content="attributes" data-simply-attributes="data-count">
             Actions
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addAction">Add action</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.actions">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Action</label>
-                <input data-simply-field="action" placeholder="Action name, eg getItemList">
-              </div>
-              <div class="sb-editors">
-                <div class="sb-editor-code">
-                  <label>Code</label>
-                  <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                  <div is="simply-component" rel="componentQUnitActionRunner"></div>
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="action" placeholder="Action name, eg getItemList">
+                  <label class="sb-tab">
+                    <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
+                    <span>Code</span>
+                  </label>
+                  <label class="sb-tab">
+                    <input type="radio" name="actionEditor" value="tests" data-simply-field="editor">
+                    <span>Tests</span>
+                  </label>
                 </div>
-                <div is="simply-component" rel="componentQUnitTests"></div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete action</button>
+                </div>
               </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete action</button>
+              <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+                <template data-simply-template="code">
+                  <div class="sb-editor-code">
+                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                    <div is="simply-component" rel="componentQUnitActionRunner"></div>
+                  </div>
+                </template>
+                <template data-simply-template="tests">
+                  <div class="sb-editor-code">
+                    <div is="simply-component" rel="componentQUnitTests"></div>
+                  </div>
+                </template>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addAction">Add action</button>
       </details>
     </template>
     <template id="componentBodyHtml">
@@ -1005,28 +1118,30 @@
           <span data-simply-field="count.bodyHtml" data-simply-content="attributes" data-simply-attributes="data-count">
             Additional body HTML
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addBodyHtml">Add body HTML</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.bodyHtml">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Name</label>
-                <input data-simply-field="name" placeholder="Name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+                  <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addBodyHtml">Add body HTML</button>
       </details>
     </template>
     <template id="componentCommands">
@@ -1035,30 +1150,45 @@
           <span data-simply-field="count.commands" data-simply-content="attributes" data-simply-attributes="data-count">
             Commands
           </span>
+          <span class='sb-controls'>
+            <button class="sb-button" data-simply-command="addCommand">Add command</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.commands">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Command</label>
-                <input data-simply-field="command" placeholder="Command name, eg getItemList">
-              </div>
-              <div class="sb-editors">
-                <div class="sb-editor-code">
-                  <label>Code</label>
-                  <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
-                  <div is="simply-component" rel="componentQUnitCommandRunner"></div>
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="command" placeholder="Command name, eg getItemList">
+                  <label class="sb-tab">
+                    <input type="radio" name="commandEditor" checked value="code" data-simply-field="editor">
+                    <span>Code</span>
+                  </label>
+                  <label class="sb-tab">
+                    <input type="radio" name="commandEditor" value="tests" data-simply-field="editor">
+                    <span>Tests</span>
+                  </label>
                 </div>
-                <div is="simply-component" rel="componentQUnitTests"></div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete action</button>
+                </div>
               </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
+              <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+                <template data-simply-template="code">
+                  <div class="sb-editor-code">
+                    <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                    <div is="simply-component" rel="componentQUnitCommandRunner"></div>
+                  </div>
+                </template>
+                <template data-simply-template="tests">
+                  <div class="sb-editor-code">
+                    <div is="simply-component" rel="componentQUnitTests"></div>
+                  </div>
+                </template>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addCommand">Add command</button>
       </details>
     </template>
     <template id="componentComponentCss">
@@ -1067,28 +1197,29 @@
           <span data-simply-field="count.componentCss" data-simply-content="attributes" data-simply-attributes="data-count">
             Component CSS collections
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addComponentCss">Add CSS collection</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.componentCss">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>CSS collection</label>
-                <input data-simply-field="name" placeholder="Name this CSS collection">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name this CSS collection">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete CSS</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Styles</label>
                   <textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addComponentCss">Add CSS collection</button>
       </details>
     </template>
     <template id="componentComponentTemplate">
@@ -1097,29 +1228,30 @@
           <span data-simply-field="count.componentTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
             Component HTML template
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addComponentTemplate">Add component HTML template</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.componentTemplates">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Component template</label>
-                <input data-simply-field="component" placeholder="Component name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="component" placeholder="Component name">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
                   <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
               </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
-              </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addComponentTemplate">Add component HTML template</button>
       </details>
     </template>
     <template id="componentDataApi">
@@ -1128,28 +1260,29 @@
           <span data-simply-field="count.dataApi" data-simply-content="attributes" data-simply-attributes="data-count">
             Data API
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addDataApiMethod">Add method</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.dataApi">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Method</label>
-                <input data-simply-field="method" placeholder="API method name, eg getItemList">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="method" placeholder="API method name, eg getItemList">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete method</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addDataApiMethod">Add method</button>
       </details>
     </template>
     <template id="componentDataSources">
@@ -1158,28 +1291,29 @@
           <span data-simply-field="count.dataSources" data-simply-content="attributes" data-simply-attributes="data-count">
             Data sources
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addDataSource">Add data source</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.dataSources">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Data source</label>
-                <input data-simply-field="dataSource" placeholder="Data source name, eg itemList">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="dataSource" placeholder="Data source name, eg itemList">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete data source</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addDataSource">Add data source</button>
       </details>
     </template>
     <template id="componentDescription">
@@ -1196,28 +1330,30 @@
           <span data-simply-field="count.footHtml" data-simply-content="attributes" data-simply-attributes="data-count">
             Additional foot HTML
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addFootHtml">Add foot HTML</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.footHtml">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Name</label>
-                <input data-simply-field="name" placeholder="Name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+                  <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addFootHtml">Add foot HTML</button>
       </details>
     </template>
     <template id="componentHeadHtml">
@@ -1226,28 +1362,30 @@
           <span data-simply-field="count.headHtml" data-simply-content="attributes" data-simply-attributes="data-count">
             Additional head HTML
           </span>
+          <span class="sb-controls">
+	    <button class="sb-button" data-simply-command="addHeadHtml">Add head HTML</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.headHtml">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Name</label>
-                <input data-simply-field="name" placeholder="Name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete head HTML</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
+                  <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addHeadHtml">Add head HTML</button>
       </details>
     </template>
     <template id="componentPageCss">
@@ -1256,28 +1394,29 @@
           <span data-simply-field="count.pageCss" data-simply-content="attributes" data-simply-attributes="data-count">
             Page CSS collections
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addPageCss">Add CSS collection</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.pageCss">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>CSS collection</label>
-                <input data-simply-field="name" placeholder="Name this CSS collection">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Name this CSS collection">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete CSS</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Styles</label>
                   <textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addPageCss">Add CSS collection</button>
       </details>
     </template>
     <template id="componentPageTemplate">
@@ -1286,50 +1425,52 @@
           <span data-simply-field="count.pageTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
             Page HTML template
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addPageTemplate">Add page HTML template</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.pageTemplates">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Page</label>
-                <input data-simply-field="page" placeholder="Page name">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="page" placeholder="Page name">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
+                  <div is="simply-component" rel="componentHtmlValidator"></div>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addPageTemplate">Add page HTML template</button>
       </details>
     </template>
     <template id="componentQUnitTests">
       <div class="sb-editor-qunit-tests">
-        <label>Tests</label>
         <div class="sb-tests" data-simply-list="tests">
           <template>
             <div class="sb-test">
-              <div class="sb-test-properties">
-                <input data-simply-field="name" placeholder="Test name">
+              <div class="sb-test-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="name" placeholder="Test name">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete test</button>
+                </div>
               </div>
               <div class="sb-test-editor">
                 <textarea data-codemirror-mode="javascript" data-simply-field="test-code" placeholder="function() {...}"></textarea>
               </div>
-              <div class="sb-test-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete test</button>
-              </div>
             </div>
            </template>
         </div>
-        <button data-simply-command="addTest">Add test</button>
+        <button class="sb-button" data-simply-command="addTest">Add test</button>
       </div>
     </template>
     <template id="componentQUnitCommandRunner">
@@ -1473,28 +1614,29 @@
           <span data-simply-field="count.rawApi" data-simply-content="attributes" data-simply-attributes="data-count">
             Raw API
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addRawApiMethod">Add method</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.rawApi">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Method</label>
-                <input data-simply-field="method" placeholder="API method name, eg getItemList">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="method" placeholder="API method name, eg getItemList">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete method</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addRawApiMethod">Add method</button>
       </details>
     </template>
     <template id="componentRoutes">
@@ -1503,28 +1645,29 @@
           <span data-simply-field="count.routes" data-simply-content="attributes" data-simply-attributes="data-count">
             Routes
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addRoute">Add route</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.routes">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Route</label>
-                <input data-simply-field="route" placeholder="#route/:variable">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="route" placeholder="#route/:variable">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete route</button>
+                </div>
               </div>
               <div class="sb-editors">
                 <div class="sb-editor-code">
-                  <label>Code</label>
                   <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
                 </div>
-              </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addRoute">Add route</button>
       </details>
     </template>
     <template id="componentTransformers">
@@ -1533,36 +1676,52 @@
           <span data-simply-field="count.transformers" data-simply-content="attributes" data-simply-attributes="data-count">
             Transformers
           </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addTransformer">Add transformer</button>
+          </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.transformers">
           <template>
             <div class="sb-part">
-              <div class="sb-properties">
-                <label>Method</label>
-                <input data-simply-field="transformer" placeholder="Transformer name, eg itemNameFromId">
-              </div>
-              <div class="sb-editors">
-                <div class="sb-editor-code">
-                  <label title="Render code transforms the data from what is stored into what the user sees">Render code</label>
-                  <textarea data-codemirror-mode="javascript" data-simply-field="render-code" placeholder="function() {...}"></textarea>
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="transformer" placeholder="Transformer name, eg itemNameFromId">
+                  <label class="sb-tab" title="Render code transforms the data from what is stored into what the user sees. Extract takes the data as provided from the DOM and transforms it for storage">
+                    <input type="radio" checked name="transformerEditor" value="code" data-simply-field="editor">
+                    <span>Render/Extract</span>
+                  </label>
+                  <label class="sb-tab">
+                    <input type="radio" name="transformerEditor" value="tests" data-simply-field="editor">
+                    <span>Tests</span>
+                  </label>
                 </div>
-                <div class="sb-editor-code">
-                  <label title="Extract takes the data as provided from the DOM and transforms it for storage">Extract code</label>
-                  <textarea data-codemirror-mode="javascript" data-simply-field="extract-code" placeholder="function() {...}"></textarea>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete transformer</button>
                 </div>
               </div>
-              <div class="sb-options">
-                <label>Options</label>
-                <button data-simply-command="deleteEntry">Delete</button>
+              <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+                <template data-simply-template="code">
+                  <div class="sb-editor-code sb-dual">
+                    <textarea data-codemirror-mode="javascript" data-simply-field="render-code" placeholder="function() {...}"></textarea>
+                    <textarea data-codemirror-mode="javascript" data-simply-field="extract-code" placeholder="function() {...}"></textarea>
+                  </div>
+                </template>
+                <template data-simply-template="tests">
+                  <div class="sb-editor-code">
+                    <div is="simply-component" rel="componentQUnitTests"></div>
+                  </div>
+                </template>
               </div>
             </div>
           </template>
         </div>
-        <button data-simply-command="addTransformer">Add transformer</button>
       </details>
     </template>
     <template id="header">
-      <!-- header -->
+      <h1>Simply Code - Build something awesome!</h1>
+      <div class="sb-controls">
+        <a href="#publish" class="sb-button">Preview and publish!</a>
+      </div>
     </template>
     <template id="componentHtmlValidator">
       <div data-simply-field="code" data-simply-transformer="validateHtml"></div>
@@ -1575,29 +1734,35 @@
         </template>
       </div>
     </template>
-    <template id="navigation">
-      <nav>
-        <li><a href="#base">Base components</a></li>
-        <li><a href="#components">Components</a></li>
-        <li><a href="#pages">Pages</a></li>
-        <li><a href="#publish">Publish App HTML</a></li>
-      </nav>
+    <template id="menu">
+       <ul data-simply-list="menu">
+          <template>
+             <li data-simply-command="expandMenu">
+               <a data-simply-command="navigate" href="#" data-simply-field="item"></a>
+               <div is="simply-component" rel="menu"></div>
+             </li>
+          </template>
+       </ul>
     </template>
     <!-- /Component HTML templates -->
 
-    <header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
+    <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
       <template data-simply-template='Header' rel="header"></template>
     </header>
-    <div is="simply-component" rel="navigation"></div>
+    <nav>
+      <div is="simply-component" rel="menu"></div>
+    </nav>
     <!-- FIXME: hier main van maken -->
     <div class="main" data-simply-field="page" data-simply-content="template">
       <!-- Page HTML templates -->
       <template data-simply-template="Edit base component">
         <main>
-          <h1>Edit base component: <span data-simply-field="component.id"></span></h1>
-          <div class="field">
-            <button data-simply-command="saveBaseComponent">Save</button>
-               <button data-simply-command="deleteBaseComponent">Delete</button>
+          <div class="sb-header">
+            <h1>Edit base component: <span data-simply-field="component.id"></span></h1>
+            <div class="sb-controls">
+              <button class="sb-button" data-simply-command="saveBaseComponent">Save</button>
+              <button class="sb-button" data-simply-command="deleteBaseComponent">Delete</button>
+            </div>
           </div>
           <div is="simply-component" rel="componentDescription"></div>
           <div is="simply-component" rel="componentHeadHtml"></div>
@@ -1607,42 +1772,45 @@
           <div is="simply-component" rel="componentActions"></div>
           <div is="simply-component" rel="componentRoutes"></div>
           <div is="simply-component" rel="componentRawApi"></div>
-          <div class="field">
-            <button data-simply-command="saveBaseComponent">Save</button>
-               <button data-simply-command="deleteBaseComponent">Delete</button>
-          </div>
         </main>
       </template>
       <template data-simply-template="Base components">
         <main>
           <h1>Base components</h1>
-          <ul data-simply-list="components">
+          <ul class="sb-components-list" data-simply-list="components">
             <template>
-              <li>
+              <li data-simply-command="navigate">
                 <a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="baseComponentLink"><span data-simply-field="id"></span></a>
                 <p data-simply-field="description"></p>
               </li>
             </template>
           </ul>
-          <h1>Add component</h1>
-          <form action="#" data-simply-command="createBaseComponent">
-            <div class="field">
-              <label>Name: <input type="text" data-simply-field="newComponent.id"></label>
+          <h1>Add base component</h1>
+          <div class="sb-part">
+            <div class="sb-part-header">
+              <div class="sb-tabs">
+                <input data-simply-field="newComponent.id" class="sb-tab" placeholder="Name your component">
+              </div>
+              <div class="sb-options">
+                <button class="sb-button" data-simply-command="createBaseComponent">Create</button>
+              </div>
             </div>
-            <div class="field">
-              <label>Description</label>
-              <textarea data-simply-field="newComponent.description"></textarea>
+            <div class="sb-editors">
+              <div class="sb-editor-code">
+                <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+              </div>
             </div>
-            <button data-simply-command="createBaseComponent">Create</button>
-          </form>
+          </div>
         </main>
       </template>
       <template data-simply-template="Edit component">
         <main>
-          <h1>Edit component: <span data-simply-field="component.id"></span></h1>
-          <div class="field">
-            <button data-simply-command="saveComponent">Save</button>
-               <button data-simply-command="deleteComponent">Delete</button>
+          <div class="sb-header">
+            <h1>Edit component: <span data-simply-field="component.id"></span></h1>
+            <div class="sb-controls">
+              <button class="sb-button" data-simply-command="saveComponent">Save</button>
+              <button class="sb-button" data-simply-command="deleteComponent">Delete</button>
+            </div>
           </div>
           <div is="simply-component" rel="componentDescription"></div>
           <div is="simply-component" rel="componentComponentTemplate"></div>
@@ -1653,42 +1821,45 @@
           <div is="simply-component" rel="componentRoutes"></div>
           <div is="simply-component" rel="componentTransformers"></div>
           <div is="simply-component" rel="componentDataSources"></div>
-          <div class="field">
-            <button data-simply-command="saveComponent">Save</button>
-               <button data-simply-command="deleteComponent">Delete</button>
-          </div>
         </main>
       </template>
       <template data-simply-template="List components">
         <main>
           <h1>Components</h1>
-          <ul data-simply-list="components">
+          <ul class="sb-components-list" data-simply-list="components">
             <template>
-              <li>
+              <li data-simply-command="navigate">
                 <a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="componentLink"><span data-simply-field="id"></span></a>
                 <p data-simply-field="description"></p>
               </li>
             </template>
           </ul>
           <h1>Add component</h1>
-          <form action="#" data-simply-command="createComponent">
-            <div class="field">
-              <label>Name: <input type="text" data-simply-field="newComponent.id"></label>
+          <div class="sb-part">
+            <div class="sb-part-header">
+              <div class="sb-tabs">
+                <input data-simply-field="newComponent.id" class="sb-tab" placeholder="Name your component">
+              </div>
+              <div class="sb-options">
+                <button class="sb-button" data-simply-command="createComponent">Create</button>
+              </div>
             </div>
-            <div class="field">
-              <label>Description</label>
-              <textarea data-simply-field="newComponent.description"></textarea>
+            <div class="sb-editors">
+              <div class="sb-editor-code">
+                <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+              </div>
             </div>
-            <button data-simply-command="createComponent">Create</button>
-          </form>
+          </div>
         </main>
       </template>
       <template data-simply-template="Edit page">
         <main>
-          <h1>Edit page: <span data-simply-field="component.id"></span></h1>
-          <div class="field">
-            <button data-simply-command="savePage">Save</button>
-               <button data-simply-command="deletePage">Delete</button>
+          <div class="sb-header">
+            <h1>Edit page: <span data-simply-field="component.id"></span></h1>
+            <div class="sb-controls">
+              <button class="sb-button" data-simply-command="savePage">Save</button>
+              <button class="sb-button" data-simply-command="deletePage">Delete</button>
+            </div>
           </div>
           <div is="simply-component" rel="componentDescription"></div>
           <div is="simply-component" rel="componentPageTemplate"></div>
@@ -1699,34 +1870,35 @@
           <div is="simply-component" rel="componentRoutes"></div>
           <div is="simply-component" rel="componentTransformers"></div>
           <div is="simply-component" rel="componentDataSources"></div>
-          <div class="field">
-            <button data-simply-command="savePage">Save</button>
-               <button data-simply-command="deletePage">Delete</button>
-          </div>
         </main>
       </template>
       <template data-simply-template="Pages">
         <main>
           <h1>Pages</h1>
-          <ul data-simply-list="components">
+          <ul class="sb-components-list" data-simply-list="components">
             <template>
-              <li>
+              <li data-simply-command="navigate">
                 <a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="pageLink"><span data-simply-field="id"></span></a>
                 <p data-simply-field="description"></p>
               </li>
             </template>
           </ul>
-          <h1>Add component</h1>
-          <form action="#" data-simply-command="createPage">
-            <div class="field">
-              <label>Name: <input type="text" data-simply-field="newComponent.id"></label>
+          <h1>Add page</h1>
+          <div class="sb-part">
+            <div class="sb-part-header">
+              <div class="sb-tabs">
+                <input data-simply-field="newComponent.id" class="sb-tab" placeholder="Name your component">
+              </div>
+              <div class="sb-options">
+                <button class="sb-button" data-simply-command="createPage">Create</button>
+              </div>
             </div>
-            <div class="field">
-              <label>Description</label>
-              <textarea data-simply-field="newComponent.description"></textarea>
+            <div class="sb-editors">
+              <div class="sb-editor-code">
+                <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+              </div>
             </div>
-            <button data-simply-command="createPage">Create</button>
-          </form>
+          </div>
         </main>
       </template>
       <template data-simply-template="Publish App HTML">
@@ -1738,7 +1910,7 @@
         <main>
           <h1>App HTML preview</h1>
           <div class="field">
-            <button data-simply-command="saveAppHtml">Publish App</button>
+            <button class="sb-button" data-simply-command="saveAppHtml">Publish App</button>
           </div>
           <div class="sb-preview">
 <pre>
@@ -1906,10 +2078,12 @@
   &lt;!-- /Component HTML templates -->
 </pre>
 <pre>
-  &lt;header data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
+  &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
     &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
   &lt;/header&gt;
-  &lt;div is="simply-component" rel="navigation"&gt;&lt;/div&gt;
+  &lt;nav&gt;
+    &lt;div is="simply-component" rel="menu"&gt;&lt;/div&gt;
+  &lt;/nav&gt;
   &lt;!-- FIXME: hier main van maken --&gt;
   &lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
 </pre>
@@ -1983,7 +2157,7 @@
 </pre>
           </div>
           <div class="field">
-            <button data-simply-command="saveAppHtml">Publish App</button>
+            <button class="sb-button" data-simply-command="saveAppHtml">Publish App</button>
           </div>
         </main>
       </template>
@@ -2137,6 +2311,10 @@
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
           simplyApp.commands.codeMirrorInit();
+          window.setTimeout(
+             simplyApp.commands.codeMirrorInit,
+             250
+          );
         }
       });
     </script>
@@ -2145,22 +2323,37 @@
       document.addEventListener("simply-data-changed", function(event) {
         if (event.data.dataBinding.parentKey == "/component/parts/") {
           var list = event.data.arguments[0];
-          editor.pageData.count[list] = event.data.arguments[1].length;
+          var length;
+          if (typeof(event.data.arguments[1]) === "undefined") {
+             length = 0;
+          } else {
+             length = event.data.arguments[1].length;
+          }
+          editor.pageData.count[list] = length;
         }
+      });
+    </script>
+    <!-- Load main menu -->
+    <script>
+      window.addEventListener("simply-content-loaded", function() {
+        simplyApp.actions.getMainMenu()
+        .then(function(menu) {
+          editor.pageData.menu = menu;
+        });
       });
     </script>
     <!-- toastAnimation -->
     <script>
       var purgeTimer;
       function purgeToasts() {
-        editor.pageData.alerts = [];
+        // editor.pageData.alerts = [];
       }
       document.addEventListener("animationend", function(evt) {
-        if (evt.animationName == "ds-toast-show") {
+        if (evt.animationName == "simply-toast-show") {
           evt.target.setAttribute("data-state", "shown");
-          evt.target.classList.add("ds-toast-animated");
+          evt.target.classList.add("simply-toast-animated");
         }
-        if (evt.animationName == "ds-toast-hide") {
+        if (evt.animationName == "simply-toast-hide") {
           if (purgeTimer) {
             window.clearTimeout(purgeTimer);
           }

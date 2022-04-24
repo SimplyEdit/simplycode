@@ -1,1 +1,1 @@
-[{"component":"navigation","code":"<nav>\n  <li><a href=\"#base\">Base components</a></li>\n  <li><a href=\"#components\">Components</a></li>\n  <li><a href=\"#pages\">Pages</a></li>\n  <li><a href=\"#publish\">Publish App HTML</a></li>\n</nav>\n"}]
+[{"component":"menu","code":"<ul data-simply-list=\"menu\">\n  <template>\n    <li data-simply-command=\"expandMenu\">\n      <a data-simply-command=\"navigate\" href=\"#\" data-simply-field=\"item\"></a>\n      <div is=\"simply-component\" rel=\"menu\"></div>\n    </li>\n  </template>\n</ul>","validateResult":{"messages":[]}}]

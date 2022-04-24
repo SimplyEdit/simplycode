@@ -1,1 +1,1 @@
-[{"action":"listBaseComponents","code":"function() {\n  return simplyDataApi.listBaseComponents();\n}"}]
+[{"action":"listBaseComponents","code":"function() {\n  return simplyDataApi.listBaseComponents();\n}","editor":"code","tests":[]}]
