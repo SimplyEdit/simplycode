@@ -1,1 +1,1 @@
-[{"command":"addCommand","code":"function(el) {\n  editor.pageData.component.parts.commands.push({});\n}","tests":[]}]
+[{"command":"addCommand","code":"function(el) {\n  editor.pageData.component.parts.commands.push({});\n}","tests":[],"editor":"code"}]

@@ -1,1 +1,1 @@
-[{"command":"addRoute","code":"function(el) {\n  editor.pageData.component.parts.routes.push({});\n}","tests":[]}]
+[{"command":"addRoute","code":"function(el) {\n  editor.pageData.component.parts.routes.push({});\n}","tests":[],"editor":"code"}]

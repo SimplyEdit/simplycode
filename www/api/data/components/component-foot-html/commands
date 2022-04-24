@@ -1,1 +1,1 @@
-[{"command":"addFootHtml","code":"function(el) {\n  editor.pageData.component.parts.footHtml.push({});\n}","tests":[]}]
+[{"command":"addFootHtml","code":"function(el) {\n  editor.pageData.component.parts.footHtml.push({});\n}","tests":[],"editor":"code"}]

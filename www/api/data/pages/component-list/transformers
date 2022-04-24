@@ -1,1 +1,1 @@
-[{"transformer":"componentLink","render-code":"function(data) {\n    this.simplyData = data;\n    return {\n      href : \"#components/\" + data,\n      innerHTML: data\n    };\n}","extract-code":"function(data) {\n    return this.simplyData;\n}"}]
+[{"transformer":"componentLink","render-code":"function(data) {\n    this.simplyData = data;\n    return {\n      href : \"#components/\" + data,\n      innerHTML: data\n    };\n}","extract-code":"function(data) {\n    return this.simplyData;\n}","editor":"code"}]
