@@ -1035,20 +1035,20 @@
     <!-- HTML structure -->
 
     <div class="simply-toasts">
-      <ul class="ds-toasts ds-space" data-simply-list="alerts">
+      <ul class="simply-toasts simply-space" data-simply-list="alerts">
         <template data-simply-template="error">
-          <li class="ds-toast ds-toast-error ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-            <div class="ds-space" data-simply-field="message"></div>
+          <li class="simply-toast simply-toast-error simply-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+            <div class="simply-space" data-simply-field="message"></div>
           </li>
         </template>
         <template data-simply-template="warning">
-          <li class="ds-toast ds-toast-warning ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-            <div class="ds-space" data-simply-field="message"></div>
+          <li class="simply-toast simply-toast-warning simply-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+            <div class="simply-space" data-simply-field="message"></div>
           </li>
         </template>
         <template data-simply-template="info">
-          <li class="ds-toast ds-toast-info ds-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
-            <div class="ds-space" data-simply-field="message"></div>
+          <li class="simply-toast simply-toast-info simply-toast-autohide" data-simply-field="state" data-simply-content="attributes" data-simply-attributes="data-state">
+            <div class="simply-space" data-simply-field="message"></div>
           </li>
         </template>
       </ul>
@@ -2346,14 +2346,14 @@
     <script>
       var purgeTimer;
       function purgeToasts() {
-        editor.pageData.alerts = [];
+        // editor.pageData.alerts = [];
       }
       document.addEventListener("animationend", function(evt) {
-        if (evt.animationName == "ds-toast-show") {
+        if (evt.animationName == "simply-toast-show") {
           evt.target.setAttribute("data-state", "shown");
-          evt.target.classList.add("ds-toast-animated");
+          evt.target.classList.add("simply-toast-animated");
         }
-        if (evt.animationName == "ds-toast-hide") {
+        if (evt.animationName == "simply-toast-hide") {
           if (purgeTimer) {
             window.clearTimeout(purgeTimer);
           }
