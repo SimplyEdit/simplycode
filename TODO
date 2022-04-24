@@ -24,7 +24,6 @@ TODO:
 [Code improvements]
 - Should HTML preview be a highlighted look (using static codemirror view) instead?
 - Fix styling for tests within tabs
-- Fix styling for toasts
 - Have a way to generate style.css and extra.css
 
 [Tests]
@@ -138,6 +137,7 @@ Done:
 [v] Fix styling for 'add page' forms
 [v] Fix styling for description
 [v] Fix styling for component overview
+[v] Fix styling for toasts
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
