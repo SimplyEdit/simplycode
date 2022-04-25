@@ -6,7 +6,7 @@ Bugs:
 TODO:
 =====
 [Gather feedback]
-- Brainstorm about what this thing should be called. Simply Bits? Simply Build?
+- Brainstorm about what this thing should be called. Simply Bits? Simply Build? Simply Code?
 - Where do sorters go? Add them to page components at least?
 - Validate naming scheme of what we call things with other developers. 
   Should we rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
@@ -15,14 +15,12 @@ TODO:
 [New features]
 - Add an option for adding assets? in base components?
 - Have a way to reorganize code (sorting within a module, moving code from one module to another).
-- Add a compile/build/pack step to bundle everything and create a working app;
 - Compile in datasources and sorters
 - Do we want a deeper layered data structure, to accomodate orgs and projects?
   so www/api/data/{organization}/{project}/base-components etc;
   Or will a project have a UUID as a 'key' for it?
 
 [Code improvements]
-- Should HTML preview be a highlighted look (using static codemirror view) instead?
 - Fix styling for tests within tabs
 - Have a way to generate style.css and extra.css
 
@@ -138,6 +136,7 @@ Done:
 [v] Fix styling for description
 [v] Fix styling for component overview
 [v] Fix styling for toasts
+[v] Add a compile/build/pack step to bundle everything and create a working app;
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
@@ -146,3 +145,4 @@ Bugs fixed:
 
 Won't fix:
 [x] Replace count items with CSS counters - Won't fix: turns out not to be a trivial fix. 
+[x] Should HTML preview be a highlighted look (using static codemirror view) instead? - Won't fix: now previewing the app instead of the HTML;
