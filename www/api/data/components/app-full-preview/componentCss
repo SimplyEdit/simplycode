@@ -1,0 +1,1 @@
+[{"name":"App full preview","code":".sb-preview-code {\n  display: none;\n}\n.sb-preview-code [data-simply-list-item]:last-child .trailingComma {\n  display: none;\n}\niframe.sb-full-preview {\n  width: 1280px;\n  height: 768px;\n  transform: scale(0.6);\n  transform-origin: 0 0;\n}"}]
