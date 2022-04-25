@@ -17,11 +17,16 @@
       .sb-preview-code [data-simply-list-item]:last-child .trailingComma {
         display: none;
       }
+      .sb-full-preview-container {
+        height: calc(0.6 * 768px);
+        width: calc(0.6 * 1280px);
+      }
       iframe.sb-full-preview {
         width: 1280px;
         height: 768px;
         transform: scale(0.6);
-        transform-origin: 0 0;
+        transform-origin: top left;
+        position: absolute;
       }
                 
               
@@ -1324,6 +1329,7 @@
               
             
   <template id="componentAppFullPreview">
+      <div class="sb-full-preview-container">
       <iframe class="sb-full-preview"></iframe>
       <div class="sb-preview-code">
       <pre>
@@ -1568,6 +1574,7 @@
         &lt;/body>
       &lt;/html>
       </pre>
+      </div>
       </div>
   </template>
 
@@ -2478,9 +2485,6 @@
             <button class="sb-button" data-simply-command="saveAppHtml">Publish App</button>
           </div>
           <div is="simply-component" rel="componentAppFullPreview"></div>
-          <div class="field">
-            <button class="sb-button" data-simply-command="saveAppHtml">Publish App</button>
-          </div>
         </main>
     </template>
 
@@ -2747,4 +2751,4 @@
   </body>
 </html>
 
-      
+        
