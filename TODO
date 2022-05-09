@@ -6,7 +6,6 @@ Bugs:
 TODO:
 =====
 [Gather feedback]
-- Brainstorm about what this thing should be called. Simply Bits? Simply Build? Simply Code?
 - Where do sorters go? Add them to page components at least?
 - Validate naming scheme of what we call things with other developers. 
   Should we rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
@@ -38,7 +37,7 @@ Misc backlogged ideas in categories:
 
   Backstopjs-like comparison of visual changes?
   QUnit for tests?
-- How would a CI/CD, GitHub actions look for a Simply Build project?
+- How would a CI/CD, GitHub actions look for a Simply Code project?
 
 [Preview mode and manual tests]
 - Add a 'sample data' part for components to show in preview (like the json tab in http://simplystyle.se.yvo.muze.nl/woonmatch/)
@@ -75,7 +74,7 @@ Misc backlogged ideas in categories:
 
 [Developer collaboration]
 - How can we do git and/or versioning?
-- Can we make the Simply Build environment, previews and the like work multi-player? For instance with hyperhyperspace to connect different nodse/browsers?
+- Can we make the Simply Code environment, previews and the like work multi-player? For instance with hyperhyperspace to connect different nodse/browsers?
 
 [Unorganized]
 - Design system, where does it fit in? Do we have the features of simplyDesign(v1) covered with what we have now?
@@ -84,7 +83,7 @@ Misc backlogged ideas in categories:
 - Comments, documentation about components?
 - Search
 - Raw API: split out methods and properties
-- Sample app that is not simply-build
+- Sample app that is not simply-code
 - Includes for commands/actions/etc from other components, to make it clear that it is referenced (deleteEntry)
 - fix styling for mobile view (hamburger menu, overflows etc)
 
@@ -137,6 +136,7 @@ Done:
 [v] Fix styling for component overview
 [v] Fix styling for toasts
 [v] Add a compile/build/pack step to bundle everything and create a working app;
+[v] Brainstorm about what this thing should be called. Simply Code.
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
