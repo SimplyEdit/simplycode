@@ -1,6 +1,6 @@
 Bugs:
-- issue with codemirror width being weird. We need to lock down the table widths to get this working properly;
-- Element “style” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+- Adding a style element in Additional Head HTML renders it in the body, which causes an error to be shown:
+  Element “style” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
 
 =====
 TODO:
@@ -40,7 +40,6 @@ Misc backlogged ideas in categories:
 - How would a CI/CD, GitHub actions look for a Simply Code project?
 
 [Preview mode and manual tests]
-- Add a 'sample data' part for components to show in preview (like the json tab in http://simplystyle.se.yvo.muze.nl/woonmatch/)
 - Add a preview mode for a component preview:
   - shows HTML + CSS of the current component/page;
   - add buttons to show commands, transformers, data sources
@@ -58,6 +57,7 @@ Misc backlogged ideas in categories:
 	}
 
 	- In preview mode: add data-simply-commands that navigate to the command code instead of executing that code;
+- Add a 'sample data' part for components to show in preview (like the json tab in http://simplystyle.se.yvo.muze.nl/woonmatch/)
 
 [Developer experience]
 - Add full screen view to edit a specific part.
@@ -137,6 +137,7 @@ Done:
 [v] Fix styling for toasts
 [v] Add a compile/build/pack step to bundle everything and create a working app;
 [v] Brainstorm about what this thing should be called. Simply Code.
+[v] issue with codemirror width being weird. We need to lock down the widths to get this working properly;
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
