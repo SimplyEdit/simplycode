@@ -102,7 +102,7 @@ this.simply = (function(simply, global) {
                     matches = routeInfo[i].match.exec(path+'/');
                     if (matches) {
                         path+='/';
-                        history.replaceState({}, '', path);
+                        // history.replaceState({}, '', path);
                     }
                 }
                 matches = routeInfo[i].match.exec(path);
