@@ -1,7 +1,6 @@
 Bugs:
 - Adding a style element in Additional Head HTML renders it in the body, which causes an error to be shown:
   Element “style” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
-- preview now renders the foot html, which causes a 'simplyApp not found' error in the component preview
 
 =====
 TODO:
@@ -145,6 +144,7 @@ Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
 [v] after deleting a part, codemirror needs to reinitialize;
 [v] chrome doesn't render the simply-components
+[v] preview now renders the foot html, which causes a 'simplyApp not found' error in the component preview (moved to body html instead)
 
 Won't fix:
 [x] Replace count items with CSS counters - Won't fix: turns out not to be a trivial fix. 
