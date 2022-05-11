@@ -1,1 +1,1 @@
-[{"action":"listPages","code":"function() {\n  return simplyDataApi.listPages();\n}","editor":"code","tests":[]}]
+[{"action":"listPages","code":"function() {\n  return simplyDataApi.listPages()\n    .catch(function(error) {\n    return [];\n  });\n}","editor":"code","tests":[]}]
