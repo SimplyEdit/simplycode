@@ -6,7 +6,6 @@ Bugs:
 TODO:
 =====
 [Gather feedback]
-- Where do sorters go? Add them to page components at least?
 - Validate naming scheme of what we call things with other developers. 
   Should we rename the current 'components' to something more appropriate - Main components? App components? Modules? Plugins? 
   These are things that are not part of the base.
@@ -14,7 +13,8 @@ TODO:
 [New features]
 - Add an option for adding assets? in base components?
 - Have a way to reorganize code (sorting within a module, moving code from one module to another).
-- Compile in datasources and sorters
+- Compile in datasources
+- Compile in sorters
 - Do we want a deeper layered data structure, to accomodate orgs and projects?
   so www/api/data/{organization}/{project}/base-components etc;
   Or will a project have a UUID as a 'key' for it?
@@ -139,6 +139,8 @@ Done:
 [v] Add a compile/build/pack step to bundle everything and create a working app;
 [v] Brainstorm about what this thing should be called. Simply Code.
 [v] issue with codemirror width being weird. We need to lock down the widths to get this working properly;
+[v] Where do sorters go? Add them to page components at least? -> there were dataSources are;
+[v] Add sorter editors
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
