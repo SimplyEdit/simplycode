@@ -761,13 +761,16 @@
             addRoute : function(el) {
               editor.pageData.component.parts.routes.push({});
             },
+            addSorter : function(el) {
+              editor.pageData.component.parts.sorters.push({});
+            },
             addTransformer : function(el) {
               editor.pageData.component.parts.transformers.push({});
             },
             deleteEntry : function(el) {
               if (!confirm("Delete this?")) {
                 return;
-	      }
+              }
               var target = el;
               while (!target.hasAttribute("data-simply-list-item")) {
                 target = target.parentNode;
@@ -983,7 +986,8 @@
                     dataApi : [],
                     routes : [],
                     transformers : [],
-                    dataSources : []
+                    dataSources : [],
+                    sorters : []
                   };
                 }
                 var count = {};
@@ -1033,7 +1037,8 @@
                     dataApi : [],
                     routes : [],
                     transformers : [],
-                    dataSources : []
+                    dataSources : [],
+                    sorters : []
                   };
                 }
                 var count = {};
@@ -1804,6 +1809,37 @@
         </div>
       </details>
     </template>
+    <template id="componentSorters">
+      <details class="sb-component">
+        <summary data-simply-command="initEditors" title="Sorters are utility function that are used to sort arrays, used in datasources, actions.">
+          <span data-simply-field="count.sorters" data-simply-content="attributes" data-simply-attributes="data-count">
+            Sorters
+          </span>
+          <span class="sb-controls">
+            <button class="sb-button" data-simply-command="addSorter">Add sorter</button>
+          </span>
+        </summary>
+        <div class="sb-code-method" data-simply-list="component.parts.sorters">
+          <template>
+            <div class="sb-part">
+              <div class="sb-part-header">
+                <div class="sb-tabs">
+                  <input class="sb-tab" data-simply-field="sorter" placeholder="Sorter name, eg sortByDescription">
+                </div>
+                <div class="sb-options">
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete sorter</button>
+                </div>
+              </div>
+              <div class="sb-editors">
+                <div class="sb-editor-code">
+                  <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </details>
+    </template>
     <template id="componentTransformers">
       <details class="sb-component">
         <summary data-simply-command="initEditors" title="Transformers provide a last moment change to data, just before it is rendered. Use as a value of data-simply-transform on a data-simply-field">
@@ -2357,6 +2393,7 @@
           <div is="simply-component" rel="componentRoutes"></div>
           <div is="simply-component" rel="componentTransformers"></div>
           <div is="simply-component" rel="componentDataSources"></div>
+          <div is="simply-component" rel="componentSorters"></div>
         </main>
       </template>
       <template data-simply-template="List components">
@@ -2406,6 +2443,7 @@
           <div is="simply-component" rel="componentRoutes"></div>
           <div is="simply-component" rel="componentTransformers"></div>
           <div is="simply-component" rel="componentDataSources"></div>
+          <div is="simply-component" rel="componentSorters"></div>
         </main>
       </template>
       <template data-simply-template="Pages">
