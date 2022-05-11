@@ -57,7 +57,8 @@ Misc backlogged ideas in categories:
 	}
 
 	- In preview mode: add data-simply-commands that navigate to the command code instead of executing that code;
-- Add a 'sample data' part for components to show in preview (like the json tab in http://simplystyle.se.yvo.muze.nl/woonmatch/)
+- Is reusing sample data from components doable?
+- Do we want/need sample data in full app preview? Where does it come from? Can we reuse pages/components?
 
 [Developer experience]
 - Add full screen view to edit a specific part.
@@ -141,6 +142,8 @@ Done:
 [v] issue with codemirror width being weird. We need to lock down the widths to get this working properly;
 [v] Where do sorters go? Add them to page components at least? -> there were dataSources are;
 [v] Add sorter editors
+[v] Add a 'sample data' part for components to show in preview (like the json tab in http://simplystyle.se.yvo.muze.nl/woonmatch/)
+[v] Add sample data to pages
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
