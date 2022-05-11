@@ -177,7 +177,8 @@ nav > ul > li[data-simply-command=expandMenu]::before {
     display: grid;
     grid-template-columns: 1fr;
 }
-.sb-part .sb-editor-code.sb-dual {
+.sb-part .sb-dual {
+    display: grid;
     grid-template-columns: 1fr 1fr;
 }
 .sb-test-header {
