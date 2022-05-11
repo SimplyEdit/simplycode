@@ -80,6 +80,13 @@
         transform-origin: top left;
         position: absolute;
       }
+      iframe.sb-component-preview {
+        width: 1280px;
+        height: 750px;
+        transform: scale(0.4);
+        transform-origin: top left;
+        position: absolute;
+      }
     </style>
     <!-- /Component CSS -->
     <!-- Head HTML -->
@@ -599,6 +606,16 @@
 
                 return appData;
               });
+            },
+            resetPreview(el) {
+              return new Promise(function(resolve, reject) {
+                var newRunner = el.cloneNode(false);
+                newRunner.addEventListener("load", function() {
+                  resolve(newRunner);
+                });
+                el.parentNode.insertBefore(newRunner, el);
+                el.remove();
+              });
             }
           },
           /* /Actions */
@@ -613,18 +630,42 @@
                 previewRunner.parentNode.querySelectorAll(".sb-preview-code [data-simply-list-item]:last-child .trailingComma").forEach(function(element) {
                   element.remove();
                 });
-                previewRunner.contentWindow.document.open();
-                previewRunner.contentWindow.document.write(previewRunner.parentNode.querySelector(".sb-preview-code").innerText);
-                previewRunner.contentWindow.document.close();
+                simplyApp.actions.resetPreview(previewRunner)
+                .then(function(previewRunner) {
+                  previewRunner.contentWindow.document.open();
+                  previewRunner.contentWindow.document.write(previewRunner.parentNode.querySelector(".sb-preview-code").innerText);
+                  previewRunner.contentWindow.document.close();
+                });
+              });
+
+              // var previewRunners = document.querySelectorAll(".sb-component[open] iframe.sb-preview,iframe.sb-full-preview");
+              var previewRunners = document.querySelectorAll("iframe.sb-component-preview");
+              previewRunners.forEach(function(previewRunner) {
+                previewRunner.contentWindow.document.previewRunner = previewRunner;
+                // previewRunner.contentWindow.history.pushState({'preview':1}, '', 'https://preview.simply/');
+                previewRunner.parentNode.querySelectorAll(".sb-preview-code [data-simply-list-item]:last-child .trailingComma").forEach(function(element) {
+                  element.remove();
+                });
+                simplyApp.actions.resetPreview(previewRunner)
+                .then(function(previewRunner) {
+	              previewRunner.contentWindow.document.open();
+	              previewRunner.contentWindow.document.write(document.querySelector(".sb-preview-app-head").innerText);
+	              previewRunner.contentWindow.document.write(previewRunner.parentNode.querySelector(".sb-preview-code").innerText);
+	              previewRunner.contentWindow.document.write(document.querySelector(".sb-preview-app-foot").innerText);
+	              previewRunner.contentWindow.document.close();
+                });
               });
             },
             autoRunTests : function(el) {
               var testRunners = document.querySelectorAll(".sb-component[open] iframe.qunit");
               testRunners.forEach(function(testRunner) {
-                testRunner.contentWindow.document.testRunner = testRunner;
-                testRunner.contentWindow.document.open();
-                testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
-                testRunner.contentWindow.document.close();
+                simplyApp.actions.resetPreview(testRunner)
+                .then(function(testRunner) {
+                  testRunner.contentWindow.document.testRunner = testRunner;
+                  testRunner.contentWindow.document.open();
+                  testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
+                  testRunner.contentWindow.document.close();
+                });
               });
             },
             codeMirrorInit : function() {
@@ -909,7 +950,14 @@
           /* Routes */
           routes: {
             "#components/:component" : function(params) {
-              simplyApp.actions.getComponent(params.component)
+              editor.pageData.app = {};
+              simplyApp.actions.getAppData()
+              .then(function(appData) {
+                editor.pageData.app = appData;
+              })
+              .then(function() {
+                return simplyApp.actions.getComponent(params.component);
+              })
               .then(function(parts) {
                 var component = {
                   id : params.component
@@ -944,10 +992,22 @@
                 editor.pageData.parts = parts;
                 editor.pageData.count = count;
                 editor.pageData.page = "Edit component";
+              })
+              .then(function() {
+                setTimeout(function() { // FIXME: Wait for the CSS to be available;
+                  simplyApp.commands.autoRunPreviews();
+                }, 1000);
               });
             },
             "#pages/:component" : function(params) {
-              simplyApp.actions.getPage(params.component)
+              editor.pageData.app = {};
+              simplyApp.actions.getAppData()
+              .then(function(appData) {
+                editor.pageData.app = appData;
+              })
+              .then(function() {
+                return simplyApp.actions.getPage(params.component);
+              })
               .then(function(parts) {
                 var component = {
                   id : params.component
@@ -982,6 +1042,11 @@
                 editor.pageData.parts = parts;
                 editor.pageData.count = count;
                 editor.pageData.page = "Edit page";
+              })
+              .then(function() {
+                setTimeout(function() { // FIXME: Wait for the CSS to be available;
+                  simplyApp.commands.autoRunPreviews();
+                }, 1000);
               });
             },
             "#base/:component" : function(params) {
@@ -1290,16 +1355,21 @@
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
-              <div class="sb-editors">
+              <div class="sb-editors sb-dual">
                 <div class="sb-editor-code">
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
-                  <div is="simply-component" rel="componentHtmlValidator"></div>
+                </div>
+                <div class="sb-previews">
+                  <div is="simply-component" rel="componentPreview"></div>
                 </div>
               </div>
+              <div is="simply-component" rel="componentHtmlValidator"></div>
             </div>
           </template>
         </div>
       </details>
+      <div is="simply-component" rel="componentPreviewAppHead"></div>
+      <div is="simply-component" rel="componentPreviewAppFoot"></div>
     </template>
     <template id="componentDataApi">
       <details class="sb-component">
@@ -1487,16 +1557,21 @@
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
-              <div class="sb-editors">
+              <div class="sb-editors sb-dual">
                 <div class="sb-editor-code">
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
-                  <div is="simply-component" rel="componentHtmlValidator"></div>
+                </div>
+                <div class="sb-previews">
+                  <div is="simply-component" rel="pagePreview"></div>
                 </div>
               </div>
+              <div is="simply-component" rel="componentHtmlValidator"></div>
             </div>
           </template>
         </div>
       </details>
+      <div is="simply-component" rel="componentPreviewAppHead"></div>
+      <div is="simply-component" rel="componentPreviewAppFoot"></div>
     </template>
     <template id="componentQUnitTests">
       <div class="sb-editor-qunit-tests">
@@ -1805,6 +1880,7 @@
     <template id="simplyPreviewFullAppHead">
       <pre>
         &lt;head>
+          &lt;meta charset="utf-8">
       </pre>
       <div is="simply-component" rel="simplyPreviewComponentCss"></div>
       <div is="simply-component" rel="simplyPreviewHeadHtml"></div>
@@ -1989,10 +2065,10 @@
         &lt;/div>
       </pre>
       <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
-      <div is="simply-component" rel="simplyPreviewSimplyTransformers"></div>
-      <div is="simply-component" rel="simplyPreviewSimplySorters"></div>
-      <div is="simply-component" rel="simplyPreviewSimplyDataSources"></div>
-      <div is="simply-component" rel="simplyPreviewSimplyFootHtml"></div>
+      <div is="simply-component" rel="simplyPreviewTransformers"></div>
+      <div is="simply-component" rel="simplyPreviewSorters"></div>
+      <div is="simply-component" rel="simplyPreviewDataSources"></div>
+      <div is="simply-component" rel="simplyPreviewFootHtml"></div>
       <pre>
         &lt;/body>
       </pre>
@@ -2067,7 +2143,7 @@
         &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
       </pre>
     </template>
-    <template id="simplyPreviewSimplyTransformers">
+    <template id="simplyPreviewTransformers">
       <pre>
         &lt;script>
       </pre>
@@ -2091,7 +2167,7 @@
         &lt;/script>
       </pre>
     </template>
-    <template id="simplyPreviewSimplySorters">
+    <template id="simplyPreviewSorters">
       <pre>
         &lt;script&gt;
           // load sorters
@@ -2131,6 +2207,65 @@
         </div>
       </div>
     </template>
+    <template id="componentPreviewAppHead">
+        <div class="sb-preview-code sb-preview-app-head">
+<pre>
+&lt;!DOCTYPE HTML>
+&lt;html lang="nl">
+</pre>
+<pre>
+  &lt;head>
+    &lt;meta charset="utf-8">
+</pre>
+<div is="simply-component" rel="simplyPreviewComponentCss"></div>
+<div is="simply-component" rel="simplyPreviewHeadHtml"></div>
+<div is="simply-component" rel="simplyPreviewPageCss"></div>
+<pre>
+  &lt;/head>
+</pre>
+<pre>
+  &lt;body>
+</pre>
+    <div is="simply-component" rel="simplyPreviewComponentHtmlTemplates"></div>
+</div>
+    </template>
+    <template id="componentPreviewAppFoot">
+        <div class="sb-preview-code sb-preview-app-foot">
+<div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+<div is="simply-component" rel="simplyPreviewFootHtml"></div>
+<pre>
+  &lt;/body>
+</pre>
+<pre>
+&lt;/html>
+</pre>
+        </div>
+    </template>
+    <template id="pagePreview">
+      <div class="sb-component-preview-container">
+        <iframe class="sb-component-preview"></iframe>
+        <div class="sb-preview-code">
+          <div is="simply-component" rel="simplyPreviewAppHeader"></div>
+          <div is="simply-component" rel="simplyPreviewAppNav"></div>
+<pre>
+    &lt;div class="main"&gt;
+      &lt;!-- <span data-simply-field="page"></span> --><br>
+      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+    &lt;/div>
+</pre>
+        </div>
+      </div>
+    </template>
+    <template id="componentPreview">
+      <div class="sb-component-preview-container">
+        <iframe class="sb-component-preview"></iframe>
+        <div class="sb-preview-code">
+<pre>
+      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+</pre>
+        </div>
+      </div>
+    </template>
 
     <!-- /Component HTML templates -->
 
@@ -2143,6 +2278,7 @@
     <!-- FIXME: hier main van maken -->
     <div class="main" data-simply-field="page" data-simply-content="template">
       <!-- Page HTML templates -->
+
       <template data-simply-template="Edit base component">
         <main>
           <div class="sb-header">
@@ -2310,27 +2446,33 @@
             this.simplyData = data;
             var element = this;
             let htmlData = "<!doctype html><html lang='en'><head><title>Test</title></head><body>" + data + "</body></html>";
-            fetch("https://validator.w3.org/nu/?out=json", {
-              mode : 'cors',
-              headers: {
-                 "Content-type" : "text/html; charset=utf-8"
-              },
-              method: "POST",
-              body: htmlData
-            })
-            .then(function(result) {
-              return result.json();
-            })
-            .then(function(validateResult) {
-              element.dataBinding.config.data.validateResult = validateResult;
-              if(validateResult.messages.length) {
-                element.className = "sb-html-invalid";
-                element.innerHTML = "HTML validation failed:";
-              } else {
-                element.innerHTML = "HTML validated!";
-                element.className = "sb-html-valid";
-              }
-            });
+            if (typeof element.validateTimeout !== "undefined") {
+              window.clearTimeout(element.validateTimeout);
+            }
+            element.validateTimeout = window.setTimeout(function() {
+	          fetch("https://validator.w3.org/nu/?out=json", {
+	            mode : 'cors',
+	            headers: {
+	              "Content-type" : "text/html; charset=utf-8"
+	            },
+	            method: "POST",
+	            body: htmlData
+	          })
+	          .then(function(result) {
+	            return result.json();
+	          })
+	          .then(function(validateResult) {
+	            element.dataBinding.config.data.validateResult = validateResult;
+	            if(validateResult.messages.length) {
+	              element.className = "sb-html-invalid";
+	              element.innerHTML = "HTML validation failed:";
+	            } else {
+	              element.innerHTML = "HTML validated!";
+	              element.className = "sb-html-valid";
+	            }
+	          });
+            }, 1000);
+            element.dataBinding.config.data.validateResult = [];
             return "Validating...";
           },
           extract : function(data) {
@@ -2423,7 +2565,10 @@
           (event.data.dataBinding.parentKey == "/component/parts/") ||
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
-          window.setTimeout(
+          if (typeof autoRunPreviewTimeout !== "undefined") {
+            window.clearTimeout(autoRunPreviewTimeout);
+          }
+          autoRunPreviewTimeout = window.setTimeout(
             simplyApp.commands.autoRunPreviews,
             500
           );
@@ -2437,7 +2582,10 @@
           (event.data.dataBinding.parentKey == "/component/parts/") ||
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
-          window.setTimeout(
+          if (typeof autoRunTestsTimeout !== "undefined") {
+            window.clearTimeout(autoRunTestsTimeout);
+          }
+          autoRunTestsTimeout = window.setTimeout(
             simplyApp.commands.autoRunTests,
             500
           );
@@ -2462,9 +2610,12 @@
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
           simplyApp.commands.codeMirrorInit();
-          window.setTimeout(
-             simplyApp.commands.codeMirrorInit,
-             250
+          if (typeof codeMirrorInitTimeout !== "undefined") {
+            window.clearTimeout(codeMirrorInitTimeout);
+          }
+          codeMirrorInitTimeout = window.setTimeout(
+            simplyApp.commands.codeMirrorInit,
+            250
           );
         }
       });
@@ -2476,9 +2627,9 @@
           var list = event.data.arguments[0];
           var length;
           if (typeof(event.data.arguments[1]) === "undefined") {
-             length = 0;
+            length = 0;
           } else {
-             length = event.data.arguments[1].length;
+            length = event.data.arguments[1].length;
           }
           editor.pageData.count[list] = length;
         }
