@@ -1,1 +1,1 @@
-[{"component":"componentAppFullPreview","code":"<div class=\"sb-full-preview-container\">\n<iframe class=\"sb-full-preview\"></iframe>\n<div class=\"sb-preview-code\">\n<div is=\"simply-component\" rel=\"simplyPreviewFullApp\"></div>\n</div>\n</div>","validateResult":{"messages":[]}}]
+[{"component":"componentAppFullPreview","code":"<div class=\"sb-full-preview-container\">\n  <iframe class=\"sb-full-preview\"></iframe>\n  <div class=\"sb-preview-code\">\n    <div is=\"simply-component\" rel=\"simplyPreviewFullApp\"></div>\n  </div>\n</div>","validateResult":{"messages":[]}}]

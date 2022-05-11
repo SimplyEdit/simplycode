@@ -1173,31 +1173,38 @@
                     
                   
                         "#components/:component" : function(params) {
-                simplyApp.actions.getComponent(params.component)
+              editor.pageData.app = {};
+              simplyApp.actions.getAppData()
+                .then(function(appData) {
+                editor.pageData.app = appData;
+              })
+                .then(function() {
+                return simplyApp.actions.getComponent(params.component);
+              })
                 .then(function(parts) {
                 var component = {
-                    id : params.component
+                  id : params.component
                 };
             
                 parts = parts.filter(function(part) {
-                    if (part.id == "meta") {
+                  if (part.id == "meta") {
                     component = JSON.parse(part.contents);
                     component.id = params.component;
                     return false;
-                    }
-                    return true;
+                  }
+                  return true;
                 });
                 if (typeof component.parts === "undefined") {
-                    component.parts = {
-                      componentTemplates : [],
-                      componentCss : [],
-                      commands : [],
-                      actions : [],
-                      dataApi : [],
-                      routes : [],
-                      transformers : [],
-                      dataSources : []
-                    };
+                  component.parts = {
+                    componentTemplates : [],
+                    componentCss : [],
+                    commands : [],
+                    actions : [],
+                    dataApi : [],
+                    routes : [],
+                    transformers : [],
+                    dataSources : []
+                  };
                 }
                 var count = {};
                 parts.forEach(function(part) {
@@ -1208,12 +1215,24 @@
                 editor.pageData.parts = parts;
                 editor.pageData.count = count;
                 editor.pageData.page = "Edit component";
-                });
+              })
+                .then(function() {
+                setTimeout(function() { // FIXME: Wait for the CSS to be available;
+                  simplyApp.commands.autoRunPreviews();
+                }, 1000);
+              });
             },
       
                     
                         "#pages/:component" : function(params) {
-              simplyApp.actions.getPage(params.component)
+              editor.pageData.app = {};
+              simplyApp.actions.getAppData()
+                .then(function(appData) {
+                editor.pageData.app = appData;
+              })
+                .then(function() {
+                return simplyApp.actions.getPage(params.component);
+              })
                 .then(function(parts) {
                 var component = {
                   id : params.component
@@ -1248,6 +1267,11 @@
                 editor.pageData.parts = parts;
                 editor.pageData.count = count;
                 editor.pageData.page = "Edit page";
+              })
+                .then(function() {
+                setTimeout(function() { // FIXME: Wait for the CSS to be available;
+                  simplyApp.commands.autoRunPreviews();
+                }, 1000);
               });
             },
       
@@ -1536,7 +1560,7 @@
                   </label>
                 </div>
                 <div class="sb-options">
-                  <button class="sb-button" data-simply-command="deleteEntry">Delete action</button>
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete command</button>
                 </div>
               </div>
               <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
@@ -1594,7 +1618,8 @@
       
                     
               <template id="componentComponentTemplate">
-            <details class="sb-component">
+            
+      <details class="sb-component">
         <summary data-simply-command="initEditors" title="These templates are used to build up page templates.">
           <span data-simply-field="count.componentTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
             Component HTML template
@@ -1614,16 +1639,21 @@
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
-              <div class="sb-editors">
+              <div class="sb-editors sb-dual-preview">
                 <div class="sb-editor-code">
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
-                  <div is="simply-component" rel="componentHtmlValidator"></div>
+                </div>
+                <div class="sb-previews">
+                  <div is="simply-component" rel="componentPreview"></div>
                 </div>
               </div>
+              <div is="simply-component" rel="componentHtmlValidator"></div>
             </div>
           </template>
         </div>
       </details>
+      <div is="simply-component" rel="componentPreviewAppHead"></div>
+      <div is="simply-component" rel="componentPreviewAppFoot"></div>
         </template>
       
                     
@@ -1825,16 +1855,21 @@
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
-              <div class="sb-editors">
+              <div class="sb-editors sb-dual">
                 <div class="sb-editor-code">
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
-                  <div is="simply-component" rel="componentHtmlValidator"></div>
+                </div>
+                <div class="sb-previews">
+                  <div is="simply-component" rel="pagePreview"></div>
                 </div>
               </div>
+              <div is="simply-component" rel="componentHtmlValidator"></div>
             </div>
           </template>
         </div>
       </details>
+      <div is="simply-component" rel="componentPreviewAppHead"></div>
+      <div is="simply-component" rel="componentPreviewAppFoot"></div>
         </template>
       
                     
@@ -2150,6 +2185,74 @@
         </template>
       
                     
+              <template id="componentPreviewAppHead">
+            <div class="sb-preview-code sb-preview-app-head">
+        <pre>
+      &lt;!DOCTYPE HTML>
+      &lt;html lang="nl">
+      </pre>
+        <pre>
+        &lt;head>
+          &lt;meta charset="utf-8">
+      </pre>
+        <div is="simply-component" rel="simplyPreviewComponentCss"></div>
+        <div is="simply-component" rel="simplyPreviewHeadHtml"></div>
+        <div is="simply-component" rel="simplyPreviewPageCss"></div>
+        <pre>
+        &lt;/head>
+      </pre>
+        <pre>
+        &lt;body>
+      </pre>
+        <div is="simply-component" rel="simplyPreviewComponentHtmlTemplates"></div>
+      </div>
+        </template>
+      
+                    
+              <template id="componentPreviewAppFoot">
+            <div class="sb-preview-code sb-preview-app-foot">
+        <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+        <div is="simply-component" rel="simplyPreviewFootHtml"></div>
+        <pre>
+        &lt;/body>
+      </pre>
+        <pre>
+      &lt;/html>
+      </pre>
+      </div>
+      
+        </template>
+      
+                    
+              <template id="componentPreview">
+            <div class="sb-component-preview-container">
+        <iframe class="sb-component-preview"></iframe>
+        <div class="sb-preview-code">
+          <pre>
+            <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+      </pre>
+        </div>
+      </div>
+        </template>
+      
+                    
+              <template id="pagePreview">
+            <div class="sb-component-preview-container">
+        <iframe class="sb-component-preview"></iframe>
+        <div class="sb-preview-code">
+          <div is="simply-component" rel="simplyPreviewAppHeader"></div>
+          <div is="simply-component" rel="simplyPreviewAppNav"></div>
+          <pre>
+          &lt;div class="main"&gt;
+            &lt;!-- <span data-simply-field="page"></span> --><br>
+            <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+          &lt;/div>
+      </pre>
+        </div>
+      </div>
+        </template>
+      
+                    
               <template id="simplyPreviewFullApp">
             <pre>
       &lt;!DOCTYPE HTML>
@@ -2166,6 +2269,7 @@
               <template id="simplyPreviewFullAppHead">
             <pre>
         &lt;head>
+          &lt;meta charset="utf-8">
       </pre>
       <div is="simply-component" rel="simplyPreviewComponentCss"></div>
       <div is="simply-component" rel="simplyPreviewHeadHtml"></div>
@@ -2370,10 +2474,10 @@
         &lt;/div>
       </pre>
       <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
-      <div is="simply-component" rel="simplyPreviewSimplyTransformers"></div>
-      <div is="simply-component" rel="simplyPreviewSimplySorters"></div>
-      <div is="simply-component" rel="simplyPreviewSimplyDataSources"></div>
-      <div is="simply-component" rel="simplyPreviewSimplyFootHtml"></div>
+      <div is="simply-component" rel="simplyPreviewTransformers"></div>
+      <div is="simply-component" rel="simplyPreviewSorters"></div>
+      <div is="simply-component" rel="simplyPreviewDataSources"></div>
+      <div is="simply-component" rel="simplyPreviewFootHtml"></div>
       <pre>
         &lt;/body>
       </pre>
@@ -2755,27 +2859,33 @@
             this.simplyData = data;
             var element = this;
             let htmlData = "<!doctype html><html lang='en'><head><title>Test</title></head><body>" + data + "</body></html>";
-            fetch("https://validator.w3.org/nu/?out=json", {
-              mode : 'cors',
-              headers: {
-                "Content-type" : "text/html; charset=utf-8"
-              },
-              method: "POST",
-              body: htmlData
-            })
-              .then(function(result) {
-              return result.json();
-            })
-              .then(function(validateResult) {
-              element.dataBinding.config.data.validateResult = validateResult;
-              if(validateResult.messages.length) {
-                element.className = "sb-html-invalid";
-                element.innerHTML = "HTML validation failed:";
-              } else {
-                element.innerHTML = "HTML validated!";
-                element.className = "sb-html-valid";
-              }
-            });
+            if (typeof element.validateTimeout !== "undefined") {
+              window.clearTimeout(element.validateTimeout);
+            }
+            element.validateTimeout = window.setTimeout(function() {
+              fetch("https://validator.w3.org/nu/?out=json", {
+                mode : 'cors',
+                headers: {
+                  "Content-type" : "text/html; charset=utf-8"
+                },
+                method: "POST",
+                body: htmlData
+              })
+                .then(function(result) {
+                return result.json();
+              })
+                .then(function(validateResult) {
+                element.dataBinding.config.data.validateResult = validateResult;
+                if(validateResult.messages.length) {
+                  element.className = "sb-html-invalid";
+                  element.innerHTML = "HTML validation failed:";
+                } else {
+                  element.innerHTML = "HTML validated!";
+                  element.className = "sb-html-valid";
+                }
+              });
+            }, 1000);
+            element.dataBinding.config.data.validateResult = {};
             return "Validating...";
           },
             extract : function(data) {
@@ -2893,7 +3003,10 @@
           (event.data.dataBinding.parentKey == "/component/parts/") ||
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
-          window.setTimeout(
+          if (typeof autoRunPreviewTimeout !== "undefined") {
+            window.clearTimeout(autoRunPreviewTimeout);
+          }
+          autoRunPreviewTimeout = window.setTimeout(
             simplyApp.commands.autoRunPreviews,
             500
           );
@@ -2903,20 +3016,22 @@
       
                     
               <!-- Auto run tests -->
-          <script>
-      document.addEventListener("simply-data-changed", function(event) {
-        if (
-          (event.data.dataBinding.parentKey == "/component/parts/") ||
-          (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
-        ) {
-          window.setTimeout(
-            simplyApp.commands.autoRunTests,
-            500
-          );
-        }
-      });
-    </script>
-    
+              <script>
+          document.addEventListener("simply-data-changed", function(event) {
+            if (
+              (event.data.dataBinding.parentKey == "/component/parts/") ||
+              (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
+            ) {
+              if (typeof autoRunTestsTimeout !== "undefined") {
+                window.clearTimeout(autoRunTestsTimeout);
+              }
+              autoRunTestsTimeout = window.setTimeout(
+                simplyApp.commands.autoRunTests,
+                500
+              );
+            }
+          });
+        </script>
       
                     
               <!-- Codemirror base -->
@@ -2943,7 +3058,10 @@
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
           simplyApp.commands.codeMirrorInit();
-          window.setTimeout(
+          if (typeof codeMirrorInitTimeout !== "undefined") {
+            window.clearTimeout(codeMirrorInitTimeout);
+          }
+          codeMirrorInitTimeout = window.setTimeout(
             simplyApp.commands.codeMirrorInit,
             250
           );
