@@ -1,6 +1,7 @@
 Bugs:
 - Adding a style element in Additional Head HTML renders it in the body, which causes an error to be shown:
   Element “style” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+- preview now renders the foot html, which causes a 'simplyApp not found' error in the component preview
 
 =====
 TODO:
@@ -40,8 +41,8 @@ Misc backlogged ideas in categories:
 - How would a CI/CD, GitHub actions look for a Simply Code project?
 
 [Preview mode and manual tests]
-- Add a preview mode for a component preview:
-  - shows HTML + CSS of the current component/page;
+[v] Add a preview mode for a component preview:
+  [v] shows HTML + CSS of the current component/page;
   - add buttons to show commands, transformers, data sources
     - with an option to show a specific one, or a subset;
     - show a different color for commands that have no code?
@@ -74,7 +75,8 @@ Misc backlogged ideas in categories:
 
 [Developer collaboration]
 - How can we do git and/or versioning?
-- Can we make the Simply Code environment, previews and the like work multi-player? For instance with hyperhyperspace to connect different nodse/browsers?
+- Can we make the Simply Code environment, previews and the like work multi-player? For instance with hyperhyperspace to connect different nodes/browsers?
+- Can we 'mount' other Simply Code APIs to import components/base components/pages from? How would we build that - do we need to import all the CSS but only a subset of HTML?
 
 [Unorganized]
 - Design system, where does it fit in? Do we have the features of simplyDesign(v1) covered with what we have now?
