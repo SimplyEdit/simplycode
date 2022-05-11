@@ -407,7 +407,10 @@
               });
             },
             browse : function(path) {
-              return simplyDataApi.browse(path);
+              return simplyDataApi.browse(path)
+              .catch(function(error) {
+                return [];
+              });
             },
             saveBaseComponent : function(component) {
               var promises = [];
@@ -439,7 +442,10 @@
               return simplyDataApi.getBaseComponent(component);
             },
             listBaseComponents : function() {
-              return simplyDataApi.listBaseComponents();
+              return simplyDataApi.listBaseComponents()
+              .catch(function(error) {
+                return [];
+              });
             },
             getComponent : function(component) {
               return simplyDataApi.getComponent(component);
@@ -471,7 +477,10 @@
               return simplyDataApi.deleteComponent(component);
             },
             listComponents : function() {
-              return simplyDataApi.listComponents();
+              return simplyDataApi.listComponents()
+              .catch(function(error) {
+                return [];
+              });
             },
             getPage : function(component) {
               return simplyDataApi.getPage(component);
@@ -503,7 +512,10 @@
               return simplyDataApi.deletePage(component);
             },
             listPages : function() {
-              return simplyDataApi.listPages();
+              return simplyDataApi.listPages()
+              .catch(function(error) {
+                return [];
+              });
             },
             saveAppHtml : function(appHtml) {
               return simplyDataApi.saveAppHtml(appHtml);
