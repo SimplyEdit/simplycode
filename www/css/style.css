@@ -181,6 +181,10 @@ nav > ul > li[data-simply-command=expandMenu]::before {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
+.sb-part .sb-dual-preview {
+    display: grid;
+    grid-template-columns: auto 480px;
+}
 .sb-test-header {
     display: grid;
     grid-template-columns: 1fr 1fr;

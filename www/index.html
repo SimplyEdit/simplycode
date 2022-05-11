@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="nl">
   <head>
+    <meta charset="utf-8">
     <!-- Component CSS -->
     <style>
       /* QUnit iframe */
@@ -80,10 +81,13 @@
         transform-origin: top left;
         position: absolute;
       }
+      :root {
+        --sb-component-preview-scale: 0.4;
+      }
       iframe.sb-component-preview {
-        width: 1280px;
-        height: 750px;
-        transform: scale(0.4);
+        width: calc(480px/var(--sb-component-preview-scale));
+        height: calc(300px/var(--sb-component-preview-scale));
+        transform: scale(var(--sb-component-preview-scale));
         transform-origin: top left;
         position: absolute;
       }
@@ -1355,7 +1359,7 @@
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
-              <div class="sb-editors sb-dual">
+              <div class="sb-editors sb-dual-preview">
                 <div class="sb-editor-code">
                   <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
                 </div>
