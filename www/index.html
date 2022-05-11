@@ -1936,346 +1936,346 @@
       </div>
     </template>
     <template id="simplyPreviewFullApp">
-      <pre>
-      &lt;!DOCTYPE HTML>
-      &lt;html lang="nl">
-      </pre>
-      <div is="simply-component" rel="simplyPreviewFullAppHead"></div>
-      <div is="simply-component" rel="simplyPreviewFullAppBody"></div>
-      <pre>
-      &lt;/html>
-      </pre>
-    </template>
+<pre>
+&lt;!DOCTYPE HTML>
+&lt;html lang="nl">
+</pre>
+<div is="simply-component" rel="simplyPreviewFullAppHead"></div>
+<div is="simply-component" rel="simplyPreviewFullAppBody"></div>
+<pre>
+&lt;/html>
+</pre>
+</template>
     <template id="simplyPreviewFullAppHead">
-      <pre>
-        &lt;head>
-          &lt;meta charset="utf-8">
-      </pre>
-      <div is="simply-component" rel="simplyPreviewComponentCss"></div>
-      <div is="simply-component" rel="simplyPreviewHeadHtml"></div>
-      <div is="simply-component" rel="simplyPreviewSimplyApp"></div>
-      <pre>
-        &lt;/head>
-      </pre>
-    </template>
-    <template id="simplyPreviewComponentCss">
-      <pre>
-          &lt;!-- Component CSS -->
-          &lt;style&gt;
-      </pre>
-                  <div data-simply-list="app.componentCss">
-                    <template>
-                      <pre class="componentCss">
-            /* <span data-simply-field="name"></span> */<br>
-      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=6></span>
-                      </pre>
-                    </template>
-                  </div>
-      <pre>
-          &lt;/style&gt;
-          &lt;!-- /Component CSS -->
-      </pre>
-    </template>
+<pre>
+  &lt;head>
+  &lt;meta charset="utf-8">
+</pre>
+<div is="simply-component" rel="simplyPreviewComponentCss"></div>
+<div is="simply-component" rel="simplyPreviewHeadHtml"></div>
+<div is="simply-component" rel="simplyPreviewSimplyApp"></div>
+<pre>
+  &lt;/head>
+</pre>
+</template>
+<template id="simplyPreviewComponentCss">
+<pre>
+    &lt;!-- Component CSS -->
+    &lt;style&gt;
+</pre>
+<div data-simply-list="app.componentCss">
+<template>
+<pre class="componentCss">
+      /* <span data-simply-field="name"></span> */<br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=6></span>
+</pre>
+</template>
+</div>
+<pre>
+    &lt;/style&gt;
+    &lt;!-- /Component CSS -->
+</pre>
+</template>
     <template id="simplyPreviewHeadHtml">
-      <pre>
-          &lt;!-- Head HTML -->
-      </pre>
-                  <div data-simply-list="app.headHtml">
-                    <template>
-      <pre class="headHtml">
-          &lt;!-- <span data-simply-field="name"></span> --><br>
-      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-          &lt;!-- /Head HTML -->
-      </pre>
-    </template>
+<pre>
+    &lt;!-- Head HTML -->
+</pre>
+<div data-simply-list="app.headHtml">
+<template>
+<pre class="headHtml">
+    &lt;!-- <span data-simply-field="name"></span> --><br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+</pre>
+</template>
+</div>
+<pre>
+    &lt;!-- /Head HTML -->
+</pre>
+</template>
     <template id="simplyPreviewRawApi">
-      <pre>
-              /* Raw API */
-              var simplyRawApi = {
-      </pre>
-                  <div data-simply-list="app.rawApi">
-                    <template>
-      <pre class="rawApiMethod">
-                <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-              };
-              /* End of Raw API */
-      </pre>
-    </template>
+<pre>
+        /* Raw API */
+        var simplyRawApi = {
+</pre>
+<div data-simply-list="app.rawApi">
+<template>
+<pre class="rawApiMethod">
+          <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
+</pre>
+</template>
+</div>
+<pre>
+        };
+        /* End of Raw API */
+</pre>
+</template>
     <template id="simplyPreviewDataApi">
-      <pre>
-              /* Data API */
-              simplyDataApi = {
-      </pre>
-                  <div data-simply-list="app.dataApi">
-                    <template>
-      <pre class="rawApiMethod">
-                <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-              };
-              /* End of Data API */
-      </pre>
-    </template>
+<pre>
+        /* Data API */
+        simplyDataApi = {
+</pre>
+<div data-simply-list="app.dataApi">
+<template>
+<pre class="rawApiMethod">
+          <span data-simply-field="method"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=10></span><span class="trailingComma">,</span>
+</pre>
+</template>
+</div>
+<pre>
+        };
+        /* End of Data API */
+</pre>
+</template>
     <template id="simplyPreviewActions">
-      <pre>
-                /* Actions */
-                actions: {
-      </pre>
-                  <div data-simply-list="app.actions">
-                    <template>
-      <pre class="action">
-                  <span data-simply-field="action"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-                },
-                /* /Actions */
-      </pre>
-    </template>
+<pre>
+          /* Actions */
+          actions: {
+</pre>
+<div data-simply-list="app.actions">
+<template>
+<pre class="action">
+            <span data-simply-field="action"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
+</pre>
+</template>
+</div>
+<pre>
+          },
+          /* /Actions */
+</pre>
+</template>
     <template id="simplyPreviewCommands">
-      <pre>
-                /* Commands */
-                commands: {
-      </pre>
-                  <div data-simply-list="app.commands">
-                    <template>
-      <pre class="command">
-                  <span data-simply-field="command"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-                },
-                /* /Commands */
-      </pre>
-    </template>
+<pre>
+          /* Commands */
+          commands: {
+</pre>
+<div data-simply-list="app.commands">
+<template>
+<pre class="command">
+            <span data-simply-field="command"></span> : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
+</pre>
+</template>
+</div>
+<pre>
+          },
+          /* /Commands */
+</pre>
+</template>
     <template id="simplyPreviewRoutes">
-      <pre>
-                /* Routes */
-                routes: {
-      </pre>
-                  <div data-simply-list="app.routes">
-                    <template>
-      <pre class="route">
-                  "<span data-simply-field="route"></span>" : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-                }
-                /* /Routes */
-      </pre>
-    </template>
+<pre>
+          /* Routes */
+          routes: {
+</pre>
+<div data-simply-list="app.routes">
+<template>
+<pre class="route">
+            "<span data-simply-field="route"></span>" : <span data-simply-field="code" data-simply-transformer="indentCode" data-indent=12></span><span class="trailingComma">,</span>
+</pre>
+</template>
+</div>
+<pre>
+          }
+          /* /Routes */
+</pre>
+</template>
     <template id="simplyPreviewAppUtils">
-      <pre>
-              function clone(ob) {
-                return JSON.parse(JSON.stringify(ob));
-              }
-      
-              function updateDataSource(name) {
-                document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
-                  editor.list.applyDataSource(list, name);
-                  list.dataBindingPaused = 0;
-                });
-              }
-      </pre>
-    </template>
-    <template id="simplyPreviewSimplyApp">
-      <pre>
-          &lt;script&gt;
-            var simplyDataApi = {};
-            var simplyApp = {};
-      
-            window.addEventListener("simply-content-loaded", function() {
-              simply.bind = false;
-      </pre>
-      <div is="simply-component" rel="simplyPreviewRawApi"></div>
-      <div is="simply-component" rel="simplyPreviewDataApi"></div>
-      <pre>
-              simplyApp = simply.app({
-      </pre>
-      <div is="simply-component" rel="simplyPreviewActions"></div>
-      <div is="simply-component" rel="simplyPreviewCommands"></div>
-      <div is="simply-component" rel="simplyPreviewRoutes"></div>
-      <pre>
-              });
-      </pre>
-      <div is="simply-component" rel="simplyPreviewAppUtils"></div>
-      <pre>
-            });
-          &lt;/script&gt;
-      </pre>
-    </template>
-    <template id="simplyPreviewFullAppBody">
-      <pre>
-        &lt;body>
-      </pre>
-      <div is="simply-component" rel="simplyPreviewBodyHtml"></div>
-      <div is="simply-component" rel="simplyPreviewComponentHtmlTemplates"></div>
-      <div is="simply-component" rel="simplyPreviewAppHeader"></div>
-      <div is="simply-component" rel="simplyPreviewAppNav"></div>
-      <pre>
-        &lt;!-- FIXME: hier main van maken --&gt;
-        &lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
-      </pre>
-      <div is="simply-component" rel="simplyPreviewPageHtmlTemplates"></div>
-      <pre>
-        &lt;/div>
-      </pre>
-      <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
-      <div is="simply-component" rel="simplyPreviewTransformers"></div>
-      <div is="simply-component" rel="simplyPreviewSorters"></div>
-      <div is="simply-component" rel="simplyPreviewDataSources"></div>
-      <div is="simply-component" rel="simplyPreviewFootHtml"></div>
-      <pre>
-        &lt;/body>
-      </pre>
-    </template>
-    <template id="simplyPreviewBodyHtml">
-      <pre>
-          &lt;!-- Body HTML -->
-      </pre>
-                  <div data-simply-list="app.bodyHtml">
-                    <template>
-      <pre class="bodyHtml">
-          &lt;!-- <span data-simply-field="name"></span> --><br>
-      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-        &lt;!-- /Body HTML -->
-      </pre>
-    </template>
-    <template id="simplyPreviewComponentHtmlTemplates">
-      <pre>
-        &lt;!-- Component HTML templates -->
-      </pre>
-                  <div data-simply-list="app.componentTemplates">
-                    <template>
-      <pre class="componentTemplate">
-        &lt;template id="<span data-simply-field="component"></span>"&gt;
-      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=6></span>
-        &lt;/template&gt;
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-        &lt;!-- /Component HTML templates -->
-      </pre>
-    </template>
-    <template id="simplyPreviewAppHeader">
-      <pre>
-        &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
-          &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
-        &lt;/header&gt;
-      </pre>
-    </template>
-    <template id="simplyPreviewAppNav">
-      <pre>
-        &lt;nav&gt;
-          &lt;div is="simply-component" rel="menu"&gt;&lt;/div&gt;
-        &lt;/nav&gt;
-      </pre>
-    </template>
-    <template id="simplyPreviewPageHtmlTemplates">
-      <pre>
-          &lt;!-- Page HTML templates -->
-      </pre>
-                  <div data-simply-list="app.pageTemplates">
-                    <template>
-      <pre class="pageTemplate">
-          &lt;template data-simply-template="<span data-simply-field="page"></span>"&gt;
-      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=8></span>
-          &lt;/template&gt;
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-          &lt;!-- /Page HTML templates -->
-      </pre>
-    </template>
-    <template id="simplyPreviewSimplyBaseScripts">
-      <pre>
-        &lt;script src="/js/simply.everything.js">&lt;/script>
-        &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
-      </pre>
-    </template>
-    <template id="simplyPreviewTransformers">
-      <pre>
-        &lt;script>
-      </pre>
-      <pre>
-          /* Transformers */
-          editor.transformers = {
-      </pre>
-                  <div data-simply-list="app.transformers">
-                    <template>
-      <pre class="transformer">
-          "<span data-simply-field="transformer"></span>" : {
-            render : <span data-simply-field="render-code" data-simply-transformer="indentCode" data-indent=10></span>,
-            extract : <span data-simply-field="extract-code" data-simply-transformer="indentCode" data-indent=10></span>
-          }<span class="trailingComma">,</span>
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-          };
-          /* /Transformers */
-        &lt;/script>
-      </pre>
-    </template>
-    <template id="simplyPreviewSorters">
-      <pre>
-        &lt;script&gt;
-          // load sorters
-        &lt;/script&gt;
-      </pre>
-    </template>
-    <template id="simplyPreviewDataSources">
-      <pre>
-        &lt;script&gt;
-          window.addEventListener("simply-content-loaded", function() {
-          // load datasources
+<pre>
+        function clone(ob) {
+          return JSON.parse(JSON.stringify(ob));
+        }
+
+        function updateDataSource(name) {
+          document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
+            editor.list.applyDataSource(list, name);
+            list.dataBindingPaused = 0;
           });
-        &lt;/script&gt;
-      </pre>
-    </template>
+        }
+</pre>
+</template>
+    <template id="simplyPreviewSimplyApp">
+<pre>
+    &lt;script&gt;
+      var simplyDataApi = {};
+      var simplyApp = {};
+
+      window.addEventListener("simply-content-loaded", function() {
+        simply.bind = false;
+</pre>
+<div is="simply-component" rel="simplyPreviewRawApi"></div>
+<div is="simply-component" rel="simplyPreviewDataApi"></div>
+<pre>
+        simplyApp = simply.app({
+</pre>
+<div is="simply-component" rel="simplyPreviewActions"></div>
+<div is="simply-component" rel="simplyPreviewCommands"></div>
+<div is="simply-component" rel="simplyPreviewRoutes"></div>
+<pre>
+        });
+</pre>
+<div is="simply-component" rel="simplyPreviewAppUtils"></div>
+<pre>
+      });
+    &lt;/script&gt;
+</pre>
+</template>
+    <template id="simplyPreviewFullAppBody">
+<pre>
+  &lt;body>
+</pre>
+<div is="simply-component" rel="simplyPreviewBodyHtml"></div>
+<div is="simply-component" rel="simplyPreviewComponentHtmlTemplates"></div>
+<div is="simply-component" rel="simplyPreviewAppHeader"></div>
+<div is="simply-component" rel="simplyPreviewAppNav"></div>
+<pre>
+  &lt;!-- FIXME: hier main van maken --&gt;
+  &lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
+</pre>
+<div is="simply-component" rel="simplyPreviewPageHtmlTemplates"></div>
+<pre>
+  &lt;/div>
+</pre>
+<div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+<div is="simply-component" rel="simplyPreviewTransformers"></div>
+<div is="simply-component" rel="simplyPreviewSorters"></div>
+<div is="simply-component" rel="simplyPreviewDataSources"></div>
+<div is="simply-component" rel="simplyPreviewFootHtml"></div>
+<pre>
+  &lt;/body>
+</pre>
+</template>
+    <template id="simplyPreviewBodyHtml">
+<pre>
+    &lt;!-- Body HTML -->
+</pre>
+<div data-simply-list="app.bodyHtml">
+<template>
+<pre class="bodyHtml">
+    &lt;!-- <span data-simply-field="name"></span> --><br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+</pre>
+</template>
+</div>
+<pre>
+    &lt;!-- /Body HTML -->
+</pre>
+</template>
+    <template id="simplyPreviewComponentHtmlTemplates">
+<pre>
+    &lt;!-- Component HTML templates -->
+</pre>
+<div data-simply-list="app.componentTemplates">
+<template>
+<pre class="componentTemplate">
+    &lt;template id="<span data-simply-field="component"></span>"&gt;
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=6></span>
+    &lt;/template&gt;
+</pre>
+</template>
+</div>
+<pre>
+    &lt;!-- /Component HTML templates -->
+</pre>
+</template>
+    <template id="simplyPreviewAppHeader">
+<pre>
+    &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
+      &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
+    &lt;/header&gt;
+</pre>
+</template>
+    <template id="simplyPreviewAppNav">
+<pre>
+    &lt;nav&gt;
+      &lt;div is="simply-component" rel="menu"&gt;&lt;/div&gt;
+    &lt;/nav&gt;
+</pre>
+</template>
+    <template id="simplyPreviewPageHtmlTemplates">
+<pre>
+    &lt;!-- Page HTML templates -->
+</pre>
+<div data-simply-list="app.pageTemplates">
+<template>
+<pre class="pageTemplate">
+    &lt;template data-simply-template="<span data-simply-field="page"></span>"&gt;
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=8></span>
+    &lt;/template&gt;
+</pre>
+</template>
+</div>
+<pre>
+    &lt;!-- /Page HTML templates -->
+</pre>
+</template>
+    <template id="simplyPreviewSimplyBaseScripts">
+<pre>
+    &lt;script src="/js/simply.everything.js">&lt;/script>
+    &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+</pre>
+</template>
+    <template id="simplyPreviewTransformers">
+<pre>
+    &lt;script>
+</pre>
+<pre>
+      /* Transformers */
+      editor.transformers = {
+</pre>
+<div data-simply-list="app.transformers">
+<template>
+<pre class="transformer">
+      "<span data-simply-field="transformer"></span>" : {
+        render : <span data-simply-field="render-code" data-simply-transformer="indentCode" data-indent=10></span>,
+        extract : <span data-simply-field="extract-code" data-simply-transformer="indentCode" data-indent=10></span>
+      }<span class="trailingComma">,</span>
+</pre>
+</template>
+</div>
+<pre>
+      };
+      /* /Transformers */
+    &lt;/script>
+</pre>
+</template>
+    <template id="simplyPreviewSorters">
+<pre>
+    &lt;script&gt;
+      // load sorters
+    &lt;/script&gt;
+</pre>
+</template>
+    <template id="simplyPreviewDataSources">
+<pre>
+    &lt;script&gt;
+      window.addEventListener("simply-content-loaded", function() {
+      // load datasources
+      });
+    &lt;/script&gt;
+</pre>
+</template>
     <template id="simplyPreviewFootHtml">
-      <pre>
-        &lt;!-- Foot HTML -->
-      </pre>
-                  <div data-simply-list="app.footHtml">
-                    <template>
-      <pre class="footHtml">
-        &lt;!-- <span data-simply-field="name"></span> --><br>
-      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
-      </pre>
-                    </template>
-                  </div>
-      <pre>
-        &lt;!-- /Foot HTML -->
-      </pre>
-    </template>
+<pre>
+    &lt;!-- Foot HTML -->
+</pre>
+<div data-simply-list="app.footHtml">
+<template>
+<pre class="footHtml">
+    &lt;!-- <span data-simply-field="name"></span> --><br>
+<span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+</pre>
+</template>
+</div>
+<pre>
+    &lt;!-- /Foot HTML -->
+</pre>
+</template>
     <template id="componentAppFullPreview">
-      <div class="sb-full-preview-container">
-        <iframe class="sb-full-preview"></iframe>
-        <div class="sb-preview-code">
+<div class="sb-full-preview-container">
+  <iframe class="sb-full-preview"></iframe>
+  <div class="sb-preview-code">
 <div is="simply-component" rel="simplyPreviewFullApp"></div>
-        </div>
-      </div>
-    </template>
+  </div>
+</div>
+</template>
 
     <!-- /Component HTML templates -->
 
