@@ -610,16 +610,6 @@
 
                 return appData;
               });
-            },
-            resetPreview(el) {
-              return new Promise(function(resolve, reject) {
-                var newRunner = el.cloneNode(false);
-                newRunner.addEventListener("load", function() {
-                  resolve(newRunner);
-                });
-                el.parentNode.insertBefore(newRunner, el);
-                el.remove();
-              });
             }
           },
           /* /Actions */
@@ -630,11 +620,10 @@
               var previewRunners = document.querySelectorAll("iframe.sb-full-preview");
               previewRunners.forEach(function(previewRunner) {
                 previewRunner.contentWindow.document.previewRunner = previewRunner;
-                // previewRunner.contentWindow.history.pushState({'preview':1}, '', 'https://preview.simply/');
                 previewRunner.parentNode.querySelectorAll(".sb-preview-code [data-simply-list-item]:last-child .trailingComma").forEach(function(element) {
                   element.remove();
                 });
-                simplyApp.actions.resetPreview(previewRunner)
+                simplyApp.commands.resetPreview(previewRunner)
                 .then(function(previewRunner) {
                   previewRunner.contentWindow.document.open();
                   previewRunner.contentWindow.document.write(previewRunner.parentNode.querySelector(".sb-preview-code").innerText);
@@ -642,15 +631,13 @@
                 });
               });
 
-              // var previewRunners = document.querySelectorAll(".sb-component[open] iframe.sb-preview,iframe.sb-full-preview");
               var previewRunners = document.querySelectorAll("iframe.sb-component-preview");
               previewRunners.forEach(function(previewRunner) {
                 previewRunner.contentWindow.document.previewRunner = previewRunner;
-                // previewRunner.contentWindow.history.pushState({'preview':1}, '', 'https://preview.simply/');
                 previewRunner.parentNode.querySelectorAll(".sb-preview-code [data-simply-list-item]:last-child .trailingComma").forEach(function(element) {
                   element.remove();
                 });
-                simplyApp.actions.resetPreview(previewRunner)
+                simplyApp.commands.resetPreview(previewRunner)
                 .then(function(previewRunner) {
 	              previewRunner.contentWindow.document.open();
 	              previewRunner.contentWindow.document.write(document.querySelector(".sb-preview-app-head").innerText);
@@ -660,10 +647,20 @@
                 });
               });
             },
+            resetPreview : function(el) {
+              return new Promise(function(resolve, reject) {
+                var newRunner = el.cloneNode(false);
+                newRunner.addEventListener("load", function() {
+                  resolve(newRunner);
+                });
+                el.parentNode.insertBefore(newRunner, el);
+                el.remove();
+              });
+            },
             autoRunTests : function(el) {
               var testRunners = document.querySelectorAll(".sb-component[open] iframe.qunit");
               testRunners.forEach(function(testRunner) {
-                simplyApp.actions.resetPreview(testRunner)
+                simplyApp.commands.resetPreview(testRunner)
                 .then(function(testRunner) {
                   testRunner.contentWindow.document.testRunner = testRunner;
                   testRunner.contentWindow.document.open();
@@ -1129,8 +1126,8 @@
                 editor.pageData.page = "List components";
               });
             }
-          /* /Routes */
           }
+          /* /Routes */
         });
 
         function clone(ob) {
@@ -1148,6 +1145,15 @@
   </head>
   <body>
     <!-- Body HTML -->
+    <!-- Load main menu -->
+    <script>
+      window.addEventListener("simply-content-loaded", function() {
+        simplyApp.actions.getMainMenu()
+        .then(function(menu) {
+          editor.pageData.menu = menu;
+        });
+      });
+    </script>
     <!-- HTML structure -->
 
     <div class="simply-toasts">
@@ -1286,7 +1292,7 @@
                   </label>
                 </div>
                 <div class="sb-options">
-                  <button class="sb-button" data-simply-command="deleteEntry">Delete action</button>
+                  <button class="sb-button" data-simply-command="deleteEntry">Delete command</button>
                 </div>
               </div>
               <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
@@ -2637,15 +2643,6 @@
           }
           editor.pageData.count[list] = length;
         }
-      });
-    </script>
-    <!-- Load main menu -->
-    <script>
-      window.addEventListener("simply-content-loaded", function() {
-        simplyApp.actions.getMainMenu()
-        .then(function(menu) {
-          editor.pageData.menu = menu;
-        });
       });
     </script>
     <!-- toastAnimation -->
