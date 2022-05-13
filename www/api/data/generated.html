@@ -65,6 +65,9 @@
       .sb-preview-code {
         display: none;
       }
+      .sb-preview-data {
+        display: none;
+      }
       .sb-preview-code [data-simply-list-item]:last-child .trailingComma {
         display: none;
       }
@@ -639,6 +642,9 @@
                   previewRunner.contentWindow.document.write(previewRunner.parentNode.querySelector(".sb-preview-code").innerText);
                   previewRunner.contentWindow.document.write(document.querySelector(".sb-preview-app-foot").innerText);
                   previewRunner.contentWindow.document.close();
+                  previewRunner.contentWindow.addEventListener("simply-content-loaded", function() {
+                    previewRunner.contentWindow.editor.pageData = JSON.parse(previewRunner.parentNode.querySelector(".sb-preview-data").innerText);
+                  });
                 });
               });
             },
@@ -1359,14 +1365,27 @@
               <div class="sb-part-header">
                 <div class="sb-tabs">
                   <input class="sb-tab" data-simply-field="component" placeholder="Component name">
+                  <label class="sb-tab">
+                    <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
+                    <span>Code</span>
+                  </label>
+                  <label class="sb-tab">
+                    <input type="radio" name="actionEditor" value="sampledata" data-simply-field="editor">
+                    <span>Sample data</span>
+                  </label>
                 </div>
                 <div class="sb-options">
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
               <div class="sb-editors sb-dual-preview">
-                <div class="sb-editor-code">
-                  <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
+                <div class="sb-editor-code" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+                  <template data-simply-template="code">
+                    <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Component Html</div></main>"></textarea>
+                  </template>
+                  <template data-simply-template="sampledata">
+                    <textarea data-codemirror-mode="json" data-simply-field="sampledata" placeholder="{}"></textarea>
+                  </template>
                 </div>
                 <div class="sb-previews">
                   <div is="simply-component" rel="componentPreview"></div>
@@ -1561,14 +1580,27 @@
               <div class="sb-part-header">
                 <div class="sb-tabs">
                   <input class="sb-tab" data-simply-field="page" placeholder="Page name">
+                  <label class="sb-tab">
+                    <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
+                    <span>Code</span>
+                  </label>
+                  <label class="sb-tab">
+                    <input type="radio" name="actionEditor" value="sampledata" data-simply-field="editor">
+                    <span>Sample data</span>
+                  </label>
                 </div>
                 <div class="sb-options">
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
               <div class="sb-editors sb-dual">
-                <div class="sb-editor-code">
-                  <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
+                <div class="sb-editor-code" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+                  <template data-simply-template="code">
+                    <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
+                  </template>
+                  <template data-simply-template="sampledata">
+                    <textarea data-codemirror-mode="json" data-simply-field="sampledata" placeholder="{}"></textarea>
+                  </template>
                 </div>
                 <div class="sb-previews">
                   <div is="simply-component" rel="pagePreview"></div>
@@ -1950,6 +1982,11 @@
             <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
       </pre>
         </div>
+        <div class="sb-preview-data">
+          <pre>
+            <span data-simply-field="sampledata" data-simply-transformer="htmlEscape" data-indent=4></span>
+      </pre>
+        </div>
       </div>
     </template>
     <template id="pagePreview">
@@ -1963,6 +2000,11 @@
             &lt;!-- <span data-simply-field="page"></span> --><br>
             <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
           &lt;/div>
+      </pre>
+        </div>
+        <div class="sb-preview-data">
+          <pre>
+            <span data-simply-field="sampledata" data-simply-transformer="htmlEscape" data-indent=4></span>
       </pre>
         </div>
       </div>
