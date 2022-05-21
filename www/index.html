@@ -394,29 +394,29 @@
             getMainMenu : function() {
               return new Promise(function(resolve, reject) {
                 return resolve(
-	              [
-	                {
-	                   item : {
-	                     innerHTML : "Base components",
-	                     href : "#base",
+                  [
+                    {
+                       item : {
+                         innerHTML : "Base components",
+                         href : "#base",
                          "data-path" : "base-components"
-	                   }
-	                },
-	                {
-	                   item : {
-	                     innerHTML : "Components",
-	                     href : "#components",
+                       }
+                    },
+                    {
+                       item : {
+                         innerHTML : "Components",
+                         href : "#components",
                          "data-path" : "components"
-	                   }
-	                },
-	                {
-	                   item : {
-	                     innerHTML : "Pages",
-	                     href : "#pages",
+                       }
+                    },
+                    {
+                       item : {
+                         innerHTML : "Pages",
+                         href : "#pages",
                          "data-path" : "pages"
-	                   }
-	                }
-	              ]
+                       }
+                    }
+                  ]
                 );
               });
             },
@@ -642,11 +642,11 @@
                 });
                 simplyApp.commands.resetPreview(previewRunner)
                 .then(function(previewRunner) {
-	              previewRunner.contentWindow.document.open();
-	              previewRunner.contentWindow.document.write(document.querySelector(".sb-preview-app-head").innerText);
-	              previewRunner.contentWindow.document.write(previewRunner.parentNode.querySelector(".sb-preview-code").innerText);
-	              previewRunner.contentWindow.document.write(document.querySelector(".sb-preview-app-foot").innerText);
-	              previewRunner.contentWindow.document.close();
+                  previewRunner.contentWindow.document.open();
+                  previewRunner.contentWindow.document.write(document.querySelector(".sb-preview-app-head").innerText);
+                  previewRunner.contentWindow.document.write(previewRunner.parentNode.querySelector(".sb-preview-code").innerText);
+                  previewRunner.contentWindow.document.write(document.querySelector(".sb-preview-app-foot").innerText);
+                  previewRunner.contentWindow.document.close();
                   previewRunner.contentWindow.addEventListener("simply-content-loaded", function() {
                     previewRunner.contentWindow.editor.pageData = JSON.parse(previewRunner.parentNode.querySelector(".sb-preview-data").innerText);
                   });
@@ -1516,7 +1516,7 @@
             Additional head HTML
           </span>
           <span class="sb-controls">
-	    <button class="sb-button" data-simply-command="addHeadHtml">Add head HTML</button>
+        <button class="sb-button" data-simply-command="addHeadHtml">Add head HTML</button>
           </span>
         </summary>
         <div class="sb-code-method" data-simply-list="component.parts.headHtml">
@@ -2542,27 +2542,27 @@
               window.clearTimeout(element.validateTimeout);
             }
             element.validateTimeout = window.setTimeout(function() {
-	          fetch("https://validator.w3.org/nu/?out=json", {
-	            mode : 'cors',
-	            headers: {
-	              "Content-type" : "text/html; charset=utf-8"
-	            },
-	            method: "POST",
-	            body: htmlData
-	          })
-	          .then(function(result) {
-	            return result.json();
-	          })
-	          .then(function(validateResult) {
-	            element.dataBinding.config.data.validateResult = validateResult;
-	            if(validateResult.messages.length) {
-	              element.className = "sb-html-invalid";
-	              element.innerHTML = "HTML validation failed:";
-	            } else {
-	              element.innerHTML = "HTML validated!";
-	              element.className = "sb-html-valid";
-	            }
-	          });
+              fetch("https://validator.w3.org/nu/?out=json", {
+                mode : 'cors',
+                headers: {
+                  "Content-type" : "text/html; charset=utf-8"
+                },
+                method: "POST",
+                body: htmlData
+              })
+              .then(function(result) {
+                return result.json();
+              })
+              .then(function(validateResult) {
+                element.dataBinding.config.data.validateResult = validateResult;
+                if(validateResult.messages.length) {
+                  element.className = "sb-html-invalid";
+                  element.innerHTML = "HTML validation failed:";
+                } else {
+                  element.innerHTML = "HTML validated!";
+                  element.className = "sb-html-valid";
+                }
+              });
             }, 1000);
             element.dataBinding.config.data.validateResult = {};
             return "Validating...";
