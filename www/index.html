@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="nl">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <!-- Component CSS -->
@@ -367,6 +367,24 @@
               throw new Error("deleteComponent failed", response.status);
             });
           },
+          savePageFramePart : function(part, contents) {
+            return simplyRawApi.putRaw("page-frame/" + part, {}, contents)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("savePageFramePart failed", response.status);
+            });
+          },
+          getPageFrame : function() {
+            return simplyRawApi.get("page-frame")
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("getPageFrame failed", response.status);
+            });
+          },
           listPages : function() {
             return simplyRawApi.get("pages")
             .then(function(response) {
@@ -395,6 +413,13 @@
               return new Promise(function(resolve, reject) {
                 return resolve(
                   [
+                    {
+                       item : {
+                         innerHTML : "Page frame",
+                         href : "#page-frame",
+                         "data-path" : "page-frame"
+                       }
+                    },
                     {
                        item : {
                          innerHTML : "Base components",
@@ -525,6 +550,30 @@
             deletePage : function(component) {
               return simplyDataApi.deletePage(component);
             },
+            getPageFrame : function() {
+              return simplyDataApi.getPageFrame();
+// FIXME: insert default frame here;
+//              .catch(function(error) {
+//                return [];
+//              });
+            },
+            savePageFrame : function(component) {
+              var promises = [];
+              for (var name in component.parts) {
+                if (component.parts[name].length) { 
+                  promises.push(simplyDataApi.savePageFramePart(name, JSON.stringify(component.parts[name])));
+                }
+              };
+
+              var meta = clone(component);
+              delete meta.parts;
+              promises.push(simplyDataApi.savePageFramePart("meta", JSON.stringify(meta)));
+
+              return Promise.all(promises)
+              .then(function() {
+                return true;
+              });
+            },
             listPages : function() {
               return simplyDataApi.listPages()
               .catch(function(error) {
@@ -573,12 +622,25 @@
             getAppData : function() {
               var appData = {
               };
-              var promises = [
-                simplyApp.actions.getBaseComponents(),
-                simplyApp.actions.getComponents(),
-                simplyApp.actions.getPages()
-              ];
-              return Promise.all(promises)
+              return simplyApp.actions.getPageFrame()
+              .then(function(component) {
+                var frame = {};
+                component.forEach(function(part) {
+                  if (part.id == "meta") {
+                    return;
+                  };
+                  frame[part.id] = JSON.parse(part.contents);
+                });
+                appData.pageFrame = frame;
+              })
+              .then(function() {
+                var promises = [
+                  simplyApp.actions.getBaseComponents(),
+                  simplyApp.actions.getComponents(),
+                  simplyApp.actions.getPages()
+                ];
+                return Promise.all(promises);
+              })
               .then(function(appComponents) {
                 appComponents.forEach(function(appComponent) {
                   appComponent.forEach(function(component) {
@@ -932,6 +994,16 @@
                 document.location.hash="pages/";
               });
             },
+            savePageFrame : function() {
+              simplyApp.actions.savePageFrame(editor.pageData.component)
+              .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Page frame saved.",
+                  "state" : "new"
+                });
+              });
+            },
             createPage : function() {
               var newComponent = editor.pageData.newComponent;
               simplyApp.actions.savePage(newComponent)
@@ -1105,6 +1177,32 @@
               .then(function(components) {
                 editor.pageData.components = components;
                 editor.pageData.page = "List components";
+              });
+            },
+            "#page-frame" : function() {
+              simplyApp.actions.getPageFrame()
+              .then(function(parts) {
+                var component = {
+                  id : "page-frame"
+                };
+
+                parts = parts.filter(function(part) {
+                  if (part.id == "meta") {
+                    component = JSON.parse(part.contents);
+                    component.id = "page-frame";
+                    return false;
+                  }
+                  return true;
+                });
+                if (typeof component.parts === "undefined") {
+                  component.parts = {};
+                }
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                });
+                editor.pageData.component = component;
+                editor.pageData.count = {};
+                editor.pageData.page = "Edit page frame";
               });
             },
             "#publish" : function() {
@@ -1572,6 +1670,165 @@
         </div>
       </details>
     </template>
+    <template id="componentPageFrame">
+      <details class="sb-component">
+        <summary data-simply-command="initEditors" title="These make up the page frame together with the Simply App parts.">
+          Page frame
+        </summary>
+
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
+              <label class="sb-tab">HTML Start</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameHtmlStart">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.htmlStart" placeholder="<!DOCTYPE...">
+&lt;!DOCTYPE HTML>
+&lt;html lang="en"></textarea>
+              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
+              <label class="sb-tab">Head Start</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameHeadStart">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.headStart" placeholder="<head>">
+&lt;head>
+  &lt;meta charset="utf-8"></textarea>
+              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
+              <label class="sb-tab">Head end</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameHeadEnd">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.headEnd" placeholder="<head>">
+&lt;/head></textarea>
+              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
+              <label class="sb-tab">Body start</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameBodyStart">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyStart" placeholder="<body>">
+&lt;body></textarea>
+              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
+              <label class="sb-tab">Body contents start</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyContentStart" placeholder="<body>">
+  &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
+    &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
+  &lt;/header&gt;
+  &lt;nav>
+    &lt;div is="simply-component" rel="menu">&lt;/div>
+  &lt;/nav>
+  &lt;div class="main" data-simply-field="page" data-simply-content="template"></textarea>
+              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
+              <label class="sb-tab">Body content end</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameBodyContentEnd">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyContentEnd" placeholder="</main>">
+&lt;/div></textarea>
+              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
+              <label class="sb-tab">Body end</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameBodyEnd">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyEnd" placeholder="</body></html>">
+&lt;/body></textarea>
+              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
+              <label class="sb-tab">HTML end</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameHtmlEnd">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.htmlEnd" placeholder="</body></html>">
+&lt;/html></textarea>
+              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            </div>
+          </div>
+        </div>
+      </details>
+    </template>
     <template id="componentPageTemplate">
       <details class="sb-component">
         <summary data-simply-command="initEditors" title="These templates are used in routes to set the HTML of the requested page.">
@@ -1999,8 +2256,6 @@
       <div class="sb-component-preview-container">
         <iframe class="sb-component-preview"></iframe>
         <div class="sb-preview-code">
-          <div is="simply-component" rel="simplyPreviewAppHeader"></div>
-          <div is="simply-component" rel="simplyPreviewAppNav"></div>
 <pre>
     &lt;div class="main"&gt;
       &lt;!-- <span data-simply-field="page"></span> --><br>
@@ -2016,25 +2271,25 @@
       </div>
     </template>
     <template id="simplyPreviewFullApp">
-<pre>
+<pre data-simply-field="app.pageFrame.htmlStart" data-simply-transformer="htmlEscape">
 &lt;!DOCTYPE HTML>
-&lt;html lang="nl">
+&lt;html lang="en">
 </pre>
 <div is="simply-component" rel="simplyPreviewFullAppHead"></div>
 <div is="simply-component" rel="simplyPreviewFullAppBody"></div>
-<pre>
+<pre data-simply-field="app.pageFrame.htmlEnd" data-simply-transformer="htmlEscape">
 &lt;/html>
 </pre>
 </template>
     <template id="simplyPreviewFullAppHead">
-<pre>
+<pre data-simply-field="app.pageFrame.headStart" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;head>
     &lt;meta charset="utf-8">
 </pre>
 <div is="simply-component" rel="simplyPreviewComponentCss"></div>
 <div is="simply-component" rel="simplyPreviewHeadHtml"></div>
 <div is="simply-component" rel="simplyPreviewSimplyApp"></div>
-<pre>
+<pre data-simply-field="app.pageFrame.headEnd" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;/head>
 </pre>
 </template>
@@ -2198,19 +2453,23 @@
 </pre>
 </template>
     <template id="simplyPreviewFullAppBody">
-<pre>
+<pre data-simply-field="app.pageFrame.bodyStart" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;body>
 </pre>
 <div is="simply-component" rel="simplyPreviewBodyHtml"></div>
 <div is="simply-component" rel="simplyPreviewComponentHtmlTemplates"></div>
-<div is="simply-component" rel="simplyPreviewAppHeader"></div>
-<div is="simply-component" rel="simplyPreviewAppNav"></div>
-<pre>
+<pre data-simply-field="app.pageFrame.bodyContentStart" data-simply-transformer="htmlEscape" data-indent=2>
+  &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
+    &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
+  &lt;/header&gt;
+  &lt;nav&gt;
+    &lt;div is="simply-component" rel="menu"&gt;&lt;/div&gt;
+  &lt;/nav&gt;
   &lt;!-- FIXME: hier main van maken --&gt;
   &lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
 </pre>
 <div is="simply-component" rel="simplyPreviewPageHtmlTemplates"></div>
-<pre>
+<pre data-simply-field="app.pageFrame.bodyContentEnd" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;/div>
 </pre>
 <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
@@ -2218,7 +2477,7 @@
 <div is="simply-component" rel="simplyPreviewSorters"></div>
 <div is="simply-component" rel="simplyPreviewDataSources"></div>
 <div is="simply-component" rel="simplyPreviewFootHtml"></div>
-<pre>
+<pre data-simply-field="app.pageFrame.bodyEnd" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;/body>
 </pre>
 </template>
@@ -2253,20 +2512,6 @@
 </div>
 <pre>
     &lt;!-- /Component HTML templates -->
-</pre>
-</template>
-    <template id="simplyPreviewAppHeader">
-<pre>
-    &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
-      &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
-    &lt;/header&gt;
-</pre>
-</template>
-    <template id="simplyPreviewAppNav">
-<pre>
-    &lt;nav&gt;
-      &lt;div is="simply-component" rel="menu"&gt;&lt;/div&gt;
-    &lt;/nav&gt;
 </pre>
 </template>
     <template id="simplyPreviewPageHtmlTemplates">
@@ -2368,7 +2613,6 @@
     <!-- FIXME: hier main van maken -->
     <div class="main" data-simply-field="page" data-simply-content="template">
       <!-- Page HTML templates -->
-
       <template data-simply-template="Edit base component">
         <main>
           <div class="sb-header">
@@ -2486,6 +2730,18 @@
           <div is="simply-component" rel="componentTransformers"></div>
           <div is="simply-component" rel="componentDataSources"></div>
           <div is="simply-component" rel="componentSorters"></div>
+        </main>
+      </template>
+      <template data-simply-template="Edit page frame">
+        <main>
+          <div class="sb-header">
+            <h1>Edit page frame</h1>
+            <div class="sb-controls">
+              <button class="sb-button" data-simply-command="savePageFrame">Save</button>
+            </div>
+          </div>
+          <div is="simply-component" rel="componentDescription"></div>
+          <div is="simply-component" rel="componentPageFrame"></div>
         </main>
       </template>
       <template data-simply-template="Pages">
