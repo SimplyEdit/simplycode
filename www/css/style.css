@@ -299,7 +299,7 @@ li.simply-toast {
     min-width: 300px;
     float: right;
     clear: both;
-    margin-right; 0;
+    margin-right: 0;
     margin-top: 60px;
     background-color: var(--simply-grey-80);
     color: var(--simply-white);
