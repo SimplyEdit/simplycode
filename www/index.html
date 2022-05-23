@@ -553,11 +553,10 @@
               return simplyDataApi.deletePage(component);
             },
             getPageFrame : function() {
-              return simplyDataApi.getPageFrame();
-// FIXME: insert default frame here;
-//              .catch(function(error) {
-//                return [];
-//              });
+              return simplyDataApi.getPageFrame()
+              .catch(function(error) {
+                return [];
+              });
             },
             savePageFrame : function(component) {
               var promises = [];
