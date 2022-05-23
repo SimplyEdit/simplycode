@@ -100,8 +100,8 @@
     <!-- /Component CSS -->
     <!-- Head HTML -->
     <!-- base layout -->
-    <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/extra.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/extra.css">
     <!-- Forward to https -->
     <script>
       if (document.location.protocol == "http:") {
@@ -1680,18 +1680,19 @@
         <div class="sb-part">
           <div class="sb-part-header">
             <div class="sb-tabs">
-              <label class="sb-tab">HTML Start</label>
+              <label class="sb-tab">HTML start/HTML end</label>
             </div>
             <div class="sb-options">
               <button class="sb-button" data-simply-command="resetFrameHtmlStart">Reset to default</button>
             </div>
           </div>
           <div class="sb-editors">
-            <div class="sb-editor-code">
+            <div class="sb-editor-code sb-dual">
               <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.htmlStart" placeholder="<!DOCTYPE...">
 &lt;!DOCTYPE HTML>
 &lt;html lang="en"></textarea>
-              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.htmlEnd" placeholder="</html>">
+&lt;/html></textarea>
             </div>
           </div>
         </div>
@@ -1699,36 +1700,19 @@
         <div class="sb-part">
           <div class="sb-part-header">
             <div class="sb-tabs">
-              <label class="sb-tab">Head Start</label>
+              <label class="sb-tab">Head start/Head end</label>
             </div>
             <div class="sb-options">
               <button class="sb-button" data-simply-command="resetFrameHeadStart">Reset to default</button>
             </div>
           </div>
           <div class="sb-editors">
-            <div class="sb-editor-code">
+            <div class="sb-editor-code sb-dual">
               <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.headStart" placeholder="<head>">
 &lt;head>
   &lt;meta charset="utf-8"></textarea>
-              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
-            </div>
-          </div>
-        </div>
-
-        <div class="sb-part">
-          <div class="sb-part-header">
-            <div class="sb-tabs">
-              <label class="sb-tab">Head end</label>
-            </div>
-            <div class="sb-options">
-              <button class="sb-button" data-simply-command="resetFrameHeadEnd">Reset to default</button>
-            </div>
-          </div>
-          <div class="sb-editors">
-            <div class="sb-editor-code">
-              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.headEnd" placeholder="<head>">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.headEnd" placeholder="</head>">
 &lt;/head></textarea>
-              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
             </div>
           </div>
         </div>
@@ -1736,17 +1720,18 @@
         <div class="sb-part">
           <div class="sb-part-header">
             <div class="sb-tabs">
-              <label class="sb-tab">Body start</label>
+              <label class="sb-tab">Body start/Body end</label>
             </div>
             <div class="sb-options">
               <button class="sb-button" data-simply-command="resetFrameBodyStart">Reset to default</button>
             </div>
           </div>
           <div class="sb-editors">
-            <div class="sb-editor-code">
+            <div class="sb-editor-code sb-dual">
               <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyStart" placeholder="<body>">
 &lt;body></textarea>
-              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyEnd" placeholder="</body>">
+&lt;/body></textarea>
             </div>
           </div>
         </div>
@@ -1754,15 +1739,15 @@
         <div class="sb-part">
           <div class="sb-part-header">
             <div class="sb-tabs">
-              <label class="sb-tab">Body contents start</label>
+              <label class="sb-tab">Body contents start/Body contents end</label>
             </div>
             <div class="sb-options">
               <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
             </div>
           </div>
           <div class="sb-editors">
-            <div class="sb-editor-code">
-              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyContentStart" placeholder="<body>">
+            <div class="sb-editor-code sb-dual">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyContentStart" placeholder="<main>">
   &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
     &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
   &lt;/header&gt;
@@ -1770,25 +1755,8 @@
     &lt;div is="simply-component" rel="menu">&lt;/div>
   &lt;/nav>
   &lt;div class="main" data-simply-field="page" data-simply-content="template"></textarea>
-              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
-            </div>
-          </div>
-        </div>
-
-        <div class="sb-part">
-          <div class="sb-part-header">
-            <div class="sb-tabs">
-              <label class="sb-tab">Body content end</label>
-            </div>
-            <div class="sb-options">
-              <button class="sb-button" data-simply-command="resetFrameBodyContentEnd">Reset to default</button>
-            </div>
-          </div>
-          <div class="sb-editors">
-            <div class="sb-editor-code">
               <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyContentEnd" placeholder="</main>">
 &lt;/div></textarea>
-              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
             </div>
           </div>
         </div>
@@ -1796,17 +1764,24 @@
         <div class="sb-part">
           <div class="sb-part-header">
             <div class="sb-tabs">
-              <label class="sb-tab">Body end</label>
+              <label class="sb-tab">Page preview start/Page preview end</label>
             </div>
             <div class="sb-options">
-              <button class="sb-button" data-simply-command="resetFrameBodyEnd">Reset to default</button>
+              <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
             </div>
           </div>
           <div class="sb-editors">
-            <div class="sb-editor-code">
-              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyEnd" placeholder="</body></html>">
-&lt;/body></textarea>
-              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            <div class="sb-editor-code sb-dual">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyPagePreviewContentStart" placeholder="<main>">
+  &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
+    &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
+  &lt;/header&gt;
+  &lt;nav>
+    &lt;div is="simply-component" rel="menu">&lt;/div>
+  &lt;/nav>
+  &lt;div class="main"></textarea>
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyPagePreviewContentEnd" placeholder="</main>">
+&lt;/div></textarea>
             </div>
           </div>
         </div>
@@ -1814,20 +1789,22 @@
         <div class="sb-part">
           <div class="sb-part-header">
             <div class="sb-tabs">
-              <label class="sb-tab">HTML end</label>
+              <label class="sb-tab">Component preview start/Component preview end</label>
             </div>
             <div class="sb-options">
-              <button class="sb-button" data-simply-command="resetFrameHtmlEnd">Reset to default</button>
+              <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
             </div>
           </div>
           <div class="sb-editors">
-            <div class="sb-editor-code">
-              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.htmlEnd" placeholder="</body></html>">
-&lt;/html></textarea>
-              <!-- div is="simply-component" rel="componentHtmlValidator"></div -->
+            <div class="sb-editor-code sb-dual">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyComponentPreviewContentStart" placeholder="<main>">
+&lt;div class="main"></textarea>
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyComponentPreviewContentEnd" placeholder="</main>">
+&lt;/div></textarea>
             </div>
           </div>
         </div>
+
       </details>
     </template>
     <template id="componentPageTemplate">
@@ -1877,8 +1854,8 @@
           </template>
         </div>
       </details>
-      <div is="simply-component" rel="componentPreviewAppHead"></div>
-      <div is="simply-component" rel="componentPreviewAppFoot"></div>
+      <div is="simply-component" rel="pagePreviewAppHead"></div>
+      <div is="simply-component" rel="pagePreviewAppFoot"></div>
     </template>
     <template id="componentQUnitTests">
       <div class="sb-editor-qunit-tests">
@@ -2206,34 +2183,40 @@
     </template>
     <template id="componentPreviewAppHead">
         <div class="sb-preview-code sb-preview-app-head">
-<pre>
+<pre data-simply-field="app.pageFrame.htmlStart" data-simply-transformer="htmlEscape">
 &lt;!DOCTYPE HTML>
-&lt;html lang="nl">
+&lt;html lang="en">
 </pre>
-<pre>
+<pre data-simply-field="app.pageFrame.headStart" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;head>
     &lt;meta charset="utf-8">
 </pre>
 <div is="simply-component" rel="simplyPreviewComponentCss"></div>
 <div is="simply-component" rel="simplyPreviewHeadHtml"></div>
 <div is="simply-component" rel="simplyPreviewPageCss"></div>
-<pre>
+<pre data-simply-field="app.pageFrame.headEnd" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;/head>
 </pre>
-<pre>
+<pre data-simply-field="app.pageFrame.bodyStart" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;body>
 </pre>
     <div is="simply-component" rel="simplyPreviewComponentHtmlTemplates"></div>
-</div>
+<pre data-simply-field="app.pageFrame.bodyComponentPreviewContentStart" data-simply-transformer="htmlEscape" data-indent=4>
+  &lt;div class="main"&gt;
+</pre>
+        </div>
     </template>
     <template id="componentPreviewAppFoot">
         <div class="sb-preview-code sb-preview-app-foot">
+<pre data-simply-field="app.pageFrame.bodyComponentPreviewContentEnd" data-simply-transformer="htmlEscape" data-indent=4>
+  &lt;/div&gt;
+</pre>
 <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
 <div is="simply-component" rel="simplyPreviewFootHtml"></div>
-<pre>
+<pre data-simply-field="app.pageFrame.bodyEnd" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;/body>
 </pre>
-<pre>
+<pre data-simply-field="app.pageFrame.htmlEnd" data-simply-transformer="htmlEscape">
 &lt;/html>
 </pre>
         </div>
@@ -2243,7 +2226,7 @@
         <iframe class="sb-component-preview"></iframe>
         <div class="sb-preview-code">
 <pre>
-      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
+          <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
 </pre>
         </div>
         <div class="sb-preview-data">
@@ -2258,10 +2241,7 @@
         <iframe class="sb-component-preview"></iframe>
         <div class="sb-preview-code">
 <pre>
-    &lt;div class="main"&gt;
-      &lt;!-- <span data-simply-field="page"></span> --><br>
       <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=4></span>
-    &lt;/div>
 </pre>
         </div>
         <div class="sb-preview-data">
@@ -2270,6 +2250,52 @@
 </pre>
         </div>
       </div>
+    </template>
+    <template id="pagePreviewAppHead">
+        <div class="sb-preview-code sb-preview-app-head">
+<pre data-simply-field="app.pageFrame.htmlStart" data-simply-transformer="htmlEscape">
+&lt;!DOCTYPE HTML>
+&lt;html lang="en">
+</pre>
+<pre data-simply-field="app.pageFrame.headStart" data-simply-transformer="htmlEscape" data-indent=2>
+  &lt;head>
+    &lt;meta charset="utf-8">
+</pre>
+<div is="simply-component" rel="simplyPreviewComponentCss"></div>
+<div is="simply-component" rel="simplyPreviewHeadHtml"></div>
+<div is="simply-component" rel="simplyPreviewPageCss"></div>
+<pre data-simply-field="app.pageFrame.headEnd" data-simply-transformer="htmlEscape" data-indent=2>
+  &lt;/head>
+</pre>
+<pre data-simply-field="app.pageFrame.bodyStart" data-simply-transformer="htmlEscape" data-indent=2>
+  &lt;body>
+</pre>
+    <div is="simply-component" rel="simplyPreviewComponentHtmlTemplates"></div>
+<pre data-simply-field="app.pageFrame.bodyPagePreviewContentStart" data-simply-transformer="htmlEscape" data-indent=4>
+  &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
+    &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
+  &lt;/header&gt;
+  &lt;nav&gt;
+    &lt;div is="simply-component" rel="menu"&gt;&lt;/div&gt;
+  &lt;/nav&gt;
+  &lt;div class="main"&gt;
+</pre>
+      </div>
+    </template>
+    <template id="pagePreviewAppFoot">
+        <div class="sb-preview-code sb-preview-app-foot">
+<pre data-simply-field="app.pageFrame.bodyPagePreviewContentEnd" data-simply-transformer="htmlEscape" data-indent=4>
+  &lt;/div&gt;
+</pre>
+<div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+<div is="simply-component" rel="simplyPreviewFootHtml"></div>
+<pre data-simply-field="app.pageFrame.bodyEnd" data-simply-transformer="htmlEscape" data-indent=2>
+  &lt;/body>
+</pre>
+<pre data-simply-field="app.pageFrame.htmlEnd" data-simply-transformer="htmlEscape">
+&lt;/html>
+</pre>
+        </div>
     </template>
     <template id="simplyPreviewFullApp">
 <pre data-simply-field="app.pageFrame.htmlStart" data-simply-transformer="htmlEscape">
@@ -2459,18 +2485,17 @@
 </pre>
 <div is="simply-component" rel="simplyPreviewBodyHtml"></div>
 <div is="simply-component" rel="simplyPreviewComponentHtmlTemplates"></div>
-<pre data-simply-field="app.pageFrame.bodyContentStart" data-simply-transformer="htmlEscape" data-indent=2>
+<pre data-simply-field="app.pageFrame.bodyContentStart" data-simply-transformer="htmlEscape" data-indent=4>
   &lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
     &lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
   &lt;/header&gt;
   &lt;nav&gt;
     &lt;div is="simply-component" rel="menu"&gt;&lt;/div&gt;
   &lt;/nav&gt;
-  &lt;!-- FIXME: hier main van maken --&gt;
   &lt;div class="main" data-simply-field="page" data-simply-content="template"&gt;
 </pre>
 <div is="simply-component" rel="simplyPreviewPageHtmlTemplates"></div>
-<pre data-simply-field="app.pageFrame.bodyContentEnd" data-simply-transformer="htmlEscape" data-indent=2>
+<pre data-simply-field="app.pageFrame.bodyContentEnd" data-simply-transformer="htmlEscape" data-indent=4>
   &lt;/div>
 </pre>
 <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
@@ -2611,7 +2636,6 @@
     <nav>
       <div is="simply-component" rel="menu"></div>
     </nav>
-    <!-- FIXME: hier main van maken -->
     <div class="main" data-simply-field="page" data-simply-content="template">
       <!-- Page HTML templates -->
       <template data-simply-template="Edit base component">
