@@ -96,6 +96,18 @@
         position: absolute;
         background-color: white;
       }
+      /* simply dragdrop */
+      [data-simply-list].simply-dragdrop-receiving {
+        outline: 2px dashed green;
+      }
+      .sb-component [data-simply-list].sb-code-method.simply-empty:before {
+        content: "Nothing here yet... add or drop code blocks here.";
+        font-style: italic;
+      }
+      .sb-component [data-simply-list].sb-code-method:before {
+        content: "Drop code blocks here.";
+        font-style: italic;
+      }
     </style>
     <!-- /Component CSS -->
     <!-- Head HTML -->
@@ -1325,6 +1337,7 @@
                   </label>
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete action</button>
                 </div>
               </div>
@@ -1364,6 +1377,7 @@
                   <input class="sb-tab" data-simply-field="name" placeholder="Name">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
@@ -1404,6 +1418,7 @@
                   </label>
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete command</button>
                 </div>
               </div>
@@ -1443,6 +1458,7 @@
                   <input class="sb-tab" data-simply-field="name" placeholder="Name this CSS collection">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete CSS</button>
                 </div>
               </div>
@@ -1482,6 +1498,7 @@
                   </label>
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
@@ -1524,6 +1541,7 @@
                   <input class="sb-tab" data-simply-field="method" placeholder="API method name, eg getItemList">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete method</button>
                 </div>
               </div>
@@ -1555,6 +1573,7 @@
                   <input class="sb-tab" data-simply-field="dataSource" placeholder="Data source name, eg itemList">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete data source</button>
                 </div>
               </div>
@@ -1594,6 +1613,7 @@
                   <input class="sb-tab" data-simply-field="name" placeholder="Name">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
@@ -1626,6 +1646,7 @@
                   <input class="sb-tab" data-simply-field="name" placeholder="Name">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete head HTML</button>
                 </div>
               </div>
@@ -1658,6 +1679,7 @@
                   <input class="sb-tab" data-simply-field="name" placeholder="Name this CSS collection">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete CSS</button>
                 </div>
               </div>
@@ -1833,6 +1855,7 @@
                   </label>
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
                 </div>
               </div>
@@ -1867,6 +1890,7 @@
                   <input class="sb-tab" data-simply-field="name" placeholder="Test name">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete test</button>
                 </div>
               </div>
@@ -2032,6 +2056,7 @@
                   <input class="sb-tab" data-simply-field="method" placeholder="API method name, eg getItemList">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete method</button>
                 </div>
               </div>
@@ -2063,6 +2088,7 @@
                   <input class="sb-tab" data-simply-field="route" placeholder="#route/:variable">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete route</button>
                 </div>
               </div>
@@ -2094,6 +2120,7 @@
                   <input class="sb-tab" data-simply-field="sorter" placeholder="Sorter name, eg sortByDescription">
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete sorter</button>
                 </div>
               </div>
@@ -2133,6 +2160,7 @@
                   </label>
                 </div>
                 <div class="sb-options">
+                  <button class="sb-button" draggable="true">Drag me!</button>
                   <button class="sb-button" data-simply-command="deleteEntry">Delete transformer</button>
                 </div>
               </div>
@@ -3026,6 +3054,132 @@
           purgeTimer = window.setTimeout(purgeToasts, 200);
         }
       });
+    </script>
+    <!-- HTML5 drag drop for lists -->
+    <script>
+      simply.dragdrop = {
+        getDataBinding : function(el) {
+          if (el.dataBinding) {
+            return el.dataBinding;
+          } else {
+            return el.querySelector("[data-simply-field]").dataBinding; // FIXME: nested fields will go wrong this way;
+          }
+        },
+        getData : function(el) {
+          var dataBinding = simply.dragdrop.getDataBinding(el);
+          return dataBinding.config.data;
+        },
+        getListParent : function(el) {
+          while (el && !el.hasAttribute("data-simply-list")) {
+            if (el.parentNode && (el.parentNode.nodeType == document.ELEMENT_NODE)) {
+              el = el.parentNode;
+            } else {
+              el = false;
+            }
+          }
+          return el;
+        },
+        getListItemParent : function(el) {
+          while (el && !el.hasAttribute("data-simply-list-item")) {
+            if (el.parentNode && (el.parentNode.nodeType == document.ELEMENT_NODE)) {
+              el = el.parentNode;
+            } else {
+              el = false;
+            }
+          }
+          return el;
+        },
+        dragStart : function(event) {
+          var target = simply.dragdrop.getListItemParent(event.target);
+          var dataBinding = simply.dragdrop.getDataBinding(target);
+          localStorage.currentDragItem = dataBinding.config.parentKey;
+          localStorage.dragdrop = "dragStart";
+          document.currentDragItem = target;
+          // event.dataTransfer.effectAllowed = 'move';
+
+          event.dataTransfer.setData("application/json", JSON.stringify(simply.dragdrop.getData(target), true));
+          var simplyType = "simply/" + target.parentNode.dataBinding.config.key.toLowerCase();
+          event.dataTransfer.setData(simplyType, "1");
+          event.dataTransfer.setDragImage(event.target, 0, 0);
+
+          return true;
+        },
+        dragEnter : function(event) {
+          var listParent = simply.dragdrop.getListParent(event.target);
+          if (listParent) {
+            listParent.classList.add("simply-dragdrop-receiving");
+            event.preventDefault();
+            return true;
+          }
+        },
+        dragLeave : function(event) {
+          var listParent = simply.dragdrop.getListParent(event.target);
+          if (listParent) {
+            listParent.classList.remove("simply-dragdrop-receiving");
+          }
+          event.preventDefault();
+          return true;
+        },
+        dragOver : function(event) {
+          var listParent = simply.dragdrop.getListParent(event.target);
+          if (listParent) {
+            const isJson = event.dataTransfer.types.includes("application/json");
+            const expectedType = "simply/" + listParent.dataBinding.config.key.toLowerCase();
+            const isTypeAccepted = event.dataTransfer.types.includes(expectedType);
+            if (isJson && isTypeAccepted) {
+              event.preventDefault();
+            }
+          }
+        },
+        drop : function(event) {
+          var listParent = simply.dragdrop.getListParent(event.target);
+          var data = JSON.parse(event.dataTransfer.getData("application/json"));
+
+          listParent.classList.remove("simply-dragdrop-receiving");
+
+          const expectedType = "simply/" + listParent.dataBinding.config.key.toLowerCase();
+          const isTypeAccepted = event.dataTransfer.types.includes(expectedType);
+
+          if (listParent && isTypeAccepted) {
+            var data = JSON.parse(event.dataTransfer.getData("application/json"));
+            event.preventDefault();
+            let dropEffect = event.dataTransfer.dropEffect;
+
+            switch (dropEffect) {
+              case "move":
+                localStorage.dragdrop = "move";
+                let sourceElement = document.currentDragItem;
+                if (sourceElement) {
+                  sourceElement.remove();
+                }
+              break;
+              case "copy":
+              default:
+                // do nothing, leave the original item;
+              break;
+            }
+            listParent.dataBinding.get().push(data);
+            window.setTimeout(function() {
+              localStorage.currentDragItem = '';
+            }, 250);
+          }
+        }
+      };
+      window.addEventListener("storage", function(event) {
+        if((event.key == "dragdrop") && (event.newValue == "move")) {
+          var currentDragItem = localStorage.currentDragItem;
+          var dataBinding = simply.dragdrop.getDataBinding(document.currentDragItem);
+          if (dataBinding && dataBinding.config.parentKey == localStorage.currentDragItem) {
+            document.currentDragItem.remove();
+          }
+          document.currentDragItem = false;
+        }
+      });
+      document.addEventListener("dragstart", simply.dragdrop.dragStart);
+      document.addEventListener("dragenter", simply.dragdrop.dragEnter);
+      document.addEventListener("dragleave", simply.dragdrop.dragLeave);
+      document.addEventListener("dragover", simply.dragdrop.dragOver);
+      document.addEventListener("drop", simply.dragdrop.drop);
     </script>
     <!-- /Foot HTML -->
   </body>
