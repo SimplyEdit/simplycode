@@ -659,17 +659,43 @@
               .then(function() {
                 if (appData["routes"]) {
                   appData["routes"].sort(function(a, b) {
-                    if (a.route.length > b.route.length) {
+                    routeAWeight = simplyApp.actions.getRouteWeight(a);
+                    routeBWeight = simplyApp.actions.getRouteWeight(b);
+                    if (routeAWeight > routeBWeight) {
                       return -1;
-                    } else if (a.route.length < b.route.length) {
+                    } else if (routeAWeight < routeBWeight) {
                       return 1;
                     } else {
-                      return 0;
+                      if (a > b) {
+                        return -1;
+                      } else if (a < b) {
+                        return 1;
+                      } else {
+                        return 0;
+                      }
                     }
                   });
                 }
                 return appData;
               });
+            },
+            getRouteWeight : function(route) {
+              var pathicles = route.route.split("/");
+              var weight = "";
+              pathicles.forEach(function(pathicle) {
+                if (pathicle.length === 0) {
+                  return;
+                }
+                if (pathicle.match(/^:/)) {
+                  weight += "0";
+                } else {
+                  weight += "1";
+                }
+              });
+              if (weight == "") {
+                weight = -1;
+              }
+              return parseInt(weight);
             }
           },
           /* /Actions */
@@ -723,13 +749,10 @@
             autoRunTests : function(el) {
               var testRunners = document.querySelectorAll(".sb-component[open] iframe.qunit");
               testRunners.forEach(function(testRunner) {
-                simplyApp.commands.resetPreview(testRunner)
-                  .then(function(testRunner) {
-                  testRunner.contentWindow.document.testRunner = testRunner;
-                  testRunner.contentWindow.document.open();
-                  testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
-                  testRunner.contentWindow.document.close();
-                });
+                testRunner.contentWindow.document.testRunner = testRunner;
+                testRunner.contentWindow.document.open();
+                testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
+                testRunner.contentWindow.document.close();
               });
             },
             codeMirrorInit : function() {
@@ -1028,6 +1051,43 @@
           /* /Commands */
           /* Routes */
           routes: {
+            "#base/:component" : function(params) {
+              simplyApp.actions.getBaseComponent(params.component)
+                .then(function(parts) {
+                var component = {
+                  id : params.component
+                };
+            
+                parts = parts.filter(function(part) {
+                  if (part.id == "meta") {
+                    component = JSON.parse(part.contents);
+                    component.id = params.component;
+                    return false;
+                  }
+                  return true;
+                });
+                if (typeof component.parts === "undefined") {
+                  component.parts = {
+                    headHtml : [],
+                    bodyHtml : [],
+                    footHtml : [],
+                    commands : [],
+                    actions : [],
+                    routes : [],
+                    rawApi : []
+                  };
+                }
+                var count = {};
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                  count[part.id] = component.parts[part.id].length;
+                });
+                editor.pageData.component = component;
+                editor.pageData.parts = parts;
+                editor.pageData.count = count;
+                editor.pageData.page = "Edit base component";
+              });
+            },
             "#components/:component" : function(params) {
               editor.pageData.app = {};
               simplyApp.actions.getAppData()
@@ -1130,41 +1190,11 @@
                 }, 1000);
               });
             },
-            "#base/:component" : function(params) {
-              simplyApp.actions.getBaseComponent(params.component)
-                .then(function(parts) {
-                var component = {
-                  id : params.component
-                };
-            
-                parts = parts.filter(function(part) {
-                  if (part.id == "meta") {
-                    component = JSON.parse(part.contents);
-                    component.id = params.component;
-                    return false;
-                  }
-                  return true;
-                });
-                if (typeof component.parts === "undefined") {
-                  component.parts = {
-                    headHtml : [],
-                    bodyHtml : [],
-                    footHtml : [],
-                    commands : [],
-                    actions : [],
-                    routes : [],
-                    rawApi : []
-                  };
-                }
-                var count = {};
-                parts.forEach(function(part) {
-                  component.parts[part.id] = JSON.parse(part.contents);
-                  count[part.id] = component.parts[part.id].length;
-                });
-                editor.pageData.component = component;
-                editor.pageData.parts = parts;
-                editor.pageData.count = count;
-                editor.pageData.page = "Edit base component";
+            "#base" : function() {
+              simplyApp.actions.listBaseComponents()
+                .then(function(components) {
+                editor.pageData.components = components;
+                editor.pageData.page = "Base components";
               });
             },
             "#components" : function() {
@@ -1200,6 +1230,13 @@
                 editor.pageData.page = "Edit page frame";
               });
             },
+            "#pages" : function() {
+              simplyApp.actions.listPages()
+                .then(function(components) {
+                editor.pageData.components = components;
+                editor.pageData.page = "Pages";
+              });
+            },
             "#publish" : function() {
               editor.pageData.app = {};
               simplyApp.actions.getAppData()
@@ -1209,20 +1246,6 @@
               })
                 .then(function() {
                 simplyApp.commands.autoRunPreviews();
-              });
-            },
-            "#pages" : function() {
-              simplyApp.actions.listPages()
-                .then(function(components) {
-                editor.pageData.components = components;
-                editor.pageData.page = "Pages";
-              });
-            },
-            "#base" : function() {
-              simplyApp.actions.listBaseComponents()
-                .then(function(components) {
-                editor.pageData.components = components;
-                editor.pageData.page = "Base components";
               });
             },
             "/" : function() {
@@ -1981,6 +2004,9 @@
       <pre>
         &lt;script>
           QUnit.config.reorder = false;
+          QUnit.done(function() {
+              document.testRunner.style.height = document.body.offsetHeight + "px";
+          });
           QUnit.module("[Action] <span data-simply-field="action"></span>");
       </pre>
                   <div data-simply-list="tests">
@@ -2620,13 +2646,13 @@
       </div>
     </template>
     <!-- /Component HTML templates -->
-  <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
-    <template data-simply-template='Header' rel="header"></template>
-  </header>
-  <nav>
-    <div is="simply-component" rel="menu"></div>
-  </nav>
-  <div class="main" data-simply-field="page" data-simply-content="template">
+    <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
+      <template data-simply-template='Header' rel="header"></template>
+    </header>
+    <nav>
+      <div is="simply-component" rel="menu"></div>
+    </nav>
+    <div class="main" data-simply-field="page" data-simply-content="template">
     <!-- Page HTML templates -->
     <template data-simply-template="Edit base component">
         <main>
@@ -2800,7 +2826,7 @@
         </main>
     </template>
     <!-- /Page HTML templates -->
-  </div>
+    </div>
     <script src="/js/simply.everything.js"></script>
     <script src="/js/simply-edit.js" data-api-key="muze"></script>
     <script>
