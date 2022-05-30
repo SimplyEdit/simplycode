@@ -1,6 +1,8 @@
 Bugs:
 - Adding a style element in Additional Head HTML renders it in the body, which causes an error to be shown:
   Element “style” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+- QUnit tests are not running
+- Route ordering should be be weight;
 
 =====
 TODO:
@@ -22,6 +24,7 @@ TODO:
 [Code improvements]
 - Fix styling for tests within tabs
 - Have a way to generate style.css and extra.css
+- prettify JSON that is written to the API
 
 [Tests]
 - Add a place to add tests next to the code.
@@ -85,7 +88,6 @@ Misc backlogged ideas in categories:
 - Comments, documentation about components?
 - Search
 - Raw API: split out methods and properties
-- Sample app that is not simply-code
 - Includes for commands/actions/etc from other components, to make it clear that it is referenced (deleteEntry)
 - fix styling for mobile view (hamburger menu, overflows etc)
 
@@ -144,12 +146,16 @@ Done:
 [v] Add sorter editors
 [v] Add a 'sample data' part for components to show in preview (like the json tab in http://simplystyle.se.yvo.muze.nl/woonmatch/)
 [v] Add sample data to pages
+[v] Sample app that is not simply-code
+[v] Add option to setup the page frame, so the app doesn't have to have a header/nav part
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
 [v] after deleting a part, codemirror needs to reinitialize;
 [v] chrome doesn't render the simply-components
 [v] preview now renders the foot html, which causes a 'simplyApp not found' error in the component preview (moved to body html instead)
+[v] iframes have grey background, should default to white
+[v] Route ordering should be be weight;
 
 Won't fix:
 [x] Replace count items with CSS counters - Won't fix: turns out not to be a trivial fix. 
