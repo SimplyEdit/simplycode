@@ -2004,6 +2004,9 @@
       <pre>
         &lt;script>
           QUnit.config.reorder = false;
+          QUnit.done(function() {
+              document.testRunner.style.height = document.body.offsetHeight + "px";
+          });
           QUnit.module("[Action] <span data-simply-field="action"></span>");
       </pre>
                   <div data-simply-list="tests">
