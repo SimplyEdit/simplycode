@@ -32,6 +32,21 @@
       .sb-component summary span[data-count="0"]:after {
         content: '';
       }
+      /* simply dragdrop */
+      [data-simply-list].simply-dragdrop-receiving {
+        outline: 2px dashed var(--highlight-dark);
+      }
+      .sb-component [data-simply-list].sb-code-method.simply-empty:before {
+        content: "Nothing here yet... add or drop code blocks here.";
+        font-style: italic;
+      }
+      .sb-component [data-simply-list].sb-code-method:before {
+        content: "Drop code blocks here.";
+        font-style: italic;
+      }
+      [draggable] {
+         cursor: move;
+      }
       /* HTML validator */
       .sb-html-valid,
       .sb-html-invalid {
@@ -95,21 +110,6 @@
         transform-origin: top left;
         position: absolute;
         background-color: white;
-      }
-      /* simply dragdrop */
-      [data-simply-list].simply-dragdrop-receiving {
-        outline: 2px dashed green;
-      }
-      .sb-component [data-simply-list].sb-code-method.simply-empty:before {
-        content: "Nothing here yet... add or drop code blocks here.";
-        font-style: italic;
-      }
-      .sb-component [data-simply-list].sb-code-method:before {
-        content: "Drop code blocks here.";
-        font-style: italic;
-      }
-      [draggable] {
-         cursor: move;
       }
     </style>
     <!-- /Component CSS -->
@@ -3049,40 +3049,6 @@
         }
       });
     </script>
-    <!-- component-parts-count -->
-    <script>
-      document.addEventListener("simply-data-changed", function(event) {
-        if (event.data.dataBinding.parentKey == "/component/parts/") {
-          var list = event.data.arguments[0];
-          var length;
-          if (typeof(event.data.arguments[1]) === "undefined") {
-            length = 0;
-          } else {
-            length = event.data.arguments[1].length;
-          }
-          editor.pageData.count[list] = length;
-        }
-      });
-    </script>
-    <!-- toastAnimation -->
-    <script>
-      var purgeTimer;
-      function purgeToasts() {
-        editor.pageData.alerts = [];
-      }
-      document.addEventListener("animationend", function(evt) {
-        if (evt.animationName == "simply-toast-show") {
-          evt.target.setAttribute("data-state", "shown");
-          evt.target.classList.add("simply-toast-animated");
-        }
-        if (evt.animationName == "simply-toast-hide") {
-          if (purgeTimer) {
-            window.clearTimeout(purgeTimer);
-          }
-          purgeTimer = window.setTimeout(purgeToasts, 200);
-        }
-      });
-    </script>
     <!-- HTML5 drag drop for lists -->
     <script>
       simply.dragdrop = {
@@ -3208,6 +3174,40 @@
       document.addEventListener("dragleave", simply.dragdrop.dragLeave);
       document.addEventListener("dragover", simply.dragdrop.dragOver);
       document.addEventListener("drop", simply.dragdrop.drop);
+    </script>
+    <!-- component-parts-count -->
+    <script>
+      document.addEventListener("simply-data-changed", function(event) {
+        if (event.data.dataBinding.parentKey == "/component/parts/") {
+          var list = event.data.arguments[0];
+          var length;
+          if (typeof(event.data.arguments[1]) === "undefined") {
+            length = 0;
+          } else {
+            length = event.data.arguments[1].length;
+          }
+          editor.pageData.count[list] = length;
+        }
+      });
+    </script>
+    <!-- toastAnimation -->
+    <script>
+      var purgeTimer;
+      function purgeToasts() {
+        editor.pageData.alerts = [];
+      }
+      document.addEventListener("animationend", function(evt) {
+        if (evt.animationName == "simply-toast-show") {
+          evt.target.setAttribute("data-state", "shown");
+          evt.target.classList.add("simply-toast-animated");
+        }
+        if (evt.animationName == "simply-toast-hide") {
+          if (purgeTimer) {
+            window.clearTimeout(purgeTimer);
+          }
+          purgeTimer = window.setTimeout(purgeToasts, 200);
+        }
+      });
     </script>
     <!-- /Foot HTML -->
   </body>
