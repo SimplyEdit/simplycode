@@ -1,8 +1,6 @@
 Bugs:
 - Adding a style element in Additional Head HTML renders it in the body, which causes an error to be shown:
   Element “style” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
-- QUnit tests are not running
-- Route ordering should be be weight;
 
 =====
 TODO:
@@ -15,7 +13,6 @@ TODO:
 [New features]
 - Add an option for adding assets? in base components?
 - Have a way to reorganize code (sorting within a module, moving code from one module to another).
-- Compile in datasources
 - Compile in sorters
 - Do we want a deeper layered data structure, to accomodate orgs and projects?
   so www/api/data/{organization}/{project}/base-components etc;
@@ -148,6 +145,7 @@ Done:
 [v] Add sample data to pages
 [v] Sample app that is not simply-code
 [v] Add option to setup the page frame, so the app doesn't have to have a header/nav part
+[v] Compile in datasources
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky
@@ -160,3 +158,4 @@ Bugs fixed:
 Won't fix:
 [x] Replace count items with CSS counters - Won't fix: turns out not to be a trivial fix. 
 [x] Should HTML preview be a highlighted look (using static codemirror view) instead? - Won't fix: now previewing the app instead of the HTML;
+
