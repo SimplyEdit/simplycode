@@ -3051,7 +3051,8 @@
     </script>
     <script>
       window.addEventListener("simply-content-loaded", function() {
-        // load datasources
+        /* Data sources */
+        /* /Data sources */
       });
     </script>
     <!-- Foot HTML -->
@@ -3062,13 +3063,41 @@
           (event.data.dataBinding.parentKey == "/component/parts/") ||
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
+          // Handle changes of the part name
+          if (event.data.arguments[0] == "name") {
+            var newname = event.data.arguments[1];
+            var oldname = event.data.arguments[2];
+            var component = event.data.dataBinding.parentKey.split("/")[3];
+
+            editor.pageData.app[component].forEach(function(appPart) {
+              if (appPart.name == oldname) {
+                appPart.name = newname;
+              }
+            });
+          }
+
           if (typeof autoRunPreviewTimeout !== "undefined") {
             window.clearTimeout(autoRunPreviewTimeout);
           }
-          autoRunPreviewTimeout = window.setTimeout(
-            simplyApp.commands.autoRunPreviews,
-            500
-          );
+          autoRunPreviewTimeout = window.setTimeout(function() {
+            // Update the app data for the preview
+            for (component in editor.pageData.component.parts) {
+              editor.pageData.component.parts[component].forEach(function(part) {
+                var found = false;
+                editor.pageData.app[component].forEach(function(appPart) {
+                  if (appPart.name == part.name) {
+                    appPart.code = JSON.parse(JSON.stringify(part.code));
+                    found = true;
+                  }
+                });
+                if (!found) {
+                  editor.pageData.app[component].push(JSON.parse(JSON.stringify(part)));
+                }
+              });
+            }
+
+            simplyApp.commands.autoRunPreviews()
+          }, 500);
         }
       });
     </script>
