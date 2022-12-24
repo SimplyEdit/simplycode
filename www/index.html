@@ -591,6 +591,25 @@
               throw new Error("listBaseComponents failed", response.status);
             });
           },
+          deleteComponent : function(component) {
+            return simplyRawApi.delete("components/" + component)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteComponent failed", response.status);
+            });
+          },
+          deleteComponentPart : function(component, part) {
+            return simplyRawApi.delete("components/" + component + "/" + part)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              // throw new Error("deleteComponentPart failed", response.status);
+              // allowed while data upgrade is needed
+            });
+          },
           getComponent : function(component) {
             return simplyRawApi.get("components/" + component)
             .then(function(response) {
@@ -615,25 +634,6 @@
               throw new Error("saveComponentPart failed", response.status);
             });
           },
-          deleteComponent : function(component) {
-            return simplyRawApi.delete("components/" + component)
-            .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("deleteComponent failed", response.status);
-            });
-          },
-          deleteComponentPart : function(component, part) {
-            return simplyRawApi.delete("components/" + component + "/" + part)
-            .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              // throw new Error("deleteComponentPart failed", response.status);
-              // allowed while data upgrade is needed
-            });
-          },
           listComponents : function() {
             return simplyRawApi.get("components")
             .then(function(response) {
@@ -641,6 +641,25 @@
                 return response.json();
               }
               throw new Error("listComponents failed", response.status);
+            });
+          },
+          deletePage : function(component) {
+            return simplyRawApi.delete("pages/" + component)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteComponent failed", response.status);
+            });
+          },
+          deletePagePart : function(component, part) {
+            return simplyRawApi.delete("pages/" + component + "/" + part)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              // throw new Error("deletePagePart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           getPage : function(component) {
@@ -665,25 +684,6 @@
                 return response.json();
               }
               throw new Error("savePagePart failed", response.status);
-            });
-          },
-          deletePagePart : function(component, part) {
-            return simplyRawApi.delete("pages/" + component + "/" + part)
-            .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              // throw new Error("deletePagePart failed", response.status);
-              // allowed while data upgrade is needed
-            });
-          },
-          deletePage : function(component) {
-            return simplyRawApi.delete("pages/" + component)
-            .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("deleteComponent failed", response.status);
             });
           },
           savePageFramePart : function(part, contents) {
@@ -821,6 +821,9 @@
                 return [];
               });
             },
+            deleteComponent : function(component) {
+              return simplyDataApi.deleteComponent(component);
+            },
             getComponent : function(component) {
               return simplyDataApi.getComponent(component);
             },
@@ -847,14 +850,14 @@
                 return true;
               });
             },
-            deleteComponent : function(component) {
-              return simplyDataApi.deleteComponent(component);
-            },
             listComponents : function() {
               return simplyDataApi.listComponents()
               .catch(function(error) {
                 return [];
               });
+            },
+            deletePage : function(component) {
+              return simplyDataApi.deletePage(component);
             },
             getPage : function(component) {
               return simplyDataApi.getPage(component);
@@ -881,9 +884,6 @@
               .then(function() {
                 return true;
               });
-            },
-            deletePage : function(component) {
-              return simplyDataApi.deletePage(component);
             },
             getPageFrame : function() {
               return simplyDataApi.getPageFrame()
