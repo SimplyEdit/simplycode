@@ -185,10 +185,10 @@ class filesystem {
 		list($realdir, $realfile)=self::realpaths($dirname, $filename);
 		self::runChecks('delete', self::append($dirname,$filename), $realfile);
 		if ( file_exists($realfile ) ) {
-			if ( $filename ) {
-				unlink($realfile);
-			} else {
+			if ( is_dir($realfile) ) {
 				rmdir($realfile);
+			} else {
+				unlink($realfile);
 			}
 		} else {
 			throw new fsException('File not found '.self::append($dirname,$filename), 1051);
@@ -298,14 +298,14 @@ class filesystem {
 		// check owner and current user
 
 		$error = error_get_last();
-		throw new fsException('Directory '.$dirname.' is not writable: $error', 102);
+		throw new fsException("Directory $dirname is not writable: $error", 102);
 	}
 
 	private static function fileNotWritable($file)
 	{
 		// FIXME: try to find out why it is not writable
 		$error = error_get_last();
-		throw new fsException('File '.$file.' is not writeable: $error', 103);
+		throw new fsException("File $file is not writeable: $error", 103);
 	}
 
 	private static function renameFailed($file, $tempfile)

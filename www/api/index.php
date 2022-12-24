@@ -61,9 +61,8 @@
 				}
 				return true;
 			});
-			$result = [];
-			foreach ($files as $filename) {
-				deleteRecursive($path . "/" . $filename);
+			foreach ($files as $file) {
+				deleteRecursive($path . "/" . $file);
 			}
 			filesystem::delete($dirname, $filename);
 		} else {
