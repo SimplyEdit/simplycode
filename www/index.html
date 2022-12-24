@@ -456,6 +456,50 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                 break;
+                case "dataSources":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\-get.js$/)) {
+                        partId = partFile.id.replace(/\-get.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            dataSource : partId
+                          }
+                        }
+                        contents[partId]['get-code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\-set.js$/)) {
+                        partId = partFile.id.replace(/\-set.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            dataSource : partId
+                          }
+                        }
+                        contents[partId]['set-code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\-load.js$/)) {
+                        partId = partFile.id.replace(/\-load.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            dataSource : partId
+                          }
+                        }
+                        contents[partId]['load-code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\-save.js$/)) {
+                        partId = partFile.id.replace(/\-save.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            dataSource : partId
+                          }
+                        }
+                        contents[partId]['save-code'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                break;
               }
             });
             return component;
@@ -582,6 +626,37 @@
                         test['test-code']
                       ));
                     });
+                  }
+                });
+                break;
+              case "dataSources":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.dataSource) {
+                    throw new Error("Required part name is empty");
+                  }
+                  if (componentPart['get-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.dataSource + "-get.js", {},
+                      componentPart['get-code']
+                    ));
+                  }
+                  if (componentPart['set-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.dataSource + "-set.js", {},
+                      componentPart['set-code']
+                    ));
+                  }
+                  if (componentPart['load-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.dataSource + "-load.js", {},
+                      componentPart['load-code']
+                    ));
+                  }
+                  if (componentPart['save-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.dataSource + "-save.js", {},
+                      componentPart['save-code']
+                    ));
                   }
                 });
                 break;
