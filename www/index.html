@@ -292,6 +292,9 @@
                 return response.json();
               }
               throw new Error("getBaseComponent failed", response.status);
+            })
+            .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
             });
           },
           listBaseComponents : function() {
@@ -310,10 +313,39 @@
                 return response.json();
               }
               throw new Error("getComponent failed", response.status);
+            })
+            .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
             });
           },
           saveComponentPart : function(component, part, contents) {
-            return simplyRawApi.putRaw("components/" + component + "/" + part, {}, contents)
+            simplyDataApi.deleteComponentPart(component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+            .then(function() {
+              var result;
+              componentParts = JSON.parse(contents);
+
+              switch (part) {
+                case "routes":
+                  componentParts.forEach(function(componentPart) {
+                    if (!componentPart.name) {
+                      throw new Error("Required route name is empty");
+                    }
+                    return simplyRawApi.putRaw(
+                      "components/" + component + "/" + part + "/" + componentPart.name + ".json", {}, 
+                      JSON.stringify(componentPart.route)
+                    ).then(function() {
+                      return simplyRawApi.putRaw(
+                        "components/" + component + "/" + part + "/" + componentPart.name + ".js", {}, 
+                        componentPart.code
+                      );
+                    });
+                  });
+                  break;
+                default:
+                  return simplyRawApi.putRaw("components/" + component + "/" + part, {}, contents);
+                  break;
+              }
+            })
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -355,6 +387,9 @@
                 return response.json();
               }
               throw new Error("getPage failed", response.status);
+            })
+            .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
             });
           },
           savePagePart : function(component, part, contents) {
@@ -400,6 +435,9 @@
                 return response.json();
               }
               throw new Error("getPageFrame failed", response.status);
+            })
+            .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
             });
           },
           listPages : function() {
@@ -419,6 +457,40 @@
               }
               throw new Error("saveAppHtml failed", response.status);
             });
+          },
+          mergeComponent : function(component) {
+            // this function morphs the component parts for seperate files back into one structure.
+            component.forEach(function(componentPart) {
+              switch(componentPart.id) {
+                case "routes":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.json$/)) {
+                        partId = partFile.id.replace(/\.json$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            name : partId
+                          }
+                        }
+                        contents[partId]['route'] = JSON.parse(partFile.contents);
+                      }
+                      if (partFile.id.match(/\.js$/)) {
+                        partId = partFile.id.replace(/\.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            name : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                break;
+              }
+            });
+            return component;
           }
         };
         /* End of Data API */
