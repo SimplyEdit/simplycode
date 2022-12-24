@@ -249,6 +249,16 @@
 
         /* Data API */
         simplyDataApi = {
+          deletePart : function(basePath, part) {
+            switch (part) {
+              case "meta":
+                return simplyRawApi.delete(basePath + "/meta.json");
+              break;
+              default:
+                return simplyRawApi.delete(basePath + "/" + part);
+              break;
+            }
+          },
           mergeComponent : function(component) {
             // this function morphs the component parts for seperate files back into one structure.
             component.forEach(function(componentPart) {
@@ -450,16 +460,6 @@
             });
             return component;
           },
-          deletePart : function(basePath, part) {
-            switch (part) {
-              case "meta":
-                return simplyRawApi.delete(basePath + "/meta.json");
-              break;
-              default:
-                return simplyRawApi.delete(basePath + "/" + part);
-              break;
-            }
-          },
           savePart : function(basePath, part, contents) {
             contents = JSON.parse(contents);
             var results = [];
@@ -608,16 +608,13 @@
               throw new Error("browse failed", response.status);
             });
           },
-          saveBaseComponentPart : function(component, part, contents) {
-            simplyDataApi.deletePart("base-components/" + component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
-            .then(function() {
-              return simplyDataApi.savePart("base-components/" + component, part, contents);
-            })
+          deleteBaseComponent : function(component) {
+            return simplyRawApi.delete("base-components/" + component)
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
               }
-              throw new Error("saveBaseComponentPart failed", response.status);
+              throw new Error("deleteComponent failed", response.status);
             });
           },
           deleteBaseComponentPart : function(component, part) {
@@ -630,15 +627,6 @@
               // allowed while data upgrade is needed
             });
           },
-          deleteBaseComponent : function(component) {
-            return simplyRawApi.delete("base-components/" + component)
-            .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("deleteComponent failed", response.status);
-            });
-          },
           getBaseComponent : function(component) {
             return simplyRawApi.get("base-components/" + component)
             .then(function(response) {
@@ -649,6 +637,18 @@
             })
             .then(function(component) {
               return simplyDataApi.mergeComponent(component);
+            });
+          },
+          saveBaseComponentPart : function(component, part, contents) {
+            simplyDataApi.deletePart("base-components/" + component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+            .then(function() {
+              return simplyDataApi.savePart("base-components/" + component, part, contents);
+            })
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("saveBaseComponentPart failed", response.status);
             });
           },
           listBaseComponents : function() {
@@ -755,16 +755,14 @@
               throw new Error("savePagePart failed", response.status);
             });
           },
-          savePageFramePart : function(part, contents) {
-            simplyDataApi.deletePart("page-frame/", part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
-            .then(function() {
-              return simplyDataApi.savePart("page-frame/", part, contents);
-            })
+          deletePageFramePart : function(part) {
+            return simplyRawApi.delete("page-frame/" + part)
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
               }
-              throw new Error("savePageFramePart failed", response.status);
+              // throw new Error("deletePageFramePart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           getPageFrame : function() {
@@ -779,14 +777,16 @@
               return simplyDataApi.mergeComponent(component);
             });
           },
-          deletePageFramePart : function(part) {
-            return simplyRawApi.delete("page-frame/" + part)
+          savePageFramePart : function(part, contents) {
+            simplyDataApi.deletePart("page-frame/", part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+            .then(function() {
+              return simplyDataApi.savePart("page-frame/", part, contents);
+            })
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
               }
-              // throw new Error("deletePageFramePart failed", response.status);
-              // allowed while data upgrade is needed
+              throw new Error("savePageFramePart failed", response.status);
             });
           },
           listPages : function() {
@@ -855,6 +855,12 @@
                 return [];
               });
             },
+            deleteBaseComponent : function(component) {
+              return simplyDataApi.deleteBaseComponent(component);
+            },
+            getBaseComponent : function(component) {
+              return simplyDataApi.getBaseComponent(component);
+            },
             saveBaseComponent : function(component) {
               var promises = [];
               for (var name in component.parts) {
@@ -877,12 +883,6 @@
               .then(function() {
                 return true;
               });
-            },
-            deleteBaseComponent : function(component) {
-              return simplyDataApi.deleteBaseComponent(component);
-            },
-            getBaseComponent : function(component) {
-              return simplyDataApi.getBaseComponent(component);
             },
             listBaseComponents : function() {
               return simplyDataApi.listBaseComponents()
@@ -1323,16 +1323,6 @@
                 el.querySelector("ul").dataBinding.set(menu);
               });
             },
-            saveBaseComponent : function() {
-              simplyApp.actions.saveBaseComponent(editor.pageData.component)
-              .then(function() {
-                editor.pageData.alerts.unshift({
-                  "data-simply-template" : "info",
-                  "message" : "BaseComponent saved.",
-                  "state" : "new"
-                });
-              });
-            },
             deleteBaseComponent : function() {
               if (!confirm("Delete base component?")) {
                 return;
@@ -1349,6 +1339,16 @@
                 document.location.hash="base/";
               });
             },
+            saveBaseComponent : function() {
+              simplyApp.actions.saveBaseComponent(editor.pageData.component)
+              .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "BaseComponent saved.",
+                  "state" : "new"
+                });
+              });
+            },
             createBaseComponent : function() {
               var newComponent = editor.pageData.newComponent;
               simplyApp.actions.saveBaseComponent(newComponent)
@@ -1359,16 +1359,6 @@
                        "state" : "new"
                 });
                 document.location.hash="base/" + newComponent.id;
-              });
-            },
-            saveComponent : function() {
-              simplyApp.actions.saveComponent(editor.pageData.component)
-              .then(function() {
-                editor.pageData.alerts.unshift({
-                  "data-simply-template" : "info",
-                  "message" : "Component saved.",
-                  "state" : "new"
-                });
               });
             },
             deleteComponent : function() {
@@ -1387,6 +1377,16 @@
                 document.location.hash="components/";
               });
             },
+            saveComponent : function() {
+              simplyApp.actions.saveComponent(editor.pageData.component)
+              .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Component saved.",
+                  "state" : "new"
+                });
+              });
+            },
             createComponent : function() {
               var newComponent = editor.pageData.newComponent;
               simplyApp.actions.saveComponent(newComponent)
@@ -1397,16 +1397,6 @@
                        "state" : "new"
                 });
                 document.location.hash="components/" + newComponent.id;
-              });
-            },
-            savePage : function() {
-              simplyApp.actions.savePage(editor.pageData.component)
-              .then(function() {
-                editor.pageData.alerts.unshift({
-                  "data-simply-template" : "info",
-                  "message" : "Page saved.",
-                  "state" : "new"
-                });
               });
             },
             deletePage : function() {
@@ -1423,6 +1413,16 @@
                   "state" : "new"
                 });
                 document.location.hash="pages/";
+              });
+            },
+            savePage : function() {
+              simplyApp.actions.savePage(editor.pageData.component)
+              .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Page saved.",
+                  "state" : "new"
+                });
               });
             },
             savePageFrame : function() {
