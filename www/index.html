@@ -568,6 +568,23 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                 break;
+                case "sorters":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.js$/)) {
+                        partId = partFile.id.replace(/\.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            sorter : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                break;
               }
             });
             return component;
@@ -767,6 +784,17 @@
                       ));
                     });
                   }
+                });
+                break;
+              case "sorters":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.sorter) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.sorter + ".js", {},
+                    componentPart.code
+                  ));
                 });
                 break;
               default:
