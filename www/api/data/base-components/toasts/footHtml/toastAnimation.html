@@ -1,0 +1,18 @@
+<script>
+  var purgeTimer;
+  function purgeToasts() {
+    editor.pageData.alerts = [];
+  }
+  document.addEventListener("animationend", function(evt) {
+    if (evt.animationName == "simply-toast-show") {
+      evt.target.setAttribute("data-state", "shown");
+      evt.target.classList.add("simply-toast-animated");
+    }
+    if (evt.animationName == "simply-toast-hide") {
+      if (purgeTimer) {
+        window.clearTimeout(purgeTimer);
+      }
+      purgeTimer = window.setTimeout(purgeToasts, 200);
+    }
+  });
+</script>
