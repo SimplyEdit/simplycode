@@ -317,6 +317,16 @@ class filesystem {
 		return file_exists($realfile);
 	}
 
+	public static function is_dir($filename) {
+		$realfile = realpath(self::$basedir . $filename );
+		return is_dir($realfile);
+	}
+
+	public static function scandir($filename) {
+		$realfile = realpath(self::$basedir . $filename );
+		return scandir($realfile);
+	}
+
 	private static function passthru($dirname, $filename, $hash=null)
 	{
 		list($realdir,$realfile)=self::realpaths($dirname,$filename);
