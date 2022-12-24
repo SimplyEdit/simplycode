@@ -245,6 +245,75 @@
         /* End of Raw API */
         /* Data API */
         simplyDataApi = {
+          mergeComponent : function(component) {
+            // this function morphs the component parts for seperate files back into one structure.
+            component.forEach(function(componentPart) {
+              switch(componentPart.id) {
+                case "routes":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.json$/)) {
+                        partId = partFile.id.replace(/\.json$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            name : partId
+                          }
+                        }
+                        contents[partId]['route'] = JSON.parse(partFile.contents);
+                      }
+                      if (partFile.id.match(/\.js$/)) {
+                        partId = partFile.id.replace(/\.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            name : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
+              }
+            });
+            return component;
+          },
+          savePart : function(basePath, part, contents) {
+            contents = JSON.parse(contents);
+            var results = [];
+          
+            switch (part) {
+              case "routes":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.name) {
+                    throw new Error("Required route name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.name + ".json", {}, 
+                    JSON.stringify(componentPart.route)
+                  ).then(function() {
+                    return simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.name + ".js", {}, 
+                      componentPart.code
+                    );
+                  }));
+                });
+                return Promise.all(results)
+                  .then(function(responses) {
+                  for (var i=0; i<responses.length; i++) {
+                    if (responses[i].status !== 200) {
+                      return responses[i]; // return an error if we have one
+                    }
+                  }
+                  return responses[0];
+                });
+                break;
+              default:
+                return simplyRawApi.putRaw(basePath + "/" + part, {}, JSON.stringify(contents));
+                break;
+            }
+          },
           browse : function(path) {
             return simplyRawApi.get(path)
               .then(function(response) {
@@ -255,7 +324,10 @@
             });
           },
           saveBaseComponentPart : function(component, part, contents) {
-            return simplyRawApi.putRaw("base-components/" + component + "/" + part, {}, contents)
+            simplyDataApi.deleteBaseComponentPart(component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+              .then(function() {
+              return simplyDataApi.savePart("base-components/" + component, part, contents);
+            })
               .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -269,7 +341,8 @@
               if (response.status === 200) {
                 return response.json();
               }
-              throw new Error("deleteBaseComponentPart failed", response.status);
+              // throw new Error("deleteBaseComponentPart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           deleteBaseComponent : function(component) {
@@ -288,6 +361,9 @@
                 return response.json();
               }
               throw new Error("getBaseComponent failed", response.status);
+            })
+              .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
             });
           },
           listBaseComponents : function() {
@@ -306,16 +382,22 @@
                 return response.json();
               }
               throw new Error("getComponent failed", response.status);
+            })
+            .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
             });
           },
           saveComponentPart : function(component, part, contents) {
-              return simplyRawApi.putRaw("components/" + component + "/" + part, {}, contents)
+            simplyDataApi.deleteComponentPart(component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+              .then(function() {
+              return simplyDataApi.savePart("components/" + component, part, contents);
+            })
               .then(function(response) {
-                  if (response.status === 200) {
-                      return response.json();
-                  }
-                  throw new Error("saveComponentPart failed", response.status);
-              });
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("saveComponentPart failed", response.status);
+            });
           },
           deleteComponent : function(component) {
               return simplyRawApi.delete("components/" + component)
@@ -327,12 +409,13 @@
               });
           },
           deleteComponentPart : function(component, part) {
-            return simplyRawApi.delete("components/" + component + "/" + part)
+           return simplyRawApi.delete("components/" + component + "/" + part)
               .then(function(response) {
               if (response.status === 200) {
                 return response.json();
               }
-              throw new Error("deleteComponentPart failed", response.status);
+              // throw new Error("deleteComponentPart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           listComponents  : function() {
@@ -351,10 +434,16 @@
                 return response.json();
               }
               throw new Error("getPage failed", response.status);
+            })
+              .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
             });
           },
           savePagePart : function(component, part, contents) {
-            return simplyRawApi.putRaw("pages/" + component + "/" + part, {}, contents)
+            simplyDataApi.deletePagePart(component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+              .then(function() {
+              return simplyDataApi.savePart("pages/" + component, part, contents);
+            })
               .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -368,7 +457,8 @@
               if (response.status === 200) {
                 return response.json();
               }
-              throw new Error("deletePagePart failed", response.status);
+              //throw new Error("deletePagePart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           deletePage : function(component) {
@@ -381,7 +471,10 @@
             });
           },
           savePageFramePart : function(part, contents) {
-            return simplyRawApi.putRaw("page-frame/" + part, {}, contents)
+            simplyDataApi.deletePageFramePart(part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+              .then(function() {
+              return simplyDataApi.savePart("page-frame/", part, contents);
+            })
               .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -396,6 +489,19 @@
                 return response.json();
               }
               throw new Error("getPageFrame failed", response.status);
+            })
+              .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
+            });
+          },
+          deletePageFramePart : function(part) {
+            return simplyRawApi.delete("page-frame/" + part)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              // throw new Error("deletePageFramePart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           listPages : function() {
@@ -970,14 +1076,14 @@
               });
             },
             saveComponent : function() {
-                simplyApp.actions.saveComponent(editor.pageData.component)
-                .then(function() {
-                  editor.pageData.alerts.unshift({
-                    "data-simply-template" : "info",
-                    "message" : "Component saved.",
-                    "state" : "new"
-                  });
+              simplyApp.actions.saveComponent(editor.pageData.component)
+              .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Component saved.",
+                  "state" : "new"
                 });
+              });
             },
             deleteComponent : function() {
               if (!confirm("Delete component?")) {
