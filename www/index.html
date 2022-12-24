@@ -253,6 +253,9 @@
             // this function morphs the component parts for seperate files back into one structure.
             component.forEach(function(componentPart) {
               switch(componentPart.id) {
+                case "meta.json":
+                  componentPart.id = "meta";
+                  break;
                 case "routes":
                   if (typeof componentPart.contents === "object") {
                     var contents = {};
@@ -288,6 +291,9 @@
             var results = [];
 
             switch (part) {
+              case "meta":
+                return simplyRawApi.putRaw(basePath + "/meta.json", {}, JSON.stringify(contents));
+                break;
               case "routes":
                 contents.forEach(function(componentPart) {
                   if (!componentPart.name) {
