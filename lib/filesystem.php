@@ -296,13 +296,16 @@ class filesystem {
 		// check if dirname is a directory
 		// check permissions on dirname
 		// check owner and current user
-		throw new fsException('Directory '.$dirname.' is not writable', 102);
+
+		$error = error_get_last();
+		throw new fsException('Directory '.$dirname.' is not writable: $error', 102);
 	}
 
 	private static function fileNotWritable($file)
 	{
 		// FIXME: try to find out why it is not writable
-		throw new fsException('File '.$file.' is not writeable', 103);
+		$error = error_get_last();
+		throw new fsException('File '.$file.' is not writeable: $error', 103);
 	}
 
 	private static function renameFailed($file, $tempfile)
@@ -375,7 +378,7 @@ class filesystem {
 
 	private static function lock($filename)
 	{
-		for ($retryCount=0; $retryCount < 4; $retryCount++) {
+		for ($retryCount=1; $retryCount < 5; $retryCount++) {
 			$fp = fopen($filename.'.lock', 'w');
 			if ( $fp && flock($fp, LOCK_EX ) ) {
 				return [
@@ -383,7 +386,7 @@ class filesystem {
 					'filename' => $filename
 				];
 			} else {
-				sleep(0.2);
+				sleep(0.2 * $retryCount);
 			}
 		}
 		return false;
