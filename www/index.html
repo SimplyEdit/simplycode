@@ -3193,7 +3193,7 @@
               editor.pageData.component.parts[component].forEach(function(part) {
                 var found = false;
                 editor.pageData.app[component].forEach(function(appPart) {
-                  if (part.name && appPart.name == part.name) {
+                  if (part.name && (appPart.name == part.name)) {
                     appPart.code = JSON.parse(JSON.stringify(part.code));
                     found = true;
                   }
