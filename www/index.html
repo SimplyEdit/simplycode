@@ -357,7 +357,7 @@
                   if (typeof componentPart.contents === "object") {
                     var contents = {};
                     componentPart.contents.forEach(function(partFile) {
-                      if (partFile.id.match(/\.css$/)) {
+                      if (partFile.id.match(/\.js$/)) {
                         partId = partFile.id.replace(/\.js$/, '');
                         if (typeof contents[partId] === "undefined") {
                           contents[partId] = {
