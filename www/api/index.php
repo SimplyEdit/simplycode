@@ -56,7 +56,7 @@
 				output('ok',200);
 			break;
 			case 'GET':
-				if (filesystem::exists($path)) {
+				if (filesystem::exists($dirname . "/" . $filename)) {
 					$result = readRecursive($path);
 					output($result, 200);
 				} else {
