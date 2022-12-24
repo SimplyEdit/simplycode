@@ -1,0 +1,12 @@
+{
+  "components": [
+    {
+      "id": "thing-component",
+      "description": "A thing component"
+    },
+    {
+      "id": "another-thing",
+      "description": "Another thing"
+    }
+  ]
+}

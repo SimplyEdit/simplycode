@@ -278,6 +278,76 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                   break;
+                case "componentCss":
+                case "pageCss":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.css$/)) {
+                        partId = partFile.id.replace(/\.css$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            name : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
+                case "componentTemplates":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.html$/)) {
+                        partId = partFile.id.replace(/\.html$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            component : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\.json$/)) {
+                        partId = partFile.id.replace(/\.json$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            component : partId
+                          }
+                        }
+                        contents[partId]['sampledata'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
+                case "pageTemplates":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.html$/)) {
+                        partId = partFile.id.replace(/\.html$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            page : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\.json$/)) {
+                        partId = partFile.id.replace(/\.json$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            page : partId
+                          }
+                        }
+                        contents[partId]['sampledata'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
               }
             });
             return component;
@@ -293,32 +363,77 @@
               case "routes":
                 contents.forEach(function(componentPart) {
                   if (!componentPart.name) {
-                    throw new Error("Required route name is empty");
+                    throw new Error("Required part name is empty");
                   }
                   results.push(simplyRawApi.putRaw(
                     basePath + "/" + part + "/" + componentPart.name + ".json", {}, 
                     JSON.stringify(componentPart.route)
-                  ).then(function() {
-                    return simplyRawApi.putRaw(
-                      basePath + "/" + part + "/" + componentPart.name + ".js", {}, 
-                      componentPart.code
-                    );
-                  }));
+                  ));
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.name + ".js", {}, 
+                    componentPart.code
+                  ));
                 });
-                return Promise.all(results)
-                  .then(function(responses) {
-                  for (var i=0; i<responses.length; i++) {
-                    if (responses[i].status !== 200) {
-                      return responses[i]; // return an error if we have one
-                    }
+                break;
+              case "componentCss":
+              case "pageCss":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.name) {
+                    throw new Error("Required part name is empty");
                   }
-                  return responses[0];
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.name + ".css", {}, 
+                    componentPart.code
+                  ));
+                });
+                break;
+              case "componentTemplates":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.component) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.component + ".html", {}, 
+                    componentPart.code
+                  ));
+                  if (componentPart.sampledata) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.component + ".json", {}, 
+                      componentPart.sampledata
+                    ));
+                  }
+                });
+                break;
+              case "pageTemplates":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.page) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.page + ".html", {}, 
+                    componentPart.code
+                  ));
+                  if (componentPart.sampledata) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.page + ".json", {}, 
+                      componentPart.sampledata
+                    ));
+                  }
                 });
                 break;
               default:
-                return simplyRawApi.putRaw(basePath + "/" + part, {}, JSON.stringify(contents));
+                results.push(simplyRawApi.putRaw(basePath + "/" + part, {}, JSON.stringify(contents)));
                 break;
             }
+            return Promise.all(results)
+              .then(function(responses) {
+              for (var i=0; i<responses.length; i++) {
+                if (responses[i].status !== 200) {
+                  return responses[i]; // return an error if we have one
+                }
+              }
+              return responses[0];
+            });
           },
           browse : function(path) {
             return simplyRawApi.get(path)

@@ -1,0 +1,46 @@
+<details class="sb-component">
+  <summary data-simply-command="initEditors" title="Actions provide the internal API for the app to use. It is called by routes and commands, and makes use of the Data API. Actions should not do any DOM access.">
+    <span data-simply-field="count.actions" data-simply-content="attributes" data-simply-attributes="data-count">
+      Actions
+    </span>
+    <span class="sb-controls">
+      <button class="sb-button" data-simply-command="addAction">Add action</button>
+    </span>
+  </summary>
+  <div class="sb-code-method" data-simply-list="component.parts.actions">
+    <template>
+      <div class="sb-part">
+        <div class="sb-part-header">
+          <div class="sb-tabs">
+            <input class="sb-tab" data-simply-field="action" placeholder="Action name, eg getItemList">
+            <label class="sb-tab">
+              <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
+              <span>Code</span>
+            </label>
+            <label class="sb-tab">
+              <input type="radio" name="actionEditor" value="tests" data-simply-field="editor">
+              <span>Tests</span>
+            </label>
+          </div>
+          <div class="sb-options">
+			<button class="sb-button" draggable="true">Drag to move</button>
+            <button class="sb-button" data-simply-command="deleteEntry">Delete action</button>
+          </div>
+        </div>
+        <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+          <template data-simply-template="code">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+              <div is="simply-component" rel="componentQUnitActionRunner"></div>
+            </div>
+          </template>
+          <template data-simply-template="tests">
+            <div class="sb-editor-code">
+              <div is="simply-component" rel="componentQUnitTests"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+  </div>
+</details>
