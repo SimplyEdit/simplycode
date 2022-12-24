@@ -1,1 +1,0 @@
-[{"route":"#base","code":"function() {\n  simplyApp.actions.listBaseComponents()\n    .then(function(components) {\n    editor.pageData.components = components;\n    editor.pageData.page = \"Base components\";\n  });\n}","name":"base-components"}]

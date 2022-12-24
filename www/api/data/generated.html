@@ -1230,45 +1230,6 @@
                 return [];
               });
             },
-            saveAppHtml : function(appHtml) {
-              return simplyDataApi.saveAppHtml(appHtml);
-            },
-            getBaseComponents : function() {
-              var promises = [];
-              return simplyApp.actions.listBaseComponents()
-                .then(function(baseComponents) {
-                baseComponents.forEach(function(baseComponent) {
-                  promises.push(simplyApp.actions.getBaseComponent(baseComponent.id));
-                });
-              })
-                .then(function() {
-                return Promise.all(promises);
-              });
-            },
-            getComponents : function() {
-              var promises = [];
-              return simplyApp.actions.listComponents()
-                .then(function(components) {
-                components.forEach(function(component) {
-                  promises.push(simplyApp.actions.getComponent(component.id));
-                });
-              })
-                .then(function() {
-                return Promise.all(promises);
-              });
-            },
-            getPages : function() {
-              var promises = [];
-              return simplyApp.actions.listPages()
-                .then(function(pages) {
-                pages.forEach(function(page) {
-                  promises.push(simplyApp.actions.getPage(page.id));
-                });
-              })
-                .then(function() {
-                return Promise.all(promises);
-              });
-            },
             getAppData : function() {
               var appData = {
               };
@@ -1333,6 +1294,42 @@
                 return appData;
               });
             },
+            getBaseComponents : function() {
+              var promises = [];
+              return simplyApp.actions.listBaseComponents()
+                .then(function(baseComponents) {
+                baseComponents.forEach(function(baseComponent) {
+                  promises.push(simplyApp.actions.getBaseComponent(baseComponent.id));
+                });
+              })
+                .then(function() {
+                return Promise.all(promises);
+              });
+            },
+            getComponents : function() {
+              var promises = [];
+              return simplyApp.actions.listComponents()
+                .then(function(components) {
+                components.forEach(function(component) {
+                  promises.push(simplyApp.actions.getComponent(component.id));
+                });
+              })
+                .then(function() {
+                return Promise.all(promises);
+              });
+            },
+            getPages : function() {
+              var promises = [];
+              return simplyApp.actions.listPages()
+                .then(function(pages) {
+                pages.forEach(function(page) {
+                  promises.push(simplyApp.actions.getPage(page.id));
+                });
+              })
+                .then(function() {
+                return Promise.all(promises);
+              });
+            },
             getRouteWeight : function(route) {
               var pathicles = route.route.split("/");
               var weight = "";
@@ -1350,6 +1347,9 @@
                 weight = -1;
               }
               return parseInt(weight);
+            },
+            saveAppHtml : function(appHtml) {
+              return simplyDataApi.saveAppHtml(appHtml);
             }
           },
           /* /Actions */
