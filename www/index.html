@@ -3662,12 +3662,16 @@
             for (component in editor.pageData.component.parts) {
               editor.pageData.component.parts[component].forEach(function(part) {
                 var found = false;
-                editor.pageData.app[component].forEach(function(appPart) {
-                  if (part.name && (appPart.name == part.name)) {
-                    appPart.code = JSON.parse(JSON.stringify(part.code));
-                    found = true;
-                  }
-                });
+                if (editor.pageData.app[component]) {
+                  editor.pageData.app[component].forEach(function(appPart) {
+                    if (part.name && (appPart.name == part.name)) {
+                      appPart.code = JSON.parse(JSON.stringify(part.code));
+                      found = true;
+                    }
+                  });
+                } else {
+                  editor.pageData.app[component] = [];
+                }
                 if (!found) {
                   editor.pageData.app[component].push(JSON.parse(JSON.stringify(part)));
                 }
