@@ -370,6 +370,45 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                 break;
+                case "actions":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.js$/)) {
+                        partId = partFile.id.replace(/\.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            action : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/^tests$/)) {
+                        tests = {};
+                        partFile.contents.forEach(function(testSet) {
+                          testSetPartId = testSet.id;
+                          if (typeof contents[testSetPartId] === "undefined") {
+                            contents[testSetPartId] = {
+                              action : testSetPartId
+                            }
+                          }
+                          testSet.contents.forEach(function(test) {
+                            if (typeof tests[testSet.id] === "undefined") {
+                              tests[testSet.id] = [];
+                            }
+                            tests[testSet.id].push({
+                              name : test.id,
+                              "test-code" : test.contents
+                            });
+                          });
+                          contents[testSet.id]['tests'] = Object.values(tests[testSet.id]);
+                        });
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                break;
+
               }
             });
             return component;
@@ -453,6 +492,28 @@
                     basePath + "/" + part + "/" + componentPart.method + ".js", {}, 
                     componentPart.code
                   ));
+                });
+                break;
+              case "actions":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.action) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.action + ".js", {}, 
+                    componentPart.code
+                  ));
+                  if (componentPart.tests) {
+                    componentPart.tests.forEach(function(test) {
+                      if (!test.name) {
+                        throw new Error("Required test name is empty");
+                      }
+                      results.push(simplyRawApi.putRaw(
+                        basePath + "/" + part + "/tests/" + componentPart.action + "/" + test.name + ".js", {}, 
+                        test['test-code']
+                      ));
+                    });
+                  }
                 });
                 break;
               default:
