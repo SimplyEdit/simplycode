@@ -37,6 +37,7 @@
 				if (filesystem::exists($path . '/' . $filename . '/meta.json')) {
 					$data = json_decode(filesystem::read($path . '/' . $filename, "meta.json"), true);
 				}
+
 				$data['id'] = $filename;
 				$data['ctime'] = filesystem::ctime($path, $filename);
 				$data['ctime-human'] = strftime("%c", $data['ctime']);
@@ -45,16 +46,7 @@
 			}
 			return $result;
 		} else {
-			$result = [];
-			$result['id'] = $filename;
-
-			$result['ctime'] = filesystem::ctime($dirname, $filename);
-			$result['ctime-human'] = strftime("%c", $result['ctime']);
-			$result['mtime'] = filesystem::mtime($dirname, $filename);
-			$result['mtime-human'] = strftime("%c", $result['mtime']);
-			$result['contents'] = filesystem::read($dirname, $filename);
-
-			return $result;
+			return filesystem::read($dirname, $filename);
 		}
     }
 
