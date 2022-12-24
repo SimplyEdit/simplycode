@@ -746,7 +746,13 @@
                   previewRunner.contentWindow.document.write(document.querySelector(".sb-preview-app-foot").innerText);
                   previewRunner.contentWindow.document.close();
                   previewRunner.contentWindow.addEventListener("simply-content-loaded", function() {
-                    previewRunner.contentWindow.editor.pageData = JSON.parse(previewRunner.parentNode.querySelector(".sb-preview-data").innerText);
+                    var previewData = previewRunner.parentNode.querySelector(".sb-preview-data").innerText;
+                    try {
+                      previewData = JSON.parse(previewData);
+                    } catch(e) {
+                      previewData = {};
+                    }
+                    previewRunner.contentWindow.editor.pageData = previewData;
                   });
                 });
               });
@@ -3084,7 +3090,7 @@
               editor.pageData.component.parts[component].forEach(function(part) {
                 var found = false;
                 editor.pageData.app[component].forEach(function(appPart) {
-                  if (appPart.name == part.name) {
+                  if (part.name && (appPart.name == part.name)) {
                     appPart.code = JSON.parse(JSON.stringify(part.code));
                     found = true;
                   }
