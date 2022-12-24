@@ -496,6 +496,27 @@
                         }
                         contents[partId]['save-code'] = partFile.contents;
                       }
+                      if (partFile.id.match(/^tests$/)) {
+                        tests = {};
+                        partFile.contents.forEach(function(testSet) {
+                          testSetPartId = testSet.id;
+                          if (typeof contents[testSetPartId] === "undefined") {
+                            contents[testSetPartId] = {
+                              dataSource : testSetPartId
+                            }
+                          }
+                          testSet.contents.forEach(function(test) {
+                            if (typeof tests[testSet.id] === "undefined") {
+                              tests[testSet.id] = [];
+                            }
+                            tests[testSet.id].push({
+                              name : test.id,
+                              "test-code" : test.contents
+                            });
+                          });
+                          contents[testSet.id]['tests'] = Object.values(tests[testSet.id]);
+                        });
+                      }
                     });
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
@@ -657,6 +678,17 @@
                       basePath + "/" + part + "/" + componentPart.dataSource + "-save.js", {},
                       componentPart['save-code']
                     ));
+                  }
+                  if (componentPart.tests) {
+                    componentPart.tests.forEach(function(test) {
+                      if (!test.name) {
+                        throw new Error("Required test name is empty");
+                      }
+                      results.push(simplyRawApi.putRaw(
+                        basePath + "/" + part + "/tests/" + componentPart.dataSource + "/" + test.name + ".js", {},
+                        test['test-code']
+                      ));
+                    });
                   }
                 });
                 break;
