@@ -100,9 +100,11 @@
 							filesystem::delete($path, $file);
 						}
 						filesystem::delete($path);
+						sleep(0.5);
 						output('deleted', 200);
 					} else {
 						filesystem::delete($dirname, $filename);
+						sleep(0.5);
 						output('deleted', 200);
 					}
 				} else {
