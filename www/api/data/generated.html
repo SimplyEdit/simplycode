@@ -403,7 +403,7 @@
                               tests[testSet.id] = [];
                             }
                             tests[testSet.id].push({
-                              name : test.id,
+                              name : test.id.replace(/\.js$/, ''),
                               "test-code" : test.contents
                             });
                           });
@@ -441,7 +441,7 @@
                               tests[testSet.id] = [];
                             }
                             tests[testSet.id].push({
-                              name : test.id,
+                              name : test.id.replace(/\.js$/, ''),
                               "test-code" : test.contents
                             });
                           });
@@ -452,9 +452,165 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                   break;
+                case "dataSources":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\-get.js$/)) {
+                        partId = partFile.id.replace(/\-get.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            dataSource : partId
+                          }
+                        }
+                        contents[partId]['get-code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\-set.js$/)) {
+                        partId = partFile.id.replace(/\-set.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            dataSource : partId
+                          }
+                        }
+                        contents[partId]['set-code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\-load.js$/)) {
+                        partId = partFile.id.replace(/\-load.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            dataSource : partId
+                          }
+                        }
+                        contents[partId]['load-code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\-save.js$/)) {
+                        partId = partFile.id.replace(/\-save.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            dataSource : partId
+                          }
+                        }
+                        contents[partId]['save-code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/^tests$/)) {
+                        tests = {};
+                        partFile.contents.forEach(function(testSet) {
+                          testSetPartId = testSet.id;
+                          if (typeof contents[testSetPartId] === "undefined") {
+                            contents[testSetPartId] = {
+                              dataSource : testSetPartId
+                            }
+                          }
+                          testSet.contents.forEach(function(test) {
+                            if (typeof tests[testSet.id] === "undefined") {
+                              tests[testSet.id] = [];
+                            }
+                            tests[testSet.id].push({
+                              name : test.id.replace(/\.js$/, ''),
+                              "test-code" : test.contents
+                            });
+                          });
+                          contents[testSet.id]['tests'] = Object.values(tests[testSet.id]);
+                        });
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
+                case "transformers":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\-render.js$/)) {
+                        partId = partFile.id.replace(/\-render.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            transformer : partId
+                          }
+                        }
+                        contents[partId]['render-code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\-extract.js$/)) {
+                        partId = partFile.id.replace(/\-extract.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            transformer : partId
+                          }
+                        }
+                        contents[partId]['extract-code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/^tests$/)) {
+                        tests = {};
+                        partFile.contents.forEach(function(testSet) {
+                          testSetPartId = testSet.id;
+                          if (typeof contents[testSetPartId] === "undefined") {
+                            contents[testSetPartId] = {
+                              transformer : testSetPartId
+                            }
+                          }
+                          testSet.contents.forEach(function(test) {
+                            if (typeof tests[testSet.id] === "undefined") {
+                              tests[testSet.id] = [];
+                            }
+                            tests[testSet.id].push({
+                              name : test.id.replace(/\.js$/, ''),
+                              "test-code" : test.contents
+                            });
+                          });
+                          contents[testSet.id]['tests'] = Object.values(tests[testSet.id]);
+                        });
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
+                case "sorters":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.js$/)) {
+                        partId = partFile.id.replace(/\.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            sorter : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
+                case "headHtml":
+                case "bodyHtml":
+                case "footHtml":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.html$/)) {
+                        partId = partFile.id.replace(/\.html$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            name : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
               }
             });
             return component;
+          },
+          mergePageFrame : function(component) {
+            var contents = {};
+            component.contents.forEach(function(partFile) {
+              if (partFile.id.match(/\.html$/)) {
+                partFile.id = partFile.id.replace(/\.html$/, '');
+              }
+            });
           },
           savePart : function(basePath, part, contents) {
             contents = JSON.parse(contents);
@@ -579,6 +735,102 @@
                       ));
                     });
                   }
+                });
+                break;
+              case "dataSources":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.dataSource) {
+                    throw new Error("Required part name is empty");
+                  }
+                  if (componentPart['get-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.dataSource + "-get.js", {},
+                      componentPart['get-code']
+                    ));
+                  }
+                  if (componentPart['set-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.dataSource + "-set.js", {},
+                      componentPart['set-code']
+                    ));
+                  }
+                  if (componentPart['load-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.dataSource + "-load.js", {},
+                      componentPart['load-code']
+                    ));
+                  }
+                  if (componentPart['save-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.dataSource + "-save.js", {},
+                      componentPart['save-code']
+                    ));
+                  }
+                  if (componentPart.tests) {
+                    componentPart.tests.forEach(function(test) {
+                      if (!test.name) {
+                        throw new Error("Required test name is empty");
+                      }
+                      results.push(simplyRawApi.putRaw(
+                        basePath + "/" + part + "/tests/" + componentPart.dataSource + "/" + test.name + ".js", {},
+                        test['test-code']
+                      ));
+                    });
+                  }
+                });
+                break;
+              case "transformers":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.transformer) {
+                    throw new Error("Required part name is empty");
+                  }
+                  if (componentPart['render-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.transformer + "-render.js", {},
+                      componentPart['render-code']
+                    ));
+                  }
+                  if (componentPart['extract-code']) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.transformer + "-extract.js", {},
+                      componentPart['extract-code']
+                    ));
+                  }
+                  if (componentPart.tests) {
+                    componentPart.tests.forEach(function(test) {
+                      if (!test.name) {
+                        throw new Error("Required test name is empty");
+                      }
+                      results.push(simplyRawApi.putRaw(
+                        basePath + "/" + part + "/tests/" + componentPart.transformer + "/" + test.name + ".js", {},
+                        test['test-code']
+                      ));
+                    });
+                  }
+                });
+                break;
+              case "sorters":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.sorter) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.sorter + ".js", {},
+                    componentPart.code
+                  ));
+                });
+                break;
+              case "headHtml":
+              case "bodyHtml":
+              case "footHtml":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.name) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.name + ".html", {},
+                    componentPart.code
+                  ));
                 });
                 break;
               default:
@@ -770,14 +1022,14 @@
               throw new Error("getPageFrame failed", response.status);
             })
               .then(function(component) {
-              return simplyDataApi.mergeComponent(component);
+              return simplyDataApi.mergePageFrame(component);
             });
           },
           savePageFramePart : function(part, contents) {
-            simplyDataApi.deletePart("page-frame/", part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
-              .then(function() {
-              return simplyDataApi.savePart("page-frame/", part, contents);
-            })
+            if (part == "meta") {
+              return '"ok"';
+            }
+            return simplyDataApi.savePart("page-frame", part + ".html", contents)
               .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -3139,13 +3391,13 @@
       </div>
     </template>
     <!-- /Component HTML templates -->
-    <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
-      <template data-simply-template='Header' rel="header"></template>
-    </header>
-    <nav>
-      <div is="simply-component" rel="menu"></div>
-    </nav>
-    <div class="main" data-simply-field="page" data-simply-content="template">
+  <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
+    <template data-simply-template='Header' rel="header"></template>
+  </header>
+  <nav>
+    <div is="simply-component" rel="menu"></div>
+  </nav>
+  <div class="main" data-simply-field="page" data-simply-content="template">
     <!-- Page HTML templates -->
     <template data-simply-template="Edit base component">
         <main>
@@ -3319,7 +3571,7 @@
         </main>
     </template>
     <!-- /Page HTML templates -->
-    </div>
+  </div>
     <script src="/js/simply.everything.js"></script>
     <script src="/js/simply-edit.js" data-api-key="muze"></script>
     <script>
@@ -3467,7 +3719,7 @@
               }
             });
           }
-          
+    
           if (typeof autoRunPreviewTimeout !== "undefined") {
             window.clearTimeout(autoRunPreviewTimeout);
           }
@@ -3476,12 +3728,16 @@
             for (component in editor.pageData.component.parts) {
               editor.pageData.component.parts[component].forEach(function(part) {
                 var found = false;
-                editor.pageData.app[component].forEach(function(appPart) {
-                  if (part.name && (appPart.name == part.name)) {
-                    appPart.code = JSON.parse(JSON.stringify(part.code));
-                    found = true;
-                  }
-                });
+                if (editor.pageData.app[component]) {
+                  editor.pageData.app[component].forEach(function(appPart) {
+                    if (part.name && (appPart.name == part.name)) {
+                      appPart.code = JSON.parse(JSON.stringify(part.code));
+                      found = true;
+                    }
+                  });
+                } else {
+                  editor.pageData.app[component] = [];
+                }
                 if (!found) {
                   editor.pageData.app[component].push(JSON.parse(JSON.stringify(part)));
                 }

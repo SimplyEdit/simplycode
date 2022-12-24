@@ -123,6 +123,102 @@ function(basePath, part, contents) {
         }
       });
       break;
+    case "dataSources":
+      contents.forEach(function(componentPart) {
+        if (!componentPart.dataSource) {
+          throw new Error("Required part name is empty");
+        }
+        if (componentPart['get-code']) {
+          results.push(simplyRawApi.putRaw(
+            basePath + "/" + part + "/" + componentPart.dataSource + "-get.js", {},
+            componentPart['get-code']
+          ));
+        }
+        if (componentPart['set-code']) {
+          results.push(simplyRawApi.putRaw(
+            basePath + "/" + part + "/" + componentPart.dataSource + "-set.js", {},
+            componentPart['set-code']
+          ));
+        }
+        if (componentPart['load-code']) {
+          results.push(simplyRawApi.putRaw(
+            basePath + "/" + part + "/" + componentPart.dataSource + "-load.js", {},
+            componentPart['load-code']
+          ));
+        }
+        if (componentPart['save-code']) {
+          results.push(simplyRawApi.putRaw(
+            basePath + "/" + part + "/" + componentPart.dataSource + "-save.js", {},
+            componentPart['save-code']
+          ));
+        }
+        if (componentPart.tests) {
+          componentPart.tests.forEach(function(test) {
+            if (!test.name) {
+              throw new Error("Required test name is empty");
+            }
+            results.push(simplyRawApi.putRaw(
+              basePath + "/" + part + "/tests/" + componentPart.dataSource + "/" + test.name + ".js", {},
+              test['test-code']
+            ));
+          });
+        }
+      });
+      break;
+    case "transformers":
+      contents.forEach(function(componentPart) {
+        if (!componentPart.transformer) {
+          throw new Error("Required part name is empty");
+        }
+        if (componentPart['render-code']) {
+          results.push(simplyRawApi.putRaw(
+            basePath + "/" + part + "/" + componentPart.transformer + "-render.js", {},
+            componentPart['render-code']
+          ));
+        }
+        if (componentPart['extract-code']) {
+          results.push(simplyRawApi.putRaw(
+            basePath + "/" + part + "/" + componentPart.transformer + "-extract.js", {},
+            componentPart['extract-code']
+          ));
+        }
+        if (componentPart.tests) {
+          componentPart.tests.forEach(function(test) {
+            if (!test.name) {
+              throw new Error("Required test name is empty");
+            }
+            results.push(simplyRawApi.putRaw(
+              basePath + "/" + part + "/tests/" + componentPart.transformer + "/" + test.name + ".js", {},
+              test['test-code']
+            ));
+          });
+        }
+      });
+      break;
+    case "sorters":
+      contents.forEach(function(componentPart) {
+        if (!componentPart.sorter) {
+          throw new Error("Required part name is empty");
+        }
+        results.push(simplyRawApi.putRaw(
+          basePath + "/" + part + "/" + componentPart.sorter + ".js", {},
+          componentPart.code
+        ));
+      });
+      break;
+    case "headHtml":
+    case "bodyHtml":
+    case "footHtml":
+      contents.forEach(function(componentPart) {
+        if (!componentPart.name) {
+          throw new Error("Required part name is empty");
+        }
+        results.push(simplyRawApi.putRaw(
+          basePath + "/" + part + "/" + componentPart.name + ".html", {},
+          componentPart.code
+        ));
+      });
+      break;
     default:
       results.push(simplyRawApi.putRaw(basePath + "/" + part, {}, JSON.stringify(contents)));
       break;

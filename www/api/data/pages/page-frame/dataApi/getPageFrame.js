@@ -7,6 +7,6 @@ function() {
     throw new Error("getPageFrame failed", response.status);
   })
     .then(function(component) {
-    return simplyDataApi.mergeComponent(component);
+    return simplyDataApi.mergePageFrame(component);
   });
 }
