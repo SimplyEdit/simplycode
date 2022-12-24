@@ -407,7 +407,7 @@
                               tests[testSet.id] = [];
                             }
                             tests[testSet.id].push({
-                              name : test.id,
+                              name : test.id.replace(/\.js$/, '');,
                               "test-code" : test.contents
                             });
                           });
@@ -445,7 +445,7 @@
                               tests[testSet.id] = [];
                             }
                             tests[testSet.id].push({
-                              name : test.id,
+                              name : test.id.replace(/\.js$/, '');,
                               "test-code" : test.contents
                             });
                           });
@@ -510,7 +510,7 @@
                               tests[testSet.id] = [];
                             }
                             tests[testSet.id].push({
-                              name : test.id,
+                              name : test.id.replace(/\.js$/, '');,
                               "test-code" : test.contents
                             });
                           });
@@ -557,7 +557,7 @@
                               tests[testSet.id] = [];
                             }
                             tests[testSet.id].push({
-                              name : test.id,
+                              name : test.id.replace(/\.js$/, '');,
                               "test-code" : test.contents
                             });
                           });
