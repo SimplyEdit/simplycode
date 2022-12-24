@@ -345,7 +345,8 @@
               if (response.status === 200) {
                 return response.json();
               }
-              throw new Error("deleteBaseComponentPart failed", response.status);
+              // throw new Error("deleteBaseComponentPart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           deleteBaseComponent : function(component) {
@@ -418,6 +419,7 @@
                 return response.json();
               }
               // throw new Error("deleteComponentPart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           listComponents : function() {
@@ -459,7 +461,8 @@
               if (response.status === 200) {
                 return response.json();
               }
-              throw new Error("deletePagePart failed", response.status);
+              // throw new Error("deletePagePart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           deletePage : function(component) {
@@ -483,15 +486,6 @@
               throw new Error("savePageFramePart failed", response.status);
             });
           },
-          deletePageFramePart : function(part) {
-            return simplyRawApi.delete("page-frame/" + part)
-            .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("deletePageFramePart failed", response.status);
-            });
-          },
           getPageFrame : function() {
             return simplyRawApi.get("page-frame")
             .then(function(response) {
@@ -502,6 +496,16 @@
             })
             .then(function(component) {
               return simplyDataApi.mergeComponent(component);
+            });
+          },
+          deletePageFramePart : function(part) {
+            return simplyRawApi.delete("page-frame/" + part)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              // throw new Error("deletePageFramePart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           listPages : function() {
