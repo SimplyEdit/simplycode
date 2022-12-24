@@ -300,6 +300,58 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                 break;
+                case "componentTemplates":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.html$/)) {
+                        partId = partFile.id.replace(/\.html$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            component : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\.json$/)) {
+                        partId = partFile.id.replace(/\.json$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            component : partId
+                          }
+                        }
+                        contents[partId]['sampledata'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                break;
+                case "pageTemplates":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.html$/)) {
+                        partId = partFile.id.replace(/\.html$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            page : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/\.json$/)) {
+                        partId = partFile.id.replace(/\.json$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            page : partId
+                          }
+                        }
+                        contents[partId]['sampledata'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                break;
               }
             });
             return component;
@@ -320,12 +372,11 @@
                   results.push(simplyRawApi.putRaw(
                     basePath + "/" + part + "/" + componentPart.name + ".json", {}, 
                     JSON.stringify(componentPart.route)
-                  ).then(function() {
-                    return simplyRawApi.putRaw(
+                  ));
+                  results.push(simplyRawApi.putRaw(
                       basePath + "/" + part + "/" + componentPart.name + ".js", {}, 
                       componentPart.code
-                    );
-                  }));
+                  ));
                 });
                 break;
               case "componentCss":
@@ -338,6 +389,40 @@
                     basePath + "/" + part + "/" + componentPart.name + ".css", {}, 
                     componentPart.code
                   ));
+                });
+                break;
+              case "componentTemplates":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.component) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.component + ".html", {}, 
+                    componentPart.code
+                  ));
+                  if (componentPart.sampledata) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.component + ".json", {}, 
+                      componentPart.sampledata
+                    ));
+                  }
+                });
+                break;
+              case "pageTemplates":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.page) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.page + ".html", {}, 
+                    componentPart.code
+                  ));
+                  if (componentPart.sampledata) {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.page + ".json", {}, 
+                      componentPart.sampledata
+                    ));
+                  }
                 });
                 break;
               default:
