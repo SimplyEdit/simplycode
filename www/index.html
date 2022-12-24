@@ -132,10 +132,21 @@
         simply.bind = false;
         /* Raw API */
         var simplyRawApi = {
-          url : "/api/",
-          headers : {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+          delete : function(endpoint, params={}) {
+            if (!params.token && editor.pageData.token) {
+              params.token = editor.pageData.token;
+            }
+            if (params.token) {
+              this.headers['Authorization'] = "Bearer " + params.token;
+              delete params.token;
+            } else {
+              delete this.headers.Authentication;
+            }
+            return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
+              mode : 'cors',
+              headers: this.headers,
+              method: "DELETE"
+            });
           },
           encodeGetParams : function(params) {
             if (!params) {
@@ -159,6 +170,10 @@
               mode : 'cors',
               headers: this.headers
             });
+          },
+          headers : {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
           },
           post : function(endpoint, params={}) {
             if (!params.token && editor.pageData.token) {
@@ -228,22 +243,7 @@
               body: body
             });
           },
-          delete : function(endpoint, params={}) {
-            if (!params.token && editor.pageData.token) {
-              params.token = editor.pageData.token;
-            }
-            if (params.token) {
-              this.headers['Authorization'] = "Bearer " + params.token;
-              delete params.token;
-            } else {
-              delete this.headers.Authentication;
-            }
-            return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
-              mode : 'cors',
-              headers: this.headers,
-              method: "DELETE"
-            });
-          }
+          url : "/api/"
         };
         /* End of Raw API */
 
