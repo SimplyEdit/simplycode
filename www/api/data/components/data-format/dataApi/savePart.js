@@ -79,6 +79,28 @@ function(basePath, part, contents) {
         ));
       });
       break;
+    case "actions":
+      contents.forEach(function(componentPart) {
+        if (!componentPart.action) {
+          throw new Error("Required part name is empty");
+        }
+        results.push(simplyRawApi.putRaw(
+          basePath + "/" + part + "/" + componentPart.action + ".js", {}, 
+          componentPart.code
+        ));
+        if (componentPart.tests) {
+          componentPart.tests.forEach(function(test) {
+            if (!test.name) {
+              throw new Error("Required test name is empty");
+            }
+            results.push(simplyRawApi.putRaw(
+              basePath + "/" + part + "/tests/" + componentPart.action + "/" + test.name + ".js", {}, 
+              test['test-code']
+            ));
+          });
+        }
+      });
+      break;
     default:
       results.push(simplyRawApi.putRaw(basePath + "/" + part, {}, JSON.stringify(contents)));
       break;

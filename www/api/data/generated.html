@@ -366,6 +366,45 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                   break;
+                case "actions":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.js$/)) {
+                        partId = partFile.id.replace(/\.js$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            action : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                      if (partFile.id.match(/^tests$/)) {
+                        tests = {};
+                        partFile.contents.forEach(function(testSet) {
+                          testSetPartId = testSet.id;
+                          if (typeof contents[testSetPartId] === "undefined") {
+                            contents[testSetPartId] = {
+                              action : testSetPartId
+                            }
+                          }
+                          testSet.contents.forEach(function(test) {
+                            if (typeof tests[testSet.id] === "undefined") {
+                              tests[testSet.id] = [];
+                            }
+                            tests[testSet.id].push({
+                              name : test.id,
+                              "test-code" : test.contents
+                            });
+                          });
+                          contents[testSet.id]['tests'] = Object.values(tests[testSet.id]);
+                        });
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
+          
               }
             });
             return component;
@@ -451,6 +490,28 @@
                   ));
                 });
                 break;
+              case "actions":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.action) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.action + ".js", {}, 
+                    componentPart.code
+                  ));
+                  if (componentPart.tests) {
+                    componentPart.tests.forEach(function(test) {
+                      if (!test.name) {
+                        throw new Error("Required test name is empty");
+                      }
+                      results.push(simplyRawApi.putRaw(
+                        basePath + "/" + part + "/tests/" + componentPart.action + "/" + test.name + ".js", {}, 
+                        test['test-code']
+                      ));
+                    });
+                  }
+                });
+                break;
               default:
                 results.push(simplyRawApi.putRaw(basePath + "/" + part, {}, JSON.stringify(contents)));
                 break;
@@ -526,6 +587,25 @@
               throw new Error("listBaseComponents failed", response.status);
             });
           },
+          deleteComponent : function(component) {
+              return simplyRawApi.delete("components/" + component)
+              .then(function(response) {
+                  if (response.status === 200) {
+                      return response.json();
+                  }
+                  throw new Error("deleteComponent failed", response.status);
+              });
+          },
+          deleteComponentPart : function(component, part) {
+           return simplyRawApi.delete("components/" + component + "/" + part)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              // throw new Error("deleteComponentPart failed", response.status);
+              // allowed while data upgrade is needed
+            });
+          },
           getComponent : function(component) {
             return simplyRawApi.get("components/" + component)
             .then(function(response) {
@@ -550,25 +630,6 @@
               throw new Error("saveComponentPart failed", response.status);
             });
           },
-          deleteComponent : function(component) {
-              return simplyRawApi.delete("components/" + component)
-              .then(function(response) {
-                  if (response.status === 200) {
-                      return response.json();
-                  }
-                  throw new Error("deleteComponent failed", response.status);
-              });
-          },
-          deleteComponentPart : function(component, part) {
-           return simplyRawApi.delete("components/" + component + "/" + part)
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              // throw new Error("deleteComponentPart failed", response.status);
-              // allowed while data upgrade is needed
-            });
-          },
           listComponents  : function() {
             return simplyRawApi.get("components")
             .then(function(response) {
@@ -576,6 +637,25 @@
                 return response.json();
               }
               throw new Error("listComponents failed", response.status);
+            });
+          },
+          deletePage : function(component) {
+            return simplyRawApi.delete("pages/" + component)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteComponent failed", response.status);
+            });
+          },
+          deletePagePart : function(component, part) {
+            return simplyRawApi.delete("pages/" + component + "/" + part)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              //throw new Error("deletePagePart failed", response.status);
+              // allowed while data upgrade is needed
             });
           },
           getPage : function(component) {
@@ -600,25 +680,6 @@
                 return response.json();
               }
               throw new Error("savePagePart failed", response.status);
-            });
-          },
-          deletePagePart : function(component, part) {
-            return simplyRawApi.delete("pages/" + component + "/" + part)
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              //throw new Error("deletePagePart failed", response.status);
-              // allowed while data upgrade is needed
-            });
-          },
-          deletePage : function(component) {
-            return simplyRawApi.delete("pages/" + component)
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("deleteComponent failed", response.status);
             });
           },
           savePageFramePart : function(part, contents) {
@@ -755,6 +816,9 @@
                 return [];
               });
             },
+            deleteComponent : function(component) {
+                return simplyDataApi.deleteComponent(component);
+            },
             getComponent : function(component) {
               return simplyDataApi.getComponent(component);
             },
@@ -781,14 +845,14 @@
                 return true;
               });
             },
-            deleteComponent : function(component) {
-                return simplyDataApi.deleteComponent(component);
-            },
             listComponents  : function() {
               return simplyDataApi.listComponents()
                 .catch(function(error) {
                 return [];
               });
+            },
+            deletePage : function(component) {
+              return simplyDataApi.deletePage(component);
             },
             getPage : function(component) {
               return simplyDataApi.getPage(component);
@@ -815,9 +879,6 @@
                 .then(function() {
                 return true;
               });
-            },
-            deletePage : function(component) {
-              return simplyDataApi.deletePage(component);
             },
             getPageFrame : function() {
               return simplyDataApi.getPageFrame()
