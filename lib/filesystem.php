@@ -331,6 +331,7 @@ class filesystem {
 	{
 		list($realdir,$realfile)=self::realpaths($dirname,$filename);
 		$lock = self::lock($realfile);
+
 		if ( !$lock ) {
 			throw new fsException('Could not lock '.$dirname.$filename.' for writing', 109);
 		}
@@ -374,12 +375,16 @@ class filesystem {
 
 	private static function lock($filename)
 	{
-		$fp = fopen($filename.'.lock', 'w');
-		if ( $fp && flock($fp, LOCK_EX ) ) {
-			return [
-				'resource' => $fp,
-				'filename' => $filename
-			];
+		for ($retryCount=0; $retryCount < 4; $retryCount++) {
+			$fp = fopen($filename.'.lock', 'w');
+			if ( $fp && flock($fp, LOCK_EX ) ) {
+				return [
+					'resource' => $fp,
+					'filename' => $filename
+				];
+			} else {
+				sleep(0.2);
+			}
 		}
 		return false;
 	}
