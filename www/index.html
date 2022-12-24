@@ -585,9 +585,36 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                 break;
+                case "headHtml":
+                case "bodyHtml":
+                case "footHtml":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.html$/)) {
+                        partId = partFile.id.replace(/\.html$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            name : partId
+                          }
+                        }
+                        contents[partId]['code'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                break;
               }
             });
             return component;
+          },
+          mergePageFrame : function(component) {
+            var contents = {};
+            component.contents.forEach(function(partFile) {
+              if (partFile.id.match(/\.html$/)) {
+                partFile.id = partFile.id.replace(/\.html$/, '');
+              }
+            });
           },
           savePart : function(basePath, part, contents) {
             contents = JSON.parse(contents);
@@ -797,6 +824,19 @@
                   ));
                 });
                 break;
+              case "headHtml":
+              case "bodyHtml":
+              case "footHtml":
+                contents.forEach(function(componentPart) {
+                  if (!componentPart.name) {
+                    throw new Error("Required part name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.name + ".html", {},
+                    componentPart.code
+                  ));
+                });
+                break;
               default:
                 results.push(simplyRawApi.putRaw(basePath + "/" + part, {}, JSON.stringify(contents)));
                 break;
@@ -986,14 +1026,14 @@
               throw new Error("getPageFrame failed", response.status);
             })
             .then(function(component) {
-              return simplyDataApi.mergeComponent(component);
+              return simplyDataApi.mergePageFrame(component);
             });
           },
           savePageFramePart : function(part, contents) {
-            simplyDataApi.deletePart("page-frame/", part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
-            .then(function() {
-              return simplyDataApi.savePart("page-frame/", part, contents);
-            })
+            if (part == "meta") {
+              return '"ok"';
+            }
+            return simplyDataApi.savePart("page-frame", part + ".html", contents)
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
