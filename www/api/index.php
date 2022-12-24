@@ -18,7 +18,7 @@
 		return sprintf('%03d-%03d', mt_rand(0, 999), mt_rand(0, 999));
 	}
 
-    function readRecursive($path) {
+	function readRecursive($path) {
 		$dirname  = dirname($path);
 		$filename = basename($path);
 		if (filesystem::is_dir($path)) {
@@ -48,7 +48,28 @@
 		} else {
 			return filesystem::read($dirname, $filename);
 		}
-    }
+	}
+
+	function deleteRecursive($path) {
+		$dirname  = dirname($path);
+		$filename = basename($path);
+		if (filesystem::is_dir($path)) {
+			$files = filesystem::scandir($path);
+			$files = array_filter($files, function($file) {
+				if ($file == '.' || $file == '..') {
+					return false;
+				}
+				return true;
+			});
+			$result = [];
+			foreach ($files as $filename) {
+				deleteRecursive($path . "/" . $filename);
+			}
+			filesystem::delete($dirname, $filename);
+		} else {
+			filesystem::delete($dirname, $filename);
+		}
+	}
 
 	try {
 		switch($request['method']) {
@@ -88,27 +109,10 @@
 			break;
 			case 'DELETE':
 				if (filesystem::exists($path) || filesystem::exists($dirname . "/" . $filename)) {
-					if (filesystem::is_dir($path)) {
-						$files = filesystem::scandir($path);
-						$files = array_filter($files, function($file) {
-							if ($file == '.' || $file == '..') {
-								return false;
-							}
-							return true;
-						});
-						foreach ($files as $file) {
-							filesystem::delete($path, $file);
-						}
-						filesystem::delete($path);
-						sleep(0.5);
-						output('deleted', 200);
-					} else {
-						filesystem::delete($dirname, $filename);
-						sleep(0.5);
-						output('deleted', 200);
-					}
+					deleteRecursive($path);
+					output("deleted", 200);
 				} else {
-					output('not found', 4040);
+					filenotfound($path);
 				}
 			break;
 		}
