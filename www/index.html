@@ -259,7 +259,10 @@
             });
           },
           saveBaseComponentPart : function(component, part, contents) {
-            return simplyRawApi.putRaw("base-components/" + component + "/" + part, {}, contents)
+            simplyDataApi.deleteBaseComponentPart(component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+            .then(function() {
+              return simplyDataApi.savePart("base-components/" + component, part, contents);
+            })
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -318,33 +321,45 @@
               return simplyDataApi.mergeComponent(component);
             });
           },
+          savePart : function(basePath, part, contents) {
+            var results = [];
+            componentParts = JSON.parse(contents);
+
+            switch (part) {
+              case "routes":
+                componentParts.forEach(function(componentPart) {
+                  if (!componentPart.name) {
+                    throw new Error("Required route name is empty");
+                  }
+                  results.push(simplyRawApi.putRaw(
+                    basePath + "/" + part + "/" + componentPart.name + ".json", {}, 
+                    JSON.stringify(componentPart.route)
+                  ).then(function() {
+                    return simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.name + ".js", {}, 
+                      componentPart.code
+                    );
+                  }));
+                });
+                return Promise.all(results)
+                .then(function(responses) {
+                  for (var i=0; i<responses.length; i++) {
+                    if (responses[i].status !== 200) {
+                      return responses[i]; // return an error if we have one
+                    }
+                  }
+                  return responses[0];
+                });
+                break;
+              default:
+                return simplyRawApi.putRaw(basePath + "/" + part, {}, contents);
+                break;
+            }
+          },
           saveComponentPart : function(component, part, contents) {
             simplyDataApi.deleteComponentPart(component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
             .then(function() {
-              var result;
-              componentParts = JSON.parse(contents);
-
-              switch (part) {
-                case "routes":
-                  componentParts.forEach(function(componentPart) {
-                    if (!componentPart.name) {
-                      throw new Error("Required route name is empty");
-                    }
-                    return simplyRawApi.putRaw(
-                      "components/" + component + "/" + part + "/" + componentPart.name + ".json", {}, 
-                      JSON.stringify(componentPart.route)
-                    ).then(function() {
-                      return simplyRawApi.putRaw(
-                        "components/" + component + "/" + part + "/" + componentPart.name + ".js", {}, 
-                        componentPart.code
-                      );
-                    });
-                  });
-                  break;
-                default:
-                  return simplyRawApi.putRaw("components/" + component + "/" + part, {}, contents);
-                  break;
-              }
+              return simplyDataApi.savePart("components/" + component, part, contents);
             })
             .then(function(response) {
               if (response.status === 200) {
@@ -393,7 +408,10 @@
             });
           },
           savePagePart : function(component, part, contents) {
-            return simplyRawApi.putRaw("pages/" + component + "/" + part, {}, contents)
+            simplyDataApi.deletePagePart(component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+            .then(function() {
+              return simplyDataApi.savePart("pages/" + component, part, contents);
+            })
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -420,12 +438,24 @@
             });
           },
           savePageFramePart : function(part, contents) {
-            return simplyRawApi.putRaw("page-frame/" + part, {}, contents)
+            simplyDataApi.deletePageFramePart(part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
+            .then(function() {
+              return simplyDataApi.savePart("page-frame/", part, contents);
+            })
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
               }
               throw new Error("savePageFramePart failed", response.status);
+            });
+          },
+          deletePageFramePart : function(part) {
+            return simplyRawApi.delete("page-frame/" + part)
+            .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deletePageFramePart failed", response.status);
             });
           },
           getPageFrame : function() {
