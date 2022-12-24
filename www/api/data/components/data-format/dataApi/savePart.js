@@ -12,11 +12,11 @@ function(basePath, part, contents) {
           throw new Error("Required part name is empty");
         }
         results.push(simplyRawApi.putRaw(
-          basePath + "/" + part + "/" + componentPart.name + ".json", {}, 
+          basePath + "/" + part + "/" + componentPart.name + ".json", {},
           JSON.stringify(componentPart.route)
         ));
         results.push(simplyRawApi.putRaw(
-          basePath + "/" + part + "/" + componentPart.name + ".js", {}, 
+          basePath + "/" + part + "/" + componentPart.name + ".js", {},
           componentPart.code
         ));
       });
@@ -28,7 +28,7 @@ function(basePath, part, contents) {
           throw new Error("Required part name is empty");
         }
         results.push(simplyRawApi.putRaw(
-          basePath + "/" + part + "/" + componentPart.name + ".css", {}, 
+          basePath + "/" + part + "/" + componentPart.name + ".css", {},
           componentPart.code
         ));
       });
@@ -39,12 +39,12 @@ function(basePath, part, contents) {
           throw new Error("Required part name is empty");
         }
         results.push(simplyRawApi.putRaw(
-          basePath + "/" + part + "/" + componentPart.component + ".html", {}, 
+          basePath + "/" + part + "/" + componentPart.component + ".html", {},
           componentPart.code
         ));
         if (componentPart.sampledata) {
           results.push(simplyRawApi.putRaw(
-            basePath + "/" + part + "/" + componentPart.component + ".json", {}, 
+            basePath + "/" + part + "/" + componentPart.component + ".json", {},
             componentPart.sampledata
           ));
         }
@@ -56,12 +56,12 @@ function(basePath, part, contents) {
           throw new Error("Required part name is empty");
         }
         results.push(simplyRawApi.putRaw(
-          basePath + "/" + part + "/" + componentPart.page + ".html", {}, 
+          basePath + "/" + part + "/" + componentPart.page + ".html", {},
           componentPart.code
         ));
         if (componentPart.sampledata) {
           results.push(simplyRawApi.putRaw(
-            basePath + "/" + part + "/" + componentPart.page + ".json", {}, 
+            basePath + "/" + part + "/" + componentPart.page + ".json", {},
             componentPart.sampledata
           ));
         }
@@ -74,7 +74,7 @@ function(basePath, part, contents) {
           throw new Error("Required part name is empty");
         }
         results.push(simplyRawApi.putRaw(
-          basePath + "/" + part + "/" + componentPart.method + ".js", {}, 
+          basePath + "/" + part + "/" + componentPart.method + ".js", {},
           componentPart.code
         ));
       });
@@ -85,7 +85,7 @@ function(basePath, part, contents) {
           throw new Error("Required part name is empty");
         }
         results.push(simplyRawApi.putRaw(
-          basePath + "/" + part + "/" + componentPart.action + ".js", {}, 
+          basePath + "/" + part + "/" + componentPart.action + ".js", {},
           componentPart.code
         ));
         if (componentPart.tests) {
@@ -94,7 +94,29 @@ function(basePath, part, contents) {
               throw new Error("Required test name is empty");
             }
             results.push(simplyRawApi.putRaw(
-              basePath + "/" + part + "/tests/" + componentPart.action + "/" + test.name + ".js", {}, 
+              basePath + "/" + part + "/tests/" + componentPart.action + "/" + test.name + ".js", {},
+              test['test-code']
+            ));
+          });
+        }
+      });
+      break;
+    case "commands":
+      contents.forEach(function(componentPart) {
+        if (!componentPart.command) {
+          throw new Error("Required part name is empty");
+        }
+        results.push(simplyRawApi.putRaw(
+          basePath + "/" + part + "/" + componentPart.command + ".js", {},
+          componentPart.code
+        ));
+        if (componentPart.tests) {
+          componentPart.tests.forEach(function(test) {
+            if (!test.name) {
+              throw new Error("Required test name is empty");
+            }
+            results.push(simplyRawApi.putRaw(
+              basePath + "/" + part + "/tests/" + componentPart.command + "/" + test.name + ".js", {},
               test['test-code']
             ));
           });
