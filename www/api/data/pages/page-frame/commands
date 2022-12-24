@@ -1,1 +1,0 @@
-[{"command":"savePageFrame","editor":"code","code":"function() {\n  simplyApp.actions.savePageFrame(editor.pageData.component)\n    .then(function() {\n    editor.pageData.alerts.unshift({\n      \"data-simply-template\" : \"info\",\n      \"message\" : \"Page frame saved.\",\n      \"state\" : \"new\"\n    });\n  });\n}","tests":[]}]
