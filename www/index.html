@@ -911,6 +911,12 @@
                 return response.json();
               }
               throw new Error("listBaseComponents failed", response.status);
+            })
+            .then(function(components) {
+              components.forEach(function(component) {
+                simplyDataApi.mergeComponent(component.contents);
+              });
+              return components;
             });
           },
           deleteComponent : function(component) {
@@ -963,6 +969,12 @@
                 return response.json();
               }
               throw new Error("listComponents failed", response.status);
+            })
+            .then(function(components) {
+              components.forEach(function(component) {
+                simplyDataApi.mergeComponent(component.contents);
+              });
+              return components;
             });
           },
           deletePage : function(component) {
@@ -1049,6 +1061,12 @@
                 return response.json();
               }
               throw new Error("listPages failed", response.status);
+            })
+            .then(function(components) {
+              components.forEach(function(component) {
+                simplyDataApi.mergeComponent(component.contents);
+              });
+              return components;
             });
           },
           saveAppHtml : function(appHtml) {
@@ -1252,16 +1270,16 @@
               })
               .then(function() {
                 var promises = [
-                  simplyApp.actions.getBaseComponents(),
-                  simplyApp.actions.getComponents(),
-                  simplyApp.actions.getPages()
+                  simplyApp.actions.listBaseComponents(),
+                  simplyApp.actions.listComponents(),
+                  simplyApp.actions.listPages()
                 ];
                 return Promise.all(promises);
               })
               .then(function(appComponents) {
                 appComponents.forEach(function(appComponent) {
                   appComponent.forEach(function(component) {
-                    component.forEach(function(part) {
+                    component.contents.forEach(function(part) {
                       if (part.id == "meta") {
                         return;
                       };
