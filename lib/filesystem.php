@@ -336,7 +336,7 @@ class filesystem {
 		$lock = self::lock($realfile);
 
 		if ( !$lock ) {
-			throw new fsException('Could not lock '.$dirname.$filename.' for writing', 109);
+			throw new fsException('Could not lock '.$dirname.'/'.$filename.' for writing', 109);
 		}
 		/* PUT data comes in on the stdin stream */
 		$in       = fopen("php://input", "r");
