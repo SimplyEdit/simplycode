@@ -40,7 +40,7 @@
 
 				$data['id'] = $filename;
 				$data['ctime'] = filesystem::ctime($path, $filename);
-				$data['ctime-human'] = strftime("%c", $data['ctime']);
+				$data['ctime-human'] = date("c", $data['ctime']);
 				$data['contents'] = readRecursive($path . "/" . $filename);
 				$result[] = $data;
 			}
