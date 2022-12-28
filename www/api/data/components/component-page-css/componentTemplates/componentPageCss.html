@@ -1,0 +1,30 @@
+<details class="sb-component">
+  <summary data-simply-command="initEditors" title="Set page specific CSS - this CSS is only used for this page and is removed when we are on another page.">
+    <span data-simply-field="count.pageCss" data-simply-content="attributes" data-simply-attributes="data-count">
+      Page CSS collections
+    </span>
+    <span class="sb-controls">
+      <button class="sb-button" data-simply-command="addPageCss">Add CSS collection</button>
+    </span>
+  </summary>
+  <div class="sb-code-method" data-simply-list="component.parts.pageCss">
+    <template>
+      <div class="sb-part">
+        <div class="sb-part-header">
+          <div class="sb-tabs">
+            <input class="sb-tab" data-simply-field="name" placeholder="Name this CSS collection">
+          </div>
+          <div class="sb-options">
+            <button class="sb-button" draggable="true">Drag to move</button>
+            <button class="sb-button" data-simply-command="deleteEntry">Delete CSS</button>
+          </div>
+        </div>
+        <div class="sb-editors">
+          <div class="sb-editor-code">
+            <textarea data-codemirror-mode="css" data-simply-field="code" placeholder="div {...}"></textarea>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</details>

@@ -1,1 +1,0 @@
-[{"command":"addSorter","editor":"code","code":"function(el) {\n  editor.pageData.component.parts.sorters.push({});\n}","tests":[]}]

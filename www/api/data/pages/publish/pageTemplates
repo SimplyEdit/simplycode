@@ -1,1 +1,0 @@
-[{"page":"Publish App","code":"<main>\n  <h1>App preview</h1>\n  <div class=\"field\">\n    <button class=\"sb-button\" data-simply-command=\"saveAppHtml\">Publish App</button>\n  </div>\n  <div is=\"simply-component\" rel=\"componentAppFullPreview\"></div>\n</main>","validateResult":{"messages":[]},"editor":"code"}]

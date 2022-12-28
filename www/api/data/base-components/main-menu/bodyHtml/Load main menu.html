@@ -1,0 +1,8 @@
+<script>
+  window.addEventListener("simply-content-loaded", function() {
+    simplyApp.actions.getMainMenu()
+      .then(function(menu) {
+      editor.pageData.menu = menu;
+    });
+  });
+</script>

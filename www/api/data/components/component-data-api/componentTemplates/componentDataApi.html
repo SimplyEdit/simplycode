@@ -1,0 +1,30 @@
+<details class="sb-component">
+  <summary data-simply-command="initEditors" title="The Data API layer provides functions to load en store data types. Makes use of the Raw API and provides data for actions">
+    <span data-simply-field="count.dataApi" data-simply-content="attributes" data-simply-attributes="data-count">
+      Data API
+    </span>
+    <span class="sb-controls">
+      <button class="sb-button" data-simply-command="addDataApiMethod">Add method</button>
+    </span>
+  </summary>
+  <div class="sb-code-method" data-simply-list="component.parts.dataApi">
+    <template>
+      <div class="sb-part">
+        <div class="sb-part-header">
+          <div class="sb-tabs">
+            <input class="sb-tab" data-simply-field="method" placeholder="API method name, eg getItemList">
+          </div>
+          <div class="sb-options">
+			<button class="sb-button" draggable="true">Drag to move</button>
+            <button class="sb-button" data-simply-command="deleteEntry">Delete method</button>
+          </div>
+        </div>
+        <div class="sb-editors">
+          <div class="sb-editor-code">
+            <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</details>

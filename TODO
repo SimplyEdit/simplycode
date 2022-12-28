@@ -1,6 +1,7 @@
 Bugs:
-- Adding a style element in Additional Head HTML renders it in the body, which causes an error to be shown:
+- Adding a style element in Additional Head HTML renders it in the body of the HTML preview, which causes an error to be shown:
   Element “style” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
+- The "name" field should be required for all components / parts, to make sure the generated javascript will actually compile.
 
 =====
 TODO:
@@ -146,6 +147,7 @@ Done:
 [v] Sample app that is not simply-code
 [v] Add option to setup the page frame, so the app doesn't have to have a header/nav part
 [v] Compile in datasources
+[v] Update css and other components on change for previews;
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky

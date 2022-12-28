@@ -1,1 +1,0 @@
-[{"method":"listPages","code":"function() {\n  return simplyRawApi.get(\"pages\")\n    .then(function(response) {\n    if (response.status === 200) {\n      return response.json();\n    }\n    throw new Error(\"listPages failed\", response.status);\n  });\n}"}]

@@ -1,1 +1,0 @@
-[{"name":"Load main menu","code":"<script>\n  window.addEventListener(\"simply-content-loaded\", function() {\n    simplyApp.actions.getMainMenu()\n      .then(function(menu) {\n      editor.pageData.menu = menu;\n    });\n  });\n</script>","validateResult":{"messages":[]}}]
