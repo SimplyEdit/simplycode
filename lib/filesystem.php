@@ -1,5 +1,4 @@
 <?php
-
 class fsException extends \Exception {}
 
 class filesystem {
@@ -74,8 +73,10 @@ class filesystem {
 
 	public static function put($dirname, $filename=null, $hash=null)
 	{
+		clearstatcache(true);
 		list($realdir, $realfile)=self::realpaths($dirname, $filename);
 		if (!file_exists($realdir)) {
+			clearstatcache(true);
 			$res = mkdir($realdir, 0755, true);
 			if ($res == false) {
 				self::dirNotWritable($realdir);
@@ -182,6 +183,7 @@ class filesystem {
 
 	public static function delete($dirname, $filename=null)
 	{
+		clearstatcache(true);
 		list($realdir, $realfile)=self::realpaths($dirname, $filename);
 		self::runChecks('delete', self::append($dirname,$filename), $realfile);
 		if ( file_exists($realfile ) ) {
@@ -298,6 +300,7 @@ class filesystem {
 		// check owner and current user
 
 		$error = error_get_last();
+		var_dump($error);
 		throw new fsException("Directory $dirname is not writable: $error", 102);
 	}
 
@@ -332,6 +335,7 @@ class filesystem {
 
 	private static function passthru($dirname, $filename, $hash=null)
 	{
+		clearstatcache(true);
 		list($realdir,$realfile)=self::realpaths($dirname,$filename);
 		$lock = self::lock($realfile);
 
@@ -378,16 +382,13 @@ class filesystem {
 
 	private static function lock($filename)
 	{
-		for ($retryCount=1; $retryCount < 5; $retryCount++) {
-			$fp = fopen($filename.'.lock', 'w');
-			if ( $fp && flock($fp, LOCK_EX ) ) {
-				return [
-					'resource' => $fp,
-					'filename' => $filename
-				];
-			} else {
-				sleep(0.2 * $retryCount);
-			}
+		clearstatcache(true);
+		$fp = fopen($filename.'.lock', 'w');
+		if ( $fp && flock($fp, LOCK_EX ) ) {
+			return [
+				'resource' => $fp,
+				'filename' => $filename
+			];
 		}
 		return false;
 	}
