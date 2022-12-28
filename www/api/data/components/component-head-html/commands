@@ -1,1 +1,0 @@
-[{"command":"addHeadHtml","code":"function(el) {\n  editor.pageData.component.parts.headHtml.push({});\n}","tests":[],"editor":"code"}]

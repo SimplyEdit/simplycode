@@ -14,16 +14,16 @@ function() {
   })
   .then(function() {
     var promises = [
-      simplyApp.actions.getBaseComponents(),
-      simplyApp.actions.getComponents(),
-      simplyApp.actions.getPages()
+      simplyApp.actions.listBaseComponents(),
+      simplyApp.actions.listComponents(),
+      simplyApp.actions.listPages()
     ];
     return Promise.all(promises);
   })
   .then(function(appComponents) {
     appComponents.forEach(function(appComponent) {
       appComponent.forEach(function(component) {
-        component.forEach(function(part) {
+        component.contents.forEach(function(part) {
           if (part.id == "meta") {
             return;
           };

@@ -606,11 +606,12 @@
           },
           mergePageFrame : function(component) {
             var contents = {};
-            component.contents.forEach(function(partFile) {
+            component.forEach(function(partFile) {
               if (partFile.id.match(/\.html$/)) {
                 partFile.id = partFile.id.replace(/\.html$/, '');
               }
             });
+            return component;
           },
           savePart : function(basePath, part, contents) {
             contents = JSON.parse(contents);
@@ -906,6 +907,12 @@
                 return response.json();
               }
               throw new Error("listBaseComponents failed", response.status);
+            })
+              .then(function(components) {
+              components.forEach(function(component) {
+                simplyDataApi.mergeComponent(component.contents);
+              });
+              return components;
             });
           },
           deleteComponent : function(component) {
@@ -953,11 +960,17 @@
           },
           listComponents  : function() {
             return simplyRawApi.get("components")
-            .then(function(response) {
+              .then(function(response) {
               if (response.status === 200) {
                 return response.json();
               }
               throw new Error("listComponents failed", response.status);
+            })
+              .then(function(components) {
+              components.forEach(function(component) {
+                simplyDataApi.mergeComponent(component.contents);
+              });
+              return components;
             });
           },
           deletePage : function(component) {
@@ -1044,6 +1057,12 @@
                 return response.json();
               }
               throw new Error("listPages failed", response.status);
+            })
+              .then(function(components) {
+              components.forEach(function(component) {
+                simplyDataApi.mergeComponent(component.contents);
+              });
+              return components;
             });
           },
           saveAppHtml : function(appHtml) {
@@ -1246,16 +1265,16 @@
               })
               .then(function() {
                 var promises = [
-                  simplyApp.actions.getBaseComponents(),
-                  simplyApp.actions.getComponents(),
-                  simplyApp.actions.getPages()
+                  simplyApp.actions.listBaseComponents(),
+                  simplyApp.actions.listComponents(),
+                  simplyApp.actions.listPages()
                 ];
                 return Promise.all(promises);
               })
               .then(function(appComponents) {
                 appComponents.forEach(function(appComponent) {
                   appComponent.forEach(function(component) {
-                    component.forEach(function(part) {
+                    component.contents.forEach(function(part) {
                       if (part.id == "meta") {
                         return;
                       };
@@ -3391,13 +3410,13 @@
       </div>
     </template>
     <!-- /Component HTML templates -->
-  <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
-    <template data-simply-template='Header' rel="header"></template>
-  </header>
-  <nav>
-    <div is="simply-component" rel="menu"></div>
-  </nav>
-  <div class="main" data-simply-field="page" data-simply-content="template">
+      <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
+        <template data-simply-template='Header' rel="header"></template>
+      </header>
+      <nav>
+        <div is="simply-component" rel="menu"></div>
+      </nav>
+      <div class="main" data-simply-field="page" data-simply-content="template">
     <!-- Page HTML templates -->
     <template data-simply-template="Edit base component">
         <main>
@@ -3571,7 +3590,7 @@
         </main>
     </template>
     <!-- /Page HTML templates -->
-  </div>
+    </div>
     <script src="/js/simply.everything.js"></script>
     <script src="/js/simply-edit.js" data-api-key="muze"></script>
     <script>

@@ -1,1 +1,0 @@
-[{"command":"addDataApiMethod","code":"function(el) {\n  editor.pageData.component.parts.dataApi.push({});\n}","tests":[],"editor":"code"}]
