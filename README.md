@@ -1,5 +1,4 @@
-# simply-code
-Simply Code
+# Simply Code
 
 This project allows coding in a structured environment to create apps following the Simply App Architecture.
 
