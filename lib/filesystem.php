@@ -1,5 +1,4 @@
 <?php
-
 class fsException extends \Exception {}
 
 class filesystem {
@@ -74,8 +73,10 @@ class filesystem {
 
 	public static function put($dirname, $filename=null, $hash=null)
 	{
+		clearstatcache(true);
 		list($realdir, $realfile)=self::realpaths($dirname, $filename);
 		if (!file_exists($realdir)) {
+			clearstatcache(true);
 			$res = mkdir($realdir, 0755, true);
 			if ($res == false) {
 				self::dirNotWritable($realdir);
@@ -182,13 +183,14 @@ class filesystem {
 
 	public static function delete($dirname, $filename=null)
 	{
+		clearstatcache(true);
 		list($realdir, $realfile)=self::realpaths($dirname, $filename);
 		self::runChecks('delete', self::append($dirname,$filename), $realfile);
 		if ( file_exists($realfile ) ) {
-			if ( $filename ) {
-				unlink($realfile);
-			} else {
+			if ( is_dir($realfile) ) {
 				rmdir($realfile);
+			} else {
+				unlink($realfile);
 			}
 		} else {
 			throw new fsException('File not found '.self::append($dirname,$filename), 1051);
@@ -296,13 +298,17 @@ class filesystem {
 		// check if dirname is a directory
 		// check permissions on dirname
 		// check owner and current user
-		throw new fsException('Directory '.$dirname.' is not writable', 102);
+
+		$error = error_get_last();
+		var_dump($error);
+		throw new fsException("Directory $dirname is not writable: $error", 102);
 	}
 
 	private static function fileNotWritable($file)
 	{
 		// FIXME: try to find out why it is not writable
-		throw new fsException('File '.$file.' is not writeable', 103);
+		$error = error_get_last();
+		throw new fsException("File $file is not writeable: $error", 103);
 	}
 
 	private static function renameFailed($file, $tempfile)
@@ -317,12 +323,24 @@ class filesystem {
 		return file_exists($realfile);
 	}
 
+	public static function is_dir($filename) {
+		$realfile = realpath(self::$basedir . $filename );
+		return is_dir($realfile);
+	}
+
+	public static function scandir($filename) {
+		$realfile = realpath(self::$basedir . $filename );
+		return scandir($realfile);
+	}
+
 	private static function passthru($dirname, $filename, $hash=null)
 	{
+		clearstatcache(true);
 		list($realdir,$realfile)=self::realpaths($dirname,$filename);
 		$lock = self::lock($realfile);
+
 		if ( !$lock ) {
-			throw new fsException('Could not lock '.$dirname.$filename.' for writing', 109);
+			throw new fsException('Could not lock '.$dirname.'/'.$filename.' for writing', 109);
 		}
 		/* PUT data comes in on the stdin stream */
 		$in       = fopen("php://input", "r");
@@ -364,6 +382,7 @@ class filesystem {
 
 	private static function lock($filename)
 	{
+		clearstatcache(true);
 		$fp = fopen($filename.'.lock', 'w');
 		if ( $fp && flock($fp, LOCK_EX ) ) {
 			return [

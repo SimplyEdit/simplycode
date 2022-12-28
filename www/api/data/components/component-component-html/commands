@@ -1,1 +1,0 @@
-[{"command":"addComponentTemplate","code":"function(el) {\n  editor.pageData.component.parts.componentTemplates.push({});\n}","tests":[],"editor":"code"}]

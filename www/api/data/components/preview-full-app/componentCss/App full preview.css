@@ -1,0 +1,32 @@
+.sb-preview-code {
+  display: none;
+}
+.sb-preview-data {
+  display: none;
+}
+.sb-preview-code [data-simply-list-item]:last-child .trailingComma {
+  display: none;
+}
+.sb-full-preview-container {
+  height: calc(0.6 * 768px);
+  width: calc(0.6 * 1280px);
+}
+iframe.sb-full-preview {
+  width: 1280px;
+  height: 768px;
+  transform: scale(0.6);
+  transform-origin: top left;
+  position: absolute;
+  background-color: white;
+}
+:root {
+  --sb-component-preview-scale: 0.4;
+}
+iframe.sb-component-preview {
+  width: calc(480px/var(--sb-component-preview-scale));
+  height: calc(300px/var(--sb-component-preview-scale));
+  transform: scale(var(--sb-component-preview-scale));
+  transform-origin: top left;
+  position: absolute;
+  background-color: white;
+}

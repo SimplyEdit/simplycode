@@ -1,1 +1,0 @@
-[{"method":"browse","code":"function(path) {\n  return simplyRawApi.get(path)\n    .then(function(response) {\n    if (response.status === 200) {\n      return response.json();\n    }\n    throw new Error(\"browse failed\", response.status);\n  });\n}"}]

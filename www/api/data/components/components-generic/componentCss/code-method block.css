@@ -1,0 +1,17 @@
+.sb-code-method {
+  width: 100%;
+}
+.sb-component summary span[data-count] {
+  font-weight: bold;
+}
+.sb-component summary span[data-count]:after {
+  content: '(' attr(data-count) ')';
+}
+.sb-component summary span[data-count=""],
+.sb-component summary span[data-count="0"] {
+  font-weight: normal;
+}
+.sb-component summary span[data-count=""]:after,
+.sb-component summary span[data-count="0"]:after {
+  content: '';
+}

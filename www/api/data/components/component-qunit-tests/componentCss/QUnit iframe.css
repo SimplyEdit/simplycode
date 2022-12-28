@@ -1,0 +1,8 @@
+.qunit-code {
+  display: none;
+}
+iframe.qunit {
+  border: 0;
+  width: 100%;
+  height: 0px;
+}
