@@ -1,0 +1,21 @@
+<div class="sb-editor-qunit-tests">
+  <div class="sb-tests" data-simply-list="tests">
+    <template>
+      <div class="sb-test">
+        <div class="sb-test-header">
+          <div class="sb-tabs">
+            <input class="sb-tab" data-simply-field="name" placeholder="Test name">
+          </div>
+          <div class="sb-options">
+            <button class="sb-button" draggable="true">Drag to move</button>
+            <button class="sb-button" data-simply-command="deleteEntry">Delete test</button>
+          </div>
+        </div>
+        <div class="sb-test-editor">
+          <textarea data-codemirror-mode="javascript" data-simply-field="test-code" placeholder="function() {...}"></textarea>
+        </div>
+      </div>
+    </template>
+  </div>
+  <button class="sb-button" data-simply-command="addTest">Add test</button>
+</div>

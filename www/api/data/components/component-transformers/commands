@@ -1,1 +1,0 @@
-[{"command":"addTransformer","code":"function(el) {\n  editor.pageData.component.parts.transformers.push({});\n}","tests":[],"editor":"code"}]

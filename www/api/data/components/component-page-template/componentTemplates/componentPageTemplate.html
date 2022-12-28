@@ -1,0 +1,49 @@
+<details class="sb-component">
+  <summary data-simply-command="initEditors" title="These templates are used in routes to set the HTML of the requested page.">
+    <span data-simply-field="count.pageTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
+      Page HTML template
+    </span>
+    <span class="sb-controls">
+      <button class="sb-button" data-simply-command="addPageTemplate">Add page HTML template</button>
+    </span>
+  </summary>
+  <div class="sb-code-method" data-simply-list="component.parts.pageTemplates">
+    <template>
+      <div class="sb-part">
+        <div class="sb-part-header">
+          <div class="sb-tabs">
+            <input class="sb-tab" data-simply-field="page" placeholder="Page name">
+            <label class="sb-tab">
+              <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
+              <span>Code</span>
+            </label>
+            <label class="sb-tab">
+              <input type="radio" name="actionEditor" value="sampledata" data-simply-field="editor">
+              <span>Sample data</span>
+            </label>
+          </div>
+          <div class="sb-options">
+            <button class="sb-button" draggable="true">Drag to move</button>
+            <button class="sb-button" data-simply-command="deleteEntry">Delete HTML</button>
+          </div>
+        </div>
+        <div class="sb-editors sb-dual">
+          <div class="sb-editor-code" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+            <template data-simply-template="code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Page contents</div></main>"></textarea>
+            </template>
+            <template data-simply-template="sampledata">
+              <textarea data-codemirror-mode="json" data-simply-field="sampledata" placeholder="{}"></textarea>
+            </template>
+          </div>
+          <div class="sb-previews">
+            <div is="simply-component" rel="pagePreview"></div>
+          </div>
+        </div>
+        <div is="simply-component" rel="componentHtmlValidator"></div>
+      </div>
+    </template>
+  </div>
+</details>
+<div is="simply-component" rel="pagePreviewAppHead"></div>
+<div is="simply-component" rel="pagePreviewAppFoot"></div>

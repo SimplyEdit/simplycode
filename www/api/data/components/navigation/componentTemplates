@@ -1,1 +1,0 @@
-[{"component":"menu","code":"<ul data-simply-list=\"menu\">\n  <template>\n    <li data-simply-command=\"expandMenu\">\n      <a data-simply-command=\"navigate\" href=\"#\" data-simply-field=\"item\"></a>\n      <div is=\"simply-component\" rel=\"menu\"></div>\n    </li>\n  </template>\n</ul>","validateResult":{"messages":[]},"editor":"code"}]

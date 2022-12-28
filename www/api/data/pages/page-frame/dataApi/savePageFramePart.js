@@ -7,6 +7,13 @@ function(part, contents) {
     if (response.status === 200) {
       return response.json();
     }
-    throw new Error("savePageFramePart failed", response.status);
+    // retry the call once
+    return simplyDataApi.savePart("page-frame", part + ".html", contents)
+      .then(function(response) {
+      if (response.status === 200) {
+        return response.json();
+      }
+      throw new Error("savePageFramePart failed", response.status);
+    });
   });
 }
