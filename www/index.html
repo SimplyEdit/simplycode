@@ -2548,6 +2548,24 @@
         <div class="sb-part">
           <div class="sb-part-header">
             <div class="sb-tabs">
+              <label class="sb-tab">SimplyEdit script tag</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.simplyBaseScripts" placeholder="<script ..>">
+  &lt;script src="/js/simply.everything.js">&lt;/script>
+  &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
               <label class="sb-tab">Page preview start/Page preview end</label>
             </div>
             <div class="sb-options">
@@ -2995,7 +3013,10 @@
 <pre data-simply-field="app.pageFrame.bodyComponentPreviewContentEnd" data-simply-transformer="htmlEscape" data-indent=4>
   &lt;/div&gt;
 </pre>
-<div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+<pre data-simply-field="app.pageFrame.simplyBaseScripts" data-simply-transformer="htmlEscape" data-indent=2>
+  &lt;script src="/js/simply.everything.js">&lt;/script>
+  &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+</pre>
 <div is="simply-component" rel="simplyPreviewFootHtml"></div>
 <pre data-simply-field="app.pageFrame.bodyEnd" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;/body>
@@ -3050,7 +3071,10 @@
 <pre data-simply-field="app.pageFrame.bodyPagePreviewContentEnd" data-simply-transformer="htmlEscape" data-indent=4>
   &lt;/div&gt;
 </pre>
-<div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+<pre data-simply-field="app.pageFrame.simplyBaseScripts" data-simply-transformer="htmlEscape" data-indent=2>
+  &lt;script src="/js/simply.everything.js">&lt;/script>
+  &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+</pre>
 <div is="simply-component" rel="simplyPreviewFootHtml"></div>
 <pre data-simply-field="app.pageFrame.bodyEnd" data-simply-transformer="htmlEscape" data-indent=2>
   &lt;/body>
@@ -3285,7 +3309,10 @@
 <pre data-simply-field="app.pageFrame.bodyContentEnd" data-simply-transformer="htmlEscape" data-indent=4>
   &lt;/div>
 </pre>
-<div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+<pre data-simply-field="app.pageFrame.simplyBaseScripts" data-simply-transformer="htmlEscape" data-indent=2>
+  &lt;script src="/js/simply.everything.js">&lt;/script>
+  &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+</pre>
 <div is="simply-component" rel="simplyPreviewTransformers"></div>
 <div is="simply-component" rel="simplyPreviewSorters"></div>
 <div is="simply-component" rel="simplyPreviewDataSources"></div>
@@ -3397,12 +3424,6 @@
 <pre>
       });
     &lt;/script&gt;
-</pre>
-</template>
-    <template id="simplyPreviewSimplyBaseScripts">
-<pre>
-    &lt;script src="/js/simply.everything.js">&lt;/script>
-    &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
 </pre>
 </template>
     <template id="simplyPreviewSorters">
