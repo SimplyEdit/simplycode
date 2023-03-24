@@ -3329,6 +3329,7 @@
     &lt;meta charset="utf-8">
 </pre>
 <div is="simply-component" rel="simplyPreviewComponentCss"></div>
+<div is="simply-component" rel="simplyPreviewPageCss"></div>
 <div is="simply-component" rel="simplyPreviewHeadHtml"></div>
 <div is="simply-component" rel="simplyPreviewSimplyApp"></div>
 <pre data-simply-field="app.pageFrame.headEnd" data-simply-transformer="htmlEscape" data-indent=2>
@@ -3349,6 +3350,24 @@
 </div>
 <pre>
     &lt;!-- /Head HTML -->
+</pre>
+</template>
+    <template id="simplyPreviewPageCss">
+<pre>
+    &lt;!-- Page CSS -->
+    &lt;style&gt;
+</pre>
+    <div data-simply-list="app.pageCss">
+        <template>
+<pre class="pageCss">
+      /* <span data-simply-field="name"></span> */<br>
+      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=6></span>
+</pre>
+        </template>
+    </div>
+<pre>
+    &lt;/style&gt;
+    &lt;!-- /Page CSS -->
 </pre>
 </template>
     <template id="simplyPreviewPageHtmlTemplates">
