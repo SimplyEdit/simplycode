@@ -113,6 +113,10 @@
       }
     </style>
     <!-- /Component CSS -->
+    <!-- Page CSS -->
+    <style>
+    </style>
+    <!-- /Page CSS -->
     <!-- Head HTML -->
     <!-- base layout -->
     <link rel="stylesheet" href="css/style.css">
@@ -1112,6 +1116,42 @@
         simplyApp = simply.app({
           /* Actions */
           actions: {
+            getComponentNameField : function(component) {
+              /*
+              var nameOptions = [
+                'name', // routes, componentCss, pageCss, headHtml, bodyHtml, footHtml
+                'component', // componentTemplates
+                'action', // actions
+                'command', // commands
+                'page', // pageTemplates
+                'method', // rawApi, dataApi
+                'dataSource', // dataSources
+                'transformer', // transformers
+                'sorter' // sorters
+              ];
+              */
+              switch (component) {
+                case "componentTemplates":
+                  return 'component';
+                case 'actions':
+                  return 'action';
+                case 'commands':
+                  return 'command';
+                case 'pageTemplates':
+                  return 'page';
+                case 'rawApi':
+                case 'dataApi':
+                  return 'method';
+                case 'dataSources':
+                  return 'dataSource';
+                case 'transformers':
+                  return 'transformer';
+                case 'sorters':
+                  return 'sorter';
+                default:
+                  return 'name';
+              }
+            },
             browse : function(path) {
               return simplyDataApi.browse(path)
               .catch(function(error) {
@@ -3799,14 +3839,16 @@
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
           // Handle changes of the part name
-          if (event.data.arguments[0] == "name") {
+          var component = event.data.dataBinding.parentKey.split("/")[3];
+          var componentNameField = simplyApp.actions.getComponentNameField(component);
+
+          if (event.data.arguments[0] == componentNameField) {
             var newname = event.data.arguments[1];
             var oldname = event.data.arguments[2];
-            var component = event.data.dataBinding.parentKey.split("/")[3];
 
             editor.pageData.app[component].forEach(function(appPart) {
-              if (appPart.name == oldname) {
-                appPart.name = newname;
+              if (appPart[componentNameField] == oldname) {
+                appPart[componentNameField] = newname;
               }
             });
           }
@@ -3814,21 +3856,23 @@
           if (typeof autoRunPreviewTimeout !== "undefined") {
             window.clearTimeout(autoRunPreviewTimeout);
           }
+
           autoRunPreviewTimeout = window.setTimeout(function() {
             // Update the app data for the preview
             for (component in editor.pageData.component.parts) {
+              if (!editor.pageData.app[component]) {
+                editor.pageData.app[component] = [];
+              }
+
+              var componentNameField = simplyApp.actions.getComponentNameField(component);
               editor.pageData.component.parts[component].forEach(function(part) {
                 var found = false;
-                if (editor.pageData.app[component]) {
-                  editor.pageData.app[component].forEach(function(appPart) {
-                    if (part.name && (appPart.name == part.name)) {
-                      appPart.code = JSON.parse(JSON.stringify(part.code));
-                      found = true;
-                    }
-                  });
-                } else {
-                  editor.pageData.app[component] = [];
-                }
+                editor.pageData.app[component].forEach(function(appPart) {
+                  if (part[componentNameField] && (appPart[componentNameField] == part[componentNameField])) {
+                    appPart = JSON.parse(JSON.stringify(part));
+                    found = true;
+                  }
+                });
                 if (!found) {
                   editor.pageData.app[component].push(JSON.parse(JSON.stringify(part)));
                 }
