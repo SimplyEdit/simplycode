@@ -117,12 +117,6 @@
     <!-- base layout -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/extra.css">
-    <!-- Forward to https -->
-    <script>
-      if (document.location.protocol == "http:") {
-        document.location.href = document.location.href.replace(/^http:/, "https:");
-      }
-    </script>
     <!-- /Head HTML -->
     <script>
       var simplyDataApi = {};
@@ -893,10 +887,7 @@
             });
           },
           saveBaseComponentPart : function(component, part, contents) {
-            simplyDataApi.deletePart("base-components/" + component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
-            .then(function() {
-              return simplyDataApi.savePart("base-components/" + component, part, contents);
-            })
+            simplyDataApi.savePart("base-components/" + component, part, contents)
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -941,8 +932,7 @@
               if (response.status === 200) {
                 return response.json();
               }
-              // throw new Error("deleteComponentPart failed", response.status);
-              // allowed while data upgrade is needed
+              throw new Error("deleteComponentPart failed", response.status);
             });
           },
           getComponent : function(component) {
@@ -958,10 +948,7 @@
             });
           },
           saveComponentPart : function(component, part, contents) {
-            simplyDataApi.deletePart("components/" + component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
-            .then(function() {
-              return simplyDataApi.savePart("components/" + component, part, contents);
-            })
+            simplyDataApi.savePart("components/" + component, part, contents)
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -1006,8 +993,7 @@
               if (response.status === 200) {
                 return response.json();
               }
-              // throw new Error("deletePagePart failed", response.status);
-              // allowed while data upgrade is needed
+              throw new Error("deletePagePart failed", response.status);
             });
           },
           getPage : function(component) {
@@ -1023,10 +1009,7 @@
             });
           },
           savePagePart : function(component, part, contents) {
-            simplyDataApi.deletePart("pages/" + component, part) // FIXME: this allows the old structure to be updated. should be removed when no longer needed.
-            .then(function() {
-              return simplyDataApi.savePart("pages/" + component, part, contents);
-            })
+            simplyDataApi.savePart("pages/" + component, part, contents);
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -3401,8 +3384,8 @@
 </template>
     <template id="simplyPreviewSimplyBaseScripts">
 <pre>
-    &lt;script src="/js/simply.everything.js">&lt;/script>
-    &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+    &lt;script src="js/simply.everything.js">&lt;/script>
+    &lt;script src="js/simply-edit.js" data-api-key="muze">&lt;/script>
 </pre>
 </template>
     <template id="simplyPreviewSorters">
@@ -3626,8 +3609,8 @@
       </template>
       <!-- /Page HTML templates -->
     </div>
-    <script src="/js/simply.everything.js"></script>
-    <script src="/js/simply-edit.js" data-api-key="muze"></script>
+    <script src="js/simply.everything.js"></script>
+    <script src="js/simply-edit.js" data-api-key="muze"></script>
     <script>
       /* Transformers */
       editor.transformers = {
