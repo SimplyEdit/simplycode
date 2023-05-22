@@ -111,6 +111,13 @@
       }
     </style>
     <!-- /Component CSS -->
+    <!-- Page CSS -->
+    <style>
+    
+        
+    
+    </style>
+    <!-- /Page CSS -->
     <!-- Head HTML -->
     <!-- base layout -->
     <link rel="stylesheet" href="css/style.css">
@@ -1107,6 +1114,42 @@
         simplyApp = simply.app({
           /* Actions */
           actions: {
+            getComponentNameField : function(component) { 
+              /*
+              var nameOptions = [
+                'name', // routes, componentCss, pageCss, headHtml, bodyHtml, footHtml
+                'component', // componentTemplates
+                'action', // actions
+                'command', // commands
+                'page', // pageTemplates
+                'method', // rawApi, dataApi
+                'dataSource', // dataSources
+                'transformer', // transformers
+                'sorter' // sorters
+              ];
+              */
+              switch (component) {
+                case "componentTemplates":
+                  return 'component';
+                case 'actions':
+                  return 'action';
+                case 'commands':
+                  return 'command';
+                case 'pageTemplates':
+                  return 'page';
+                case 'rawApi':
+                case 'dataApi':
+                  return 'method';
+                case 'dataSources':
+                  return 'dataSource';
+                case 'transformers':
+                  return 'transformer';
+                case 'sorters':
+                  return 'sorter';
+                default:
+                  return 'name';
+              }
+            },
             browse : function(path) {
               return simplyDataApi.browse(path)
                 .catch(function(error) {
@@ -2539,6 +2582,24 @@
         <div class="sb-part">
           <div class="sb-part-header">
             <div class="sb-tabs">
+              <label class="sb-tab">SimplyEdit script tag</label>
+            </div>
+            <div class="sb-options">
+              <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
+            </div>
+          </div>
+          <div class="sb-editors">
+            <div class="sb-editor-code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.simplyBaseScripts" placeholder="<script ..>">
+          &lt;script src="/js/simply.everything.js">&lt;/script>
+          &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script></textarea>
+            </div>
+          </div>
+        </div>  
+        
+        <div class="sb-part">
+          <div class="sb-part-header">
+            <div class="sb-tabs">
               <label class="sb-tab">Page preview start/Page preview end</label>
             </div>
             <div class="sb-options">
@@ -2986,7 +3047,11 @@
       <pre data-simply-field="app.pageFrame.bodyComponentPreviewContentEnd" data-simply-transformer="htmlEscape" data-indent=4>
         &lt;/div&gt;
       </pre>
-        <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+      <pre data-simply-field="app.pageFrame.simplyBaseScripts" data-simply-transformer="htmlEscape" data-indent=2>
+        &lt;script src="/js/simply.everything.js">&lt;/script>
+        &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+      </pre>
+        <div is="simply-component" rel="simplyPreviewTransformers"></div>
         <div is="simply-component" rel="simplyPreviewFootHtml"></div>
         <pre data-simply-field="app.pageFrame.bodyEnd" data-simply-transformer="htmlEscape" data-indent=2>
         &lt;/body>
@@ -3042,7 +3107,11 @@
       <pre data-simply-field="app.pageFrame.bodyPagePreviewContentEnd" data-simply-transformer="htmlEscape" data-indent=4>
         &lt;/div&gt;
       </pre>
-        <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+      <pre data-simply-field="app.pageFrame.simplyBaseScripts" data-simply-transformer="htmlEscape" data-indent=2>
+        &lt;script src="/js/simply.everything.js">&lt;/script>
+        &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+      </pre>
+        <div is="simply-component" rel="simplyPreviewTransformers"></div>
         <div is="simply-component" rel="simplyPreviewFootHtml"></div>
         <pre data-simply-field="app.pageFrame.bodyEnd" data-simply-transformer="htmlEscape" data-indent=2>
         &lt;/body>
@@ -3278,7 +3347,10 @@
       <pre data-simply-field="app.pageFrame.bodyContentEnd" data-simply-transformer="htmlEscape" data-indent=4>
         &lt;/div>
       </pre>
-      <div is="simply-component" rel="simplyPreviewSimplyBaseScripts"></div>
+      <pre data-simply-field="app.pageFrame.simplyBaseScripts" data-simply-transformer="htmlEscape" data-indent=2>
+        &lt;script src="/js/simply.everything.js">&lt;/script>
+        &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
+      </pre>
       <div is="simply-component" rel="simplyPreviewTransformers"></div>
       <div is="simply-component" rel="simplyPreviewSorters"></div>
       <div is="simply-component" rel="simplyPreviewDataSources"></div>
@@ -3293,6 +3365,7 @@
           &lt;meta charset="utf-8">
       </pre>
       <div is="simply-component" rel="simplyPreviewComponentCss"></div>
+      <div is="simply-component" rel="simplyPreviewPageCss"></div>
       <div is="simply-component" rel="simplyPreviewHeadHtml"></div>
       <div is="simply-component" rel="simplyPreviewSimplyApp"></div>
       <pre data-simply-field="app.pageFrame.headEnd" data-simply-transformer="htmlEscape" data-indent=2>
@@ -3313,6 +3386,24 @@
                   </div>
       <pre>
           &lt;!-- /Head HTML -->
+      </pre>
+    </template>
+    <template id="simplyPreviewPageCss">
+      <pre>
+          &lt;!-- Page CSS -->
+          &lt;style&gt;
+      </pre>
+                  <div data-simply-list="app.pageCss">
+                    <template>
+                      <pre class="pageCss">
+            /* <span data-simply-field="name"></span> */<br>
+      <span data-simply-field="code" data-simply-transformer="htmlEscape" data-indent=6></span>
+                      </pre>
+                    </template>
+                  </div>
+      <pre>
+          &lt;/style&gt;
+          &lt;!-- /Page CSS -->
       </pre>
     </template>
     <template id="simplyPreviewPageHtmlTemplates">
@@ -3390,12 +3481,6 @@
       <pre>
             });
           &lt;/script&gt;
-      </pre>
-    </template>
-    <template id="simplyPreviewSimplyBaseScripts">
-      <pre>
-        &lt;script src="/js/simply.everything.js">&lt;/script>
-        &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script>
       </pre>
     </template>
     <template id="simplyPreviewSorters">
@@ -3619,8 +3704,8 @@
     </template>
     <!-- /Page HTML templates -->
     </div>
-    <script src="/js/simply.everything.js"></script>
-    <script src="/js/simply-edit.js" data-api-key="muze"></script>
+  <script src="/js/simply.everything.js"></script>
+  <script src="/js/simply-edit.js" data-api-key="muze"></script>
     <script>
       /* Transformers */
       editor.transformers = {
@@ -3755,14 +3840,16 @@
           (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
         ) {
           // Handle changes of the part name
-          if (event.data.arguments[0] == "name") {
+          var component = event.data.dataBinding.parentKey.split("/")[3];
+          var componentNameField = simplyApp.actions.getComponentNameField(component);
+          
+          if (event.data.arguments[0] == componentNameField) {
             var newname = event.data.arguments[1];
             var oldname = event.data.arguments[2];
-            var component = event.data.dataBinding.parentKey.split("/")[3];
     
             editor.pageData.app[component].forEach(function(appPart) {
-              if (appPart.name == oldname) {
-                appPart.name = newname;
+              if (appPart[componentNameField] == oldname) {
+                appPart[componentNameField] = newname;
               }
             });
           }
@@ -3773,18 +3860,18 @@
           autoRunPreviewTimeout = window.setTimeout(function() {
             // Update the app data for the preview
             for (component in editor.pageData.component.parts) {
+              if (!editor.pageData.app[component]) {
+                editor.pageData.app[component] = [];
+              }
+              var componentNameField = simplyApp.actions.getComponentNameField(component);
               editor.pageData.component.parts[component].forEach(function(part) {
                 var found = false;
-                if (editor.pageData.app[component]) {
-                  editor.pageData.app[component].forEach(function(appPart) {
-                    if (part.name && (appPart.name == part.name)) {
-                      appPart.code = JSON.parse(JSON.stringify(part.code));
-                      found = true;
-                    }
-                  });
-                } else {
-                  editor.pageData.app[component] = [];
-                }
+                editor.pageData.app[component].forEach(function(appPart) {
+                  if (part[componentNameField] && (appPart[componentNameField] == part[componentNameField])) {
+                    appPart = JSON.parse(JSON.stringify(part));
+                    found = true;
+                  }
+                });
                 if (!found) {
                   editor.pageData.app[component].push(JSON.parse(JSON.stringify(part)));
                 }
