@@ -891,7 +891,7 @@
             });
           },
           saveBaseComponentPart : function(component, part, contents) {
-            simplyDataApi.savePart("base-components/" + component, part, contents)
+           return simplyDataApi.savePart("base-components/" + component, part, contents)
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -952,7 +952,7 @@
             });
           },
           saveComponentPart : function(component, part, contents) {
-            simplyDataApi.savePart("components/" + component, part, contents)
+           return simplyDataApi.savePart("components/" + component, part, contents)
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -1013,7 +1013,7 @@
             });
           },
           savePagePart : function(component, part, contents) {
-            simplyDataApi.savePart("pages/" + component, part, contents);
+            return simplyDataApi.savePart("pages/" + component, part, contents)
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -3468,12 +3468,6 @@
 <pre>
       });
     &lt;/script&gt;
-</pre>
-</template>
-    <template id="simplyPreviewSimplyBaseScripts">
-<pre>
-    &lt;script src="js/simply.everything.js">&lt;/script>
-    &lt;script src="js/simply-edit.js" data-api-key="muze">&lt;/script>
 </pre>
 </template>
     <template id="simplyPreviewSorters">
