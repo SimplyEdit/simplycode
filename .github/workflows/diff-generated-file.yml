@@ -9,10 +9,12 @@ name: Compare generated and index HTML
 on:
   pull_request:
     paths:
+      - '.github/workflows/diff-generated-file.yml'
       - 'www/api/data/generated.html'
       - 'www/index.html'
   push:
     paths:
+      - '.github/workflows/diff-generated-file.yml'
       - 'www/api/data/generated.html'
       - 'www/index.html'
 
