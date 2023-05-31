@@ -4,7 +4,6 @@ function(component, part) {
     if (response.status === 200) {
       return response.json();
     }
-    //throw new Error("deletePagePart failed", response.status);
-    // allowed while data upgrade is needed
+    throw new Error("deletePagePart failed", response.status);
   });
 }
