@@ -1,9 +1,4 @@
 {
-	"/faq/": {
-		"data-simply-page-template": "page.html",
-		"header": "Header",
-		"page": "Algemene pagina"
-	},
 	"/": {
 		"menu-nav": [
 			{
