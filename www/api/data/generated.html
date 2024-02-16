@@ -987,8 +987,7 @@
                 throw new Error("saveBaseComponentPart failed", response.status);
               });
             });
-          }
-          ,
+          },
           "listBaseComponents" : function() {
             return simplyRawApi.get("base-components")
               .then(function(response) {
@@ -1021,8 +1020,7 @@
               }
               throw new Error("deleteComponentPart failed", response.status);
             });
-          }
-          ,
+          },
           "getComponent" : function(component) {
             return simplyRawApi.get("components/" + component)
             .then(function(response) {
@@ -1050,8 +1048,7 @@
                 throw new Error("saveComponentPart failed", response.status);
               });
             });
-          }
-          ,
+          },
           "listComponents" : function() {
             return simplyRawApi.get("components")
               .then(function(response) {
@@ -1084,8 +1081,7 @@
               }
               throw new Error("deletePagePart failed", response.status);
             });
-          }
-          ,
+          },
           "getPage" : function(component) {
             return simplyRawApi.get("pages/" + component)
               .then(function(response) {
@@ -2091,6 +2087,9 @@
             
               
             
+              
+              
+              
     <!-- Load main menu -->
     <script>
       window.addEventListener("simply-content-loaded", function() {
