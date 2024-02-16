@@ -1,6 +1,5 @@
 function(component) {
   var promises = [];
-  debugger;
   for (var name in component.parts) {
     if (component.parts[name].length) { 
       promises.push(simplyDataApi.saveBaseComponentPart(component.id, name, component.parts[name]));
