@@ -9,7 +9,7 @@
   </summary>
   <div class="sb-code-method" data-simply-list="component.parts.dataSources">
     <template>
-      <div class="sb-part">
+      <div class="sb-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
         <div class="sb-part-header">
           <div class="sb-tabs">
             <input class="sb-tab" data-simply-field="dataSource" placeholder="Data source name, eg itemList">
@@ -28,7 +28,7 @@
           </div>
           <div class="sb-options">
 			<button class="sb-button" draggable="true">Drag to move</button>
-            <button class="sb-button" data-simply-command="deleteEntry">Delete data source</button>
+            <button class="sb-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-simply-command="deleteEntry">Delete data source</button>
           </div>
         </div>
         <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
