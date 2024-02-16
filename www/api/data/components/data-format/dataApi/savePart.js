@@ -1,5 +1,4 @@
 function(basePath, part, contents) {
-  contents = JSON.parse(contents);
   var results = [];
 
   switch (part) {
