@@ -301,6 +301,11 @@ function(basePath, part, contents) {
         }
       });
       break;
+    case "fullApp":
+    case "componentPreview":
+    case "pagePreview":
+      results.push(simplyRawApi.putRaw(basePath + "/" + part + ".html", {}, contents));
+      break;
     default:
       results.push(simplyRawApi.putRaw(basePath + "/" + part, {}, JSON.stringify(contents)));
       break;

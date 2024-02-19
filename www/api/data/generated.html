@@ -919,6 +919,11 @@
                   }
                 });
                 break;
+              case "fullApp":
+              case "componentPreview":
+              case "pagePreview":
+                results.push(simplyRawApi.putRaw(basePath + "/" + part + ".html", {}, contents));
+                break;
               default:
                 results.push(simplyRawApi.putRaw(basePath + "/" + part, {}, JSON.stringify(contents)));
                 break;
@@ -1137,13 +1142,13 @@
             if (part == "meta") {
               return '"ok"';
             }
-            return simplyDataApi.savePart("page-frame", part + ".html", contents)
+            return simplyDataApi.savePart("page-frame", part, contents)
               .then(function(response) {
               if (response.status === 200) {
                 return response.json();
               }
               // retry the call once
-              return simplyDataApi.savePart("page-frame", part + ".html", contents)
+              return simplyDataApi.savePart("page-frame", part, contents)
                 .then(function(response) {
                 if (response.status === 200) {
                   return response.json();
@@ -1397,7 +1402,7 @@
                   if (part.id == "meta") {
                     return;
                   };
-                  frame[part.id] = JSON.parse(part.contents);
+                  frame[part.id] = part.contents;
                 });
                 appData.pageFrame = frame;
               })
@@ -2026,7 +2031,7 @@
                   component.parts = {};
                 }
                 parts.forEach(function(part) {
-                  component.parts[part.id] = JSON.parse(part.contents);
+                  component.parts[part.id] = part.contents;
                 });
                 editor.pageData.component = component;
                 editor.pageData.count = {};

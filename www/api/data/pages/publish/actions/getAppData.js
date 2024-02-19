@@ -8,7 +8,7 @@ function() {
       if (part.id == "meta") {
         return;
       };
-      frame[part.id] = JSON.parse(part.contents);
+      frame[part.id] = part.contents;
     });
     appData.pageFrame = frame;
   })
