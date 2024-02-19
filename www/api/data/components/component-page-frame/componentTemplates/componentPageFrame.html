@@ -2,22 +2,17 @@
   <summary data-simply-command="initEditors" title="These make up the page frame together with the Simply App parts.">
     Page frame
   </summary>
-
   <div class="sb-part">
     <div class="sb-part-header">
       <div class="sb-tabs">
-        <label class="sb-tab">HTML start/HTML end</label>
-      </div>
-      <div class="sb-options">
-        <button class="sb-button" data-simply-command="resetFrameHtmlStart">Reset to default</button>
+        <label class="sb-tab">Full app</label>
       </div>
     </div>
     <div class="sb-editors">
-      <div class="sb-editor-code sb-dual">
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.htmlStart" placeholder="<!DOCTYPE...">
+      <div class="sb-editor-code">
+        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.fullApp" placeholder="<!DOCTYPE...">
 &lt;!DOCTYPE HTML>
-&lt;html lang="en"></textarea>
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.htmlEnd" placeholder="</html>">
+&lt;html lang="en">
 &lt;/html></textarea>
       </div>
     </div>
@@ -26,106 +21,15 @@
   <div class="sb-part">
     <div class="sb-part-header">
       <div class="sb-tabs">
-        <label class="sb-tab">Head start/Head end</label>
-      </div>
-      <div class="sb-options">
-        <button class="sb-button" data-simply-command="resetFrameHeadStart">Reset to default</button>
-      </div>
-    </div>
-    <div class="sb-editors">
-      <div class="sb-editor-code sb-dual">
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.headStart" placeholder="<head>">
-&lt;head>
-&lt;meta charset="utf-8"></textarea>
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.headEnd" placeholder="</head>">
-&lt;/head></textarea>
-      </div>
-    </div>
-  </div>
-
-  <div class="sb-part">
-    <div class="sb-part-header">
-      <div class="sb-tabs">
-        <label class="sb-tab">Body start/Body end</label>
-      </div>
-      <div class="sb-options">
-        <button class="sb-button" data-simply-command="resetFrameBodyStart">Reset to default</button>
-      </div>
-    </div>
-    <div class="sb-editors">
-      <div class="sb-editor-code sb-dual">
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyStart" placeholder="<body>">
-&lt;body></textarea>
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyEnd" placeholder="</body>">
-&lt;/body></textarea>
-      </div>
-    </div>
-  </div>
-
-  <div class="sb-part">
-    <div class="sb-part-header">
-      <div class="sb-tabs">
-        <label class="sb-tab">Body contents start/Body contents end</label>
-      </div>
-      <div class="sb-options">
-        <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
-      </div>
-    </div>
-    <div class="sb-editors">
-      <div class="sb-editor-code sb-dual">
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyContentStart" placeholder="<main>">
-&lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
-&lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
-&lt;/header&gt;
-&lt;nav>
-&lt;div is="simply-component" rel="menu">&lt;/div>
-&lt;/nav>
-&lt;div class="main" data-simply-field="page" data-simply-content="template"></textarea>
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyContentEnd" placeholder="</main>">
-&lt;/div></textarea>
-      </div>
-    </div>
-  </div>
-
-  <div class="sb-part">
-    <div class="sb-part-header">
-      <div class="sb-tabs">
-        <label class="sb-tab">SimplyEdit script tag</label>
-      </div>
-      <div class="sb-options">
-        <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
+        <label class="sb-tab">Page preview</label>
       </div>
     </div>
     <div class="sb-editors">
       <div class="sb-editor-code">
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.simplyBaseScripts" placeholder="<script ..>">
-    &lt;script src="/js/simply.everything.js">&lt;/script>
-    &lt;script src="/js/simply-edit.js" data-api-key="muze">&lt;/script></textarea>
-      </div>
-    </div>
-  </div>  
-  
-  <div class="sb-part">
-    <div class="sb-part-header">
-      <div class="sb-tabs">
-        <label class="sb-tab">Page preview start/Page preview end</label>
-      </div>
-      <div class="sb-options">
-        <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
-      </div>
-    </div>
-    <div class="sb-editors">
-      <div class="sb-editor-code sb-dual">
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyPagePreviewContentStart" placeholder="<main>">
-&lt;header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header"&gt;
-&lt;template data-simply-template='Header' rel="header"&gt;&lt;/template&gt;
-&lt;/header&gt;
-&lt;nav>
-&lt;div is="simply-component" rel="menu">&lt;/div>
-&lt;/nav>
-&lt;div class="main"></textarea>
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyPagePreviewContentEnd" placeholder="</main>">
-&lt;/div></textarea>
+        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.pagePreview" placeholder="<!DOCTYPE...">
+&lt;!DOCTYPE HTML>
+&lt;html lang="en">
+&lt;/html></textarea>
       </div>
     </div>
   </div>
@@ -133,19 +37,16 @@
   <div class="sb-part">
     <div class="sb-part-header">
       <div class="sb-tabs">
-        <label class="sb-tab">Component preview start/Component preview end</label>
-      </div>
-      <div class="sb-options">
-        <button class="sb-button" data-simply-command="resetFrameBodyContent">Reset to default</button>
+        <label class="sb-tab">Component preview</label>
       </div>
     </div>
     <div class="sb-editors">
-      <div class="sb-editor-code sb-dual">
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyComponentPreviewContentStart" placeholder="<main>">
-&lt;div class="main"></textarea>
-        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.bodyComponentPreviewContentEnd" placeholder="</main>">
-&lt;/div></textarea>
+      <div class="sb-editor-code">
+        <textarea data-codemirror-mode="htmlmixed" data-simply-field="component.parts.componentPreview" placeholder="<!DOCTYPE...">
+&lt;!DOCTYPE HTML>
+&lt;html lang="en">
+&lt;/html></textarea>
       </div>
     </div>
-  </div>
+  </div>  
 </details>
