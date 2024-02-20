@@ -2329,8 +2329,6 @@
         </template>
       </div>
     </details>
-    <div is="simply-component" rel="componentPreviewAppHead"></div>
-    <div is="simply-component" rel="componentPreviewAppFoot"></div>
     </template>
     <template id="componentDataApi">
       <details class="sb-component">
@@ -2649,8 +2647,6 @@
         </template>
       </div>
     </details>
-    <div is="simply-component" rel="pagePreviewAppHead"></div>
-    <div is="simply-component" rel="pagePreviewAppFoot"></div>
     </template>
     <template id="componentQUnitActionRunner">
       <div class="qunit-runner">
@@ -3301,7 +3297,7 @@
             let replacements = {
               "componentPreview" : data,
               "actions" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.actions ?? []),
-          	"commands" : editor.transformers.simplyPreviewCommands.render(editor.pageData.app.commands ?? []),
+              "commands" : editor.transformers.simplyPreviewCommands.render(editor.pageData.app.commands ?? []),
               "dataApi" : editor.transformers.simplyPreviewDataApi.render(editor.pageData.app.dataApi ?? []),
               "rawApi" : editor.transformers.simplyPreviewRawApi.render(editor.pageData.app.rawApi ?? []),
               "routes" : editor.transformers.simplyPreviewRoutes.render(editor.pageData.app.routes ?? []),
@@ -3428,7 +3424,7 @@
             var fullApp = data.pageFrame.fullApp;
             let replacements = {
               "actions" : editor.transformers.simplyPreviewActions.render(data.actions ?? []),
-          	"commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
+              "commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
               "dataApi" : editor.transformers.simplyPreviewDataApi.render(data.dataApi ?? []),
               "rawApi" : editor.transformers.simplyPreviewRawApi.render(data.rawApi ?? []),
               "routes" : editor.transformers.simplyPreviewRoutes.render(data.routes ?? []),
@@ -3480,7 +3476,7 @@
             let replacements = {
               "pagePreview" : data,
               "actions" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.actions ?? []),
-          	"commands" : editor.transformers.simplyPreviewCommands.render(editor.pageData.app.commands ?? []),
+              "commands" : editor.transformers.simplyPreviewCommands.render(editor.pageData.app.commands ?? []),
               "dataApi" : editor.transformers.simplyPreviewDataApi.render(editor.pageData.app.dataApi ?? []),
               "rawApi" : editor.transformers.simplyPreviewRawApi.render(editor.pageData.app.rawApi ?? []),
               "routes" : editor.transformers.simplyPreviewRoutes.render(editor.pageData.app.routes ?? []),

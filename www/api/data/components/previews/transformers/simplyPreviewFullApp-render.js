@@ -9,7 +9,7 @@ function(data) {
   var fullApp = data.pageFrame.fullApp;
   let replacements = {
     "actions" : editor.transformers.simplyPreviewActions.render(data.actions ?? []),
-	"commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
+    "commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
     "dataApi" : editor.transformers.simplyPreviewDataApi.render(data.dataApi ?? []),
     "rawApi" : editor.transformers.simplyPreviewRawApi.render(data.rawApi ?? []),
     "routes" : editor.transformers.simplyPreviewRoutes.render(data.routes ?? []),
