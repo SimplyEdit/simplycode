@@ -23,9 +23,9 @@ function(data) {
 
   // replace keys with the indentation as given
   Object.keys(replacements).forEach(function(replacement) {
-    matches = pagePreview.match("(\\s+){" + replacement + "}");
+    matches = pagePreview.match("(\\s+){{" + replacement + "}}");
     if (matches) {
-      pagePreview = pagePreview.replace("{" + replacement + "}", replacements[replacement].replace(/\n/g, matches[1]));
+      pagePreview = pagePreview.replace("{{" + replacement + "}}", replacements[replacement].replace(/\n/g, matches[1]));
     }
   });
 

@@ -4,16 +4,16 @@
     <meta charset="utf-8">
     <!-- Component CSS -->
     <style>
-      {componentCss}
+      {{componentCss}}
     </style>
     <!-- /Component CSS -->
     <!-- Page CSS -->
     <style>
-      {pageCss}
+      {{pageCss}}
     </style>
     <!-- /Page CSS -->
     <!-- Head HTML -->
-    {headHtml}
+    {{headHtml}}
     <!-- /Head HTML -->
     <script>
       var simplyDataApi = {};
@@ -22,28 +22,28 @@
         simply.bind = false;
         /* Raw API */
         var simplyRawApi = {
-          {rawApi}
+          {{rawApi}}
         };
         /* End of Raw API */
         /* Data API */
         simplyDataApi = {
-          {dataApi}
+          {{dataApi}}
         };
         /* End of Data API */
         simplyApp = simply.app({
           /* Actions */
           actions: {
-            {actions}
+            {{actions}}
           },
           /* /Actions */
           /* Commands */
           commands: {
-            {commands}
+            {{commands}}
           },
           /* /Commands */
           /* Routes */
           routes: {
-            {routes}
+            {{routes}}
           }
           /* /Routes */
         });
@@ -61,10 +61,10 @@
   </head>
   <body>
     <!-- Body HTML -->
-    {bodyHtml}
+    {{bodyHtml}}
     <!-- /Body HTML -->
     <!-- Component HTML templates -->
-    {componentTemplates}
+    {{componentTemplates}}
     <!-- /Component HTML templates -->
     <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
       <template data-simply-template='Header' rel="header"></template>
@@ -74,7 +74,7 @@
     </nav>
     <div class="main" data-simply-field="page" data-simply-content="template">
     <!-- Page HTML templates -->
-    {pageTemplates}
+    {{pageTemplates}}
     <!-- /Page HTML templates -->
     </div>
     <script src="js/simply.everything.js"></script>
@@ -82,26 +82,26 @@
     <script>
       /* Transformers */
       editor.transformers = {
-        {transformers}
+        {{transformers}}
       };
       /* /Transformers */
     </script>
     <script>
       /* Sorters */
       editor.sorters = {
-        {sorters}
+        {{sorters}}
       };
       /* /Sorters */
     </script>
     <script>
       window.addEventListener("simply-content-loaded", function() {
         /* Data sources */
-        {dataSources}
+        {{dataSources}}
         /* /Data sources */
       });
     </script>
     <!-- Foot HTML -->
-    {footHtml}
+    {{footHtml}}
     <!-- /Foot HTML -->
   </body>
 </html>

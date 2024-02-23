@@ -26,8 +26,8 @@ function(data) {
   };
 
   Object.keys(replacements).forEach(function(replacement) {
-    matches = fullApp.match("(\\s+){" + replacement + "}");
-	fullApp = fullApp.replace("{" + replacement + "}", replacements[replacement].replace(/\n/g, matches[1]));
+    matches = fullApp.match("(\\s+){{" + replacement + "}}");
+    fullApp = fullApp.replace("{{" + replacement + "}}", replacements[replacement].replace(/\n/g, matches[1]));
   });
 
   // escape html

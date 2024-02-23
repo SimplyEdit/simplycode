@@ -4,16 +4,16 @@
     <meta charset="utf-8">
     <!-- Component CSS -->
     <style>
-      {componentCss}
+      {{componentCss}}
     </style>
     <!-- /Component CSS -->
     <!-- Page CSS -->
     <style>
-      {pageCss}
+      {{pageCss}}
     </style>
     <!-- /Page CSS -->
     <!-- Head HTML -->
-    {headHtml}
+    {{headHtml}}
     <!-- /Head HTML -->
     <script>
       function clone(ob) {
@@ -29,7 +29,7 @@
   </head>
   <body>
     <!-- Component HTML templates -->
-    {componentTemplates}
+    {{componentTemplates}}
     <!-- /Component HTML templates -->
     <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
       <template data-simply-template='Header' rel="header"></template>
@@ -38,33 +38,33 @@
       <div is="simply-component" rel="menu"></div>
     </nav>
     <div class="main" data-simply-field="page" data-simply-content="template">
-      {pagePreview}
+      {{pagePreview}}
     </div>
     <script src="js/simply.everything.js"></script>
     <script src="js/simply-edit.js" data-api-key="muze"></script>
     <script>
       /* Transformers */
       editor.transformers = {
-        {transformers}
+        {{transformers}}
       };
       /* /Transformers */
     </script>
     <script>
       /* Sorters */
       editor.sorters = {
-        {sorters}
+        {{sorters}}
       };
       /* /Sorters */
     </script>
     <script>
       window.addEventListener("simply-content-loaded", function() {
         /* Data sources */
-        {dataSources}
+        {{dataSources}}
         /* /Data sources */
       });
     </script>
     <!-- Foot HTML -->
-    {footHtml}
+    {{footHtml}}
     <!-- /Foot HTML -->
   </body>
 </html>
