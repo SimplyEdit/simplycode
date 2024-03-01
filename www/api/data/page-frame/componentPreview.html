@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <!-- Component CSS -->
+    <style>
+      {{componentCss}}
+    </style>
+    <!-- /Component CSS -->
+    <!-- Page CSS -->
+    <style>
+      {{pageCss}}
+    </style>
+    <!-- /Page CSS -->
+    <!-- Head HTML -->
+    {{headHtml}}
+    <!-- /Head HTML -->
+    <script>
+      function clone(ob) {
+        return JSON.parse(JSON.stringify(ob));
+      }
+      function updateDataSource(name) {
+        document.querySelectorAll('[data-simply-data="'+name+'"]').forEach(function(list) {
+          editor.list.applyDataSource(list, name);
+          list.dataBindingPaused = 0;
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <!-- Component HTML templates -->
+    {{componentTemplates}}
+    <!-- /Component HTML templates -->
+    <div class="main">
+      {{componentPreview}}
+    </div>
+    <script src="js/simply.everything.js"></script>
+    <script src="js/simply-edit.js" data-api-key="muze"></script>
+    <script>
+      /* Transformers */
+      editor.transformers = {
+        {{transformers}}
+      };
+      /* /Transformers */
+    </script>
+    <script>
+      /* Sorters */
+      editor.sorters = {
+        {{sorters}}
+      };
+      /* /Sorters */
+    </script>
+    <script>
+      window.addEventListener("simply-content-loaded", function() {
+        /* Data sources */
+        {{dataSources}}
+        /* /Data sources */
+      });
+    </script>
+    <!-- Foot HTML -->
+    {{footHtml}}
+    <!-- /Foot HTML -->
+  </body>
+</html>

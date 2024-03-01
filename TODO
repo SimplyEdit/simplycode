@@ -2,6 +2,7 @@ Bugs:
 - Adding a style element in Additional Head HTML renders it in the body of the HTML preview, which causes an error to be shown:
   Element “style” not allowed as child of element “body” in this context. (Suppressing further errors from this subtree.)
 - The "name" field should be required for all components / parts, to make sure the generated javascript will actually compile.
+- deletePage dataApi throws deleteComponent message
 
 =====
 TODO:
@@ -14,7 +15,6 @@ TODO:
 [New features]
 - Add an option for adding assets? in base components?
 - Have a way to reorganize code (sorting within a module, moving code from one module to another).
-- Compile in sorters
 - Do we want a deeper layered data structure, to accomodate orgs and projects?
   so www/api/data/{organization}/{project}/base-components etc;
   Or will a project have a UUID as a 'key' for it?
@@ -22,7 +22,6 @@ TODO:
 [Code improvements]
 - Fix styling for tests within tabs
 - Have a way to generate style.css and extra.css
-- prettify JSON that is written to the API
 
 [Tests]
 - Add a place to add tests next to the code.
@@ -148,6 +147,8 @@ Done:
 [v] Add option to setup the page frame, so the app doesn't have to have a header/nav part
 [v] Compile in datasources
 [v] Update css and other components on change for previews;
+[v] prettify JSON that is written to the API
+[v] Compile in sorters
 
 Bugs fixed:
 [v] running codemirror twice on the same textarea causes it to go wonky

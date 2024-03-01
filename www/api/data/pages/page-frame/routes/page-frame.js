@@ -17,7 +17,7 @@ function() {
       component.parts = {};
     }
     parts.forEach(function(part) {
-      component.parts[part.id] = JSON.parse(part.contents);
+      component.parts[part.id] = part.contents;
     });
     editor.pageData.component = component;
     editor.pageData.count = {};
