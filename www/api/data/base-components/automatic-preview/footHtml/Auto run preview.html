@@ -31,9 +31,11 @@
           var componentNameField = simplyApp.actions.getComponentNameField(component);
           editor.pageData.component.parts[component].forEach(function(part) {
             var found = false;
-            editor.pageData.app[component].forEach(function(appPart) {
+            editor.pageData.app[component].forEach(function(appPart, appIndex) {
               if (part[componentNameField] && (appPart[componentNameField] == part[componentNameField])) {
-                appPart = JSON.parse(JSON.stringify(part));
+                for (i in part) {
+                  editor.pageData.app[component][appIndex][i] = part[i];
+                }
                 found = true;
               }
             });
@@ -42,6 +44,10 @@
             }
           });
         }
+
+        document.querySelectorAll("[data-simply-transformer=simplyPreviewComponent]").forEach(function(element) {
+          element.innerHTML = editor.transformers.simplyPreviewComponent.render.call(element, element.dataBinding.get());
+        });
 
         simplyApp.commands.autoRunPreviews()
       }, 500);
