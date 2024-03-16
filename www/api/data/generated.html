@@ -1256,6 +1256,42 @@
                   return 'name';
               }
             },
+            "syncRemoteComponent" : function(remote) {
+              let original = {
+                "url" : simplyRawApi.url,
+                "headers" : simplyRawApi.headers
+              };
+              simplyRawApi.url = remote.url;
+              simplyRawApi.headers = {
+                "accept" : "application/json"
+              };
+              let fetchFunctions = {
+                "base-component" : simplyDataApi.getBaseComponent,
+                "component" : simplyDataApi.getComponent,
+                "page" : simplyDataApi.getPage,
+                "page-frame" : simplyDataApi.getPageFrame
+              };
+              
+              fetchFunctions[remote.type](remote.component)
+              .then(function(parts) {    
+                parts.forEach(function(part) {
+                  if (part.id == "meta") {
+                    return;
+                  }
+                  editor.pageData.component.parts[part.id] = JSON.parse(part.contents);
+                });
+              })
+              .then(function() {
+                for (i in original) {
+                  simplyRawApi[i] = original[i];
+                }
+              })
+              .catch(function() {
+               for (i in original) {
+                  simplyRawApi[i] = original[i];
+                }
+              });
+            },
             "browse" : function(path) {
               return simplyDataApi.browse(path)
                 .catch(function(error) {
@@ -1690,6 +1726,9 @@
             },
             "addRawApiMethod" : function(el) {
               editor.pageData.component.parts.rawApi.push({});
+            },
+            "syncRemoteComponent" : function(el) {
+              return simplyApp.actions.syncRemoteComponent(editor.pageData.component.remote);
             },
             "addRoute" : function(el) {
               editor.pageData.component.parts.routes.push({});
@@ -2959,6 +2998,22 @@
       </div>
     </details>
     </template>
+    <template id="componentRemote">
+      <details class="sb-component">
+      <summary title="Remote API URL to fetch this component from">
+        Remote API URL
+      </summary>
+      <input placeholder="https://..." data-simply-field="component.remote.url">
+      <select data-simply-field="component.remote.type">
+        <option value="base-component">Base component</option>
+        <option value="component">Component</option>
+        <option value="page-frame">Page frame</option>
+        <option value="page">Page</option>
+      </select>
+      <input placeholder="component path" data-simply-field="component.remote.component"><br>
+      <button class="sb-button" data-simply-command="syncRemoteComponent">Sync from remote</button>
+    </details>
+    </template>
     <template id="componentRoutes">
       <details class="sb-component">
       <summary data-simply-command="initEditors" title="Routes provide a translation from a URL to something the app should do. Routes make use of actions to fetch or store data">
@@ -3153,6 +3208,7 @@
           <button class="sb-button" data-simply-command="deleteBaseComponent">Delete</button>
         </div>
       </div>
+      <div is="simply-component" rel="componentRemote"></div>
       <div is="simply-component" rel="componentDescription"></div>
       <div is="simply-component" rel="componentHeadHtml"></div>
       <div is="simply-component" rel="componentBodyHtml"></div>
@@ -3201,6 +3257,7 @@
           <button class="sb-button" data-simply-command="deleteComponent">Delete</button>
         </div>
       </div>
+      <div is="simply-component" rel="componentRemote"></div>
       <div is="simply-component" rel="componentDescription"></div>
       <div is="simply-component" rel="componentComponentTemplate"></div>
       <div is="simply-component" rel="componentComponentCss"></div>
@@ -3252,6 +3309,7 @@
           <button class="sb-button" data-simply-command="deletePage">Delete</button>
         </div>
       </div>
+      <div is="simply-component" rel="componentRemote"></div>
       <div is="simply-component" rel="componentDescription"></div>
       <div is="simply-component" rel="componentPageTemplate"></div>
       <div is="simply-component" rel="componentPageCss"></div>
@@ -3272,6 +3330,7 @@
           <button class="sb-button" data-simply-command="savePageFrame">Save</button>
         </div>
       </div>
+      <div is="simply-component" rel="componentRemote"></div>
       <div is="simply-component" rel="componentDescription"></div>
       <div is="simply-component" rel="componentPageFrame"></div>
     </main>
