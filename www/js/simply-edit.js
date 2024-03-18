@@ -34,7 +34,7 @@
 		var scriptURL = document.createElement('a');
 		scriptURL.href = url;
 		scriptURL.pathname = scriptURL.pathname.replace('simply-edit.js', '').replace(/\/js\/$/, '/');
-		if (apiKey !== "" && apiKey !== "muze" && apiKey !== "github") {
+		if (apiKey !== "") {
 			scriptURL.pathname = scriptURL.pathname + apiKey + "/";
 		}
 		return scriptURL.href;
@@ -327,6 +327,7 @@
 						dataParent[dataName] = [];
 					}
 
+					var listEntryMapping = list.getAttribute('data-simply-entry');
 					listItems = list.querySelectorAll("[data-simply-list-item]");
 					var counter = 0;
 					for (j=0; j<listItems.length; j++) {
@@ -341,6 +342,9 @@
 						for (var subPath in subData) {
 							if (subPath != dataPath) {
 								console.log("Notice: use of data-simply-path in subitems is not permitted, translated " + subPath + " to " + dataPath);
+							}
+							if (listEntryMapping) {
+								subData[subPath] = subData[subPath][listEntryMapping];
 							}
 							dataParent[dataName][counter] = subData[subPath];
 						}
@@ -438,6 +442,16 @@
 						stashedFields[i].removeAttribute("data-simply-stashed");
 					}
 				});
+
+				if ((target.nodeType == document.ELEMENT_NODE) && target.getAttribute("data-simply-list") && target.getAttribute("data-simply-transformer")) {
+					var transformer = target.getAttribute('data-simply-transformer');
+					if (transformer) {
+						if (editor.transformers[transformer] && (typeof editor.transformers[transformer].extract === "function")) {
+							data = editor.transformers[transformer].extract.call(target, data);
+						}
+					}
+				}
+
 				return data;
 			},
 			keyDownHandler : function(evt) {
@@ -808,9 +822,23 @@
 				}
 
 				var dataLists = clone.querySelectorAll("[data-simply-list]");
-				for (k=0; k<dataLists.length; k++) {
-					editor.list.init(dataLists[k], listDataItem, useDataBinding);
+
+				// FIXME: We need to skip sublists to prevent initing them twice!
+				var subLists;
+				subLists = clone.querySelectorAll("[data-simply-list] [data-simply-list], [data-simply-field]:not([data-simply-content='attributes']):not([data-simply-content='fixed']) [data-simply-list]");
+				var subListsArr = [];
+				for (var a=0; a<subLists.length; a++) {
+					subListsArr.unshift(subLists[a]);
 				}
+
+				for (var i=0; i<dataLists.length; i++) {
+					var isSub = (subListsArr.indexOf(dataLists[i]) > -1);
+					if (isSub) {
+						continue;
+					}
+					editor.list.init(dataLists[i], listDataItem, useDataBinding);
+				}
+
 				if (clone.nodeType == document.ELEMENT_NODE && clone.getAttribute("data-simply-list")) {
 					editor.list.init(clone, listDataItem, useDataBinding);
 				}
@@ -822,11 +850,22 @@
 					list.dataBinding.pauseListeners(list);
 				}
 
+				var transformer = list.getAttribute('data-simply-transformer');
+				if (transformer) {
+					if (editor.transformers[transformer] && (typeof editor.transformers[transformer].render === "function")) {
+						listData = editor.transformers[transformer].render.call(list, listData);
+					}
+				}
+
 				var previousStyle = list.getAttribute("style");
 				list.style.height = list.offsetHeight + "px"; // this will prevent the screen from bouncing and messing up the scroll offset.
 				editor.list.clear(list);
 				editor.list.append(list, listData);
-				list.setAttribute("style", previousStyle);
+				if (previousStyle) {
+					list.setAttribute("style", previousStyle);
+				} else {
+					list.removeAttribute("style");
+				}
 				editor.list.emptyClass(list);
 				if (list.dataBinding) {
 					list.dataBinding.resumeListeners(list);
@@ -910,18 +949,23 @@
 				var listDataGetter = function() {
 					return listData;
 				};
+				var listEntryMappingGetter = function() {
+					return listEntryMapping;
+				};
 
 				for (j=0; j<listData.length; j++) {
 					if (!listData[j]) {
 						continue;
 					}
 					if (listEntryMapping) {
-						if (!listData[j]._simplyConverted) {
+						if (!listData[j]._simplyListEntryMapping) {
 							var entry = new Object(JSON.parse(JSON.stringify(listData[j])));
 							entry[listEntryMapping] = listData[j];
-							entry._simplyConverted = true;
 							Object.defineProperty(entry, "_simplyConvertedParent", {
 								get : listDataGetter
+							});
+							Object.defineProperty(entry, "_simplyListEntryMapping", {
+								get : listEntryMappingGetter
 							});
 							listData[j] = entry;
 						}
@@ -932,7 +976,9 @@
 					if (typeof currentBinding !== "undefined") {
 						if (currentBinding.mode == "list") {
 							if (currentBinding.get() != listData) {
-								currentBinding.get().push(listData[j]);
+								if (currentBinding.get().push) {
+									currentBinding.get().push(listData[j]);
+								}
 							//	console.log("Appending items to existing data");
 							}
 						} else {
@@ -994,7 +1040,7 @@
 							stashedFields[i].removeAttribute("data-simply-stashed");
 						}
 
-						if (!listData[j]._bindings_) {
+						if (!listDataSource && !listData[j]._bindings_) {
 							newData = editor.list.get(clone.firstElementChild);
 							dataPath = editor.data.getDataPath(clone.firstElementChild);
 							editor.data.apply(newData, clone.firstElementChild);
@@ -1036,7 +1082,7 @@
 								stashedFields[i].removeAttribute("data-simply-stashed");
 							}
 
-							if (!listData[j]._bindings_) {
+							if (!listDataSource && !listData[j]._bindings_) {
 								newData = editor.list.get(clone);
 								dataPath = editor.data.getDataPath(clone);
 								editor.data.apply(newData, clone);
@@ -1391,45 +1437,10 @@
 							field.appendChild(clone);
 							for (var i=0; i<field.childNodes.length; i++) {
 								if (field.childNodes[i].nodeType == document.ELEMENT_NODE) {
-									if (field.dataBinding) {
-										// Bind the subfields of the template to the same data-level as this field;
-
-										var fieldData = {};
-										fieldData[fieldPath] = field.fieldDataParent;
-/*
-										var fieldData = {};
-										fieldData[fieldPath] = editor.currentData[fieldPath];
-										// split the binding parents into seperate entries and remove the first empty entry;
-										var subkeys = field.dataBinding.parentKey.replace(/\/$/,'').split("/");
-
-//										var subkeys = savedBindingParents.join("/").replace(/\/$/,'').split("/");
-										if (subkeys[0] === "") {
-											subkeys.shift();
-										}
-
-										if (savedParentKey != field.dataBinding.parentKey) {
-											editor.bindingParents = ["/" + subkeys.join("/")];
-											editor.settings.databind.parentKey = field.dataBinding.parentKey;
-										}
-
-//										var fieldKeys = field.getAttribute('data-simply-field').split(".");
-//										fieldKeys.pop();
-
-//										if (fieldKeys.length && (subkeys.join(".") == fieldKeys.join("."))) {
-//										} else {
-											var subkey = subkeys.shift();
-											if (fieldData[fieldPath] && fieldData[fieldPath][subkey]) {
-												fieldData[fieldPath] = fieldData[fieldPath][subkey];
-											} else {
-												fieldData[fieldPath] = {};
-											}
-//										}
-
-*/
-										editor.data.apply(fieldData, field.childNodes[i]);
-									} else {
-										editor.data.apply(editor.currentData, field.childNodes[i]);
-									}
+									// Bind the subfields of the template to the same data-level as this field;
+									var fieldData = {};
+									fieldData[fieldPath] = field.fieldDataParent;
+									editor.data.apply(fieldData, field.childNodes[i]);
 								}
 							}
 						}
@@ -1826,7 +1837,6 @@
 								field.dataBinding = false;
 							}
 						}
-
 						if (field.dataBinding) {
 							field.dataBinding.setData(dataParent);
 							field.dataBinding.set(dataParent[dataName]);
@@ -1943,9 +1953,8 @@
 			});
 
 			// Add databinding and load data afterwards
-			// editor.loadScript(editor.baseURLClean + "simply/databind.js" + (editor.profile == "dev" ? "?t=" + (new Date().getTime()) : ""), editor.data.load);
-			//editor.loadScript(editor.baseURLClean + "simply/databind.js", editor.data.load);
-			editor.data.load();
+			// editor.loadScript(editor.baseURLClean + "simply/databind.js" + (editor.profile == "dev" ? "?t=" + (new Date().getTime()) : "?v=" + editor.version), editor.data.load);
+			editor.loadScript(editor.baseURLClean + "simply/databind.js" + "?v=" + editor.version, editor.data.load);
 		},
 		loadScript : function(src, callback) {
 			if (!document.head.querySelector('script[src="'+src+'"]')) {
@@ -2700,180 +2709,6 @@
 				init : function(endpoint) {
 					this.endpoint = endpoint;
 					this.dataEndpoint = endpoint + "data.json";
-					if (this.endpoint.indexOf("dat://") === 0 && window.DatArchive) {
-						this.archive = new DatArchive(this.endpoint);
-						this.archive.readFile("dat.json").then(function(data) {
-							try {
-								editor.storage.meta = JSON.parse(data);
-								if (!editor.storage.meta.web_root) {
-									editor.storage.meta.web_root = "/";
-								}
-								if (!editor.storage.meta.web_root.match(/\/$/)) {
-									editor.storage.meta.web_root += "/";
-								}
-							} catch (e) {
-								console.log("Warning: could not parse archive metadata (dat.json)");
-							}
-						});
-					}
-					this.load = storage.default.load;
-					this.list = storage.default.list;
-					this.sitemap = storage.default.sitemap;
-					this.page = storage.default.page;
-					this.listSitemap = storage.default.listSitemap;
-
-					if (editor.responsiveImages) {
-						if (
-							editor.settings['simply-image'] &&
-							editor.settings['simply-image'].responsive
-						) {
-							if (typeof editor.settings['simply-image'].responsive.sizes === "function") {
-								editor.responsiveImages.sizes = editor.settings['simply-image'].responsive.sizes;
-							} else if (typeof editor.settings['simply-image'].responsive.sizes === "object") {
-								editor.responsiveImages.sizes = (function(sizes) {
-									return function(src) {
-										var result = {};
-										var info = src.split(".");
-										var extension = info.pop().toLowerCase();
-										if (extension === "jpg" || extension === "jpeg" || extension === "png") {
-											for (var i=0; i<sizes.length; i++) {
-												result[sizes[i] + "w"] = info.join(".") + "-simply-scaled-" + sizes[i] + "." + extension;
-											}
-										}
-										return result;
-									};
-								}(editor.settings['simply-image'].responsive.sizes));
-							}
-						}
-						window.addEventListener("resize", editor.responsiveImages.resizeHandler);
-					}
-				},
-				connect : function(callback) {
-					callback();
-				},
-				save: function(data,callback) {
-					editor.storage.file.save(this.dataEndpoint, data, callback);
-				},
-				saveTemplate : function(pageTemplate, callback) {
-					var dataPath = location.pathname.split(/\//, 3)[2];
-					if (dataPath.match(/\/$/)) {
-						dataPath += "index.html";
-					}
-
-					editor.storage.archive.readFile(editor.storage.meta.web_root + pageTemplate).then(function(result) {
-						if (result) {
-							editor.storage.file.save(dataPath, result, callback);
-						}
-					});
-				},
-				file : {
-					save : function(path, data, callback) {
-						if (path.indexOf("dat://") === 0 ) {
-							path = path.replace("dat://" + document.location.host + "/", '');
-						}
-						if (!editor.storage.archive) {
-							callback({
-								error : true,
-								message : "No connection to dat archive (are you on https?)"
-							});
-							console.log("Warning: no connection to dat archive (are you on https?)");
-							return;
-						}
-						editor.storage.archive.getInfo().then(function(info) {
-							if (!info.isOwner) {
-								callback({
-									error : true,
-									message : "Not the owner."
-								});
-								console.log("Warning: Save failed because we are not owner for this archive.");
-								return;
-							}
-
-							var executeSave = function(path, data) {
-								createDirectories(path)
-								.then(function() {
-									if (path.match(/\/$/)) {
-										// path points to a directory;
-										callback({});
-									} else {
-										editor.storage.archive.writeFile(editor.storage.meta.web_root + path, data).then(function() {
-											editor.storage.archive.commit().then(function() {
-												var saveResult = {path : path, response: "Saved."};
-												callback(saveResult);
-											});
-										});
-									}
-								});
-							};
-							var createDirectory = function(path, callback) {
-								return new Promise(function(resolve, reject) {
-									path = path.replace(/^\/\//, "/");
-									path = path.replace(/\/$/, "");
-									editor.storage.archive.readdir(path).then(null, function () {
-										editor.storage.archive.mkdir(path).then(function() {
-											editor.storage.archive.commit().then(function() {
-												resolve('created');
-											});
-										});
-									});
-								});
-							};
-							var createDirectories = function(path, callback) {
-								return new Promise(function(resolve, reject) {
-									var parts = path.split("/");
-									if (!path.match(/\/$/)) {
-										parts.pop(); // last part is the filename
-									}
-									var dirToCreate = '/';
-
-									var promises = [];
-
-									for (var i=0; i<parts.length; i++) {
-										if (parts[i] !== "") {
-											dirToCreate += parts[i] + "/";
-										}
-										if (dirToCreate != "/") {
-											promises.push(createDirectory(editor.storage.meta.web_root + dirToCreate));
-										}
-									}
-									Promise.all(promises).then(function() {
-										resolve('created');
-									});
-								});
-							};
-							if (data instanceof File) {
-								var fileReader = new FileReader();
-								fileReader.onload = function(evt) {
-									executeSave(path, this.result);
-								};
-								fileReader.readAsArrayBuffer(data);
-							} else {
-								executeSave(path, data);
-							}
-						});
-					},
-					delete : function(path, callback) {
-						if (path.match(/\/$/)) {
-							// path points to a directory;
-							editor.storage.archive.rmdir(editor.storage.meta.web_root + path, {recursive: true}).then(function() {
-								editor.storage.archive.commit().then(function() {
-									callback();
-								});
-							});
-						} else {
-							editor.storage.archive.unlink(editor.storage.meta.web_root + path).then(function() {
-								editor.storage.archive.commit().then(function() {
-									callback();
-								});
-							});
-						}
-					}
-				}
-			},
-			beakerBeta : {
-				init : function(endpoint) {
-					this.endpoint = endpoint;
-					this.dataEndpoint = endpoint + "data.json";
 					if (this.endpoint.indexOf("hyper://") === 0 && window.beaker) {
 						this.hyperdrive = beaker.hyperdrive.drive(this.endpoint);
 						this.hyperdrive.getInfo().then(function(meta) {
@@ -2881,11 +2716,10 @@
 							editor.storage.meta.web_root = "/";
 						});
 					}
-					this.load = storage.default.load;
-					this.list = storage.default.list;
-					this.sitemap = storage.default.sitemap;
-					this.page = storage.default.page;
-					this.listSitemap = storage.default.listSitemap;
+					this.load = editor.storageConnectors.default.load;
+					this.sitemap = editor.storageConnectors.default.sitemap;
+					this.page = editor.storageConnectors.default.page;
+					this.listSitemap = editor.storageConnectors.default.listSitemap;
 
 					if (editor.responsiveImages) {
 						if (
@@ -2931,6 +2765,67 @@
 						}
 					});
 				},
+				list : function(url, callback) {
+						if (url.indexOf(editor.storage.dataEndpoint) === 0) {
+							return this.listSitemap(url, callback);
+						}
+						if (url == editor.storage.endpoint) {
+							var result = {
+								images : [],
+								folders : [],
+								files : []
+							};
+							result.folders.push({url : editor.storage.dataEndpoint, name : 'My pages'});
+							var parser = document.createElement("A");
+
+							if (document.querySelector("[data-simply-images]")) {
+								var imagesEndpoint = document.querySelector("[data-simply-images]").getAttribute("data-simply-images");
+								parser.href = imagesEndpoint;
+								imagesEndpoint = parser.href;
+								result.folders.push({url : imagesEndpoint, name : 'My images'});
+							}
+							if (document.querySelector("[data-simply-files]")) {
+								var filesEndpoint = document.querySelector("[data-simply-files]").getAttribute("data-simply-files");
+								parser.href = filesEndpoint;
+								filesEndpoint = parser.href;
+								result.folders.push({url : filesEndpoint, name : 'My files'});
+							}
+							return callback(result);
+						}
+
+						var files = beaker.hyperdrive.readdir(url)
+						.then(function(files) {
+							var result = {
+								images : [],
+								folders : [],
+								files : []
+							};
+							files.forEach(function(file) {
+								var targetUrl = url + file;
+								if (targetUrl.substring(-1) === "/") {
+									result.folders.push({url : targetUrl, name : file});
+								} else {
+									if (targetUrl === editor.storage.dataEndpoint) {
+											result.folders.push({url : targetUrl, name: "My pages"});
+									} else {
+										result.files.push({url : targetUrl, name : file});
+										if (targetUrl.match(/(jpg|jpeg|gif|png|bmp|tif|svg)$/i)) {
+											result.images.push({url : targetUrl, name : file});
+										}
+									}
+								}
+							});
+
+							return result;
+						})
+						.then(function(files) {
+							callback(files);
+						})
+						.catch(function(error) {
+							console.log("The target endpoint could not be accessed.");
+							console.log(error);
+						});
+					},
 				file : {
 					save : function(path, data, callback) {
 						if (path.indexOf("hyper://") === 0 ) {
@@ -2972,13 +2867,18 @@
 								return new Promise(function(resolve, reject) {
 									path = path.replace(/^\/\//, "/");
 									path = path.replace(/\/$/, "");
-									editor.storage.hyperdrive.readdir(path).then(null, function () {
-										editor.storage.hyperdrive.mkdir(path).then(function() {
-											editor.storage.hyperdrive.commit().then(function() {
-												resolve('created');
+									editor.storage.hyperdrive.readdir(path).then(
+										function() {
+											resolve('already exists');
+										},
+										function () {
+											editor.storage.hyperdrive.mkdir(path).then(function() {
+												editor.storage.hyperdrive.commit().then(function() {
+													resolve('created');
+												});
 											});
-										});
-									});
+										}
+									);
 								});
 							};
 							var createDirectories = function(path, callback) {
@@ -3821,7 +3721,7 @@
 		A databinding is attached to one data object. It can be bound to one or more elements.
 		Changes in the element are resolved every x ms;
 		Changes in the data are resolved to the element directly;
-	
+
 		config options:
 			data: the data object to be used for databinding. Note that this is the 'outer' object, the databinding itself will be set on data[key];
 			key: the key within the data object to be bound
@@ -3833,12 +3733,12 @@
 			parentKey: an additional pointer to where the data is bound without your datastructure; use this to keep track of nesting within your data.
 			attributeFilter: a blacklist of attributes that should not trigger a change in data;
 			resolve: a function that is called _after_ a change in data has been resolved. The arguments provided to the function are: dataBinding, key, value, oldValue
-	
+
 		Basic usage usage:
 			var data = {
 				"title" : "foo"
 			};
-	
+
 			var dataBinding = new databinding({
 				data : data,
 				key : title,
@@ -3849,17 +3749,17 @@
 					return this.innerHTML;
 				}
 			});
-	
-	
+
+
 			dataBinding.bind(document.getElementById('title'));
-	
+
 			console.log(data.title); // "foo"
 			data.title = "Hello world"; // innerHTML for title is changed to 'Hello world';
 			console.log(data.title); // "Hello world"
 			document.getElementById('title').innerHTML = "Bar";
 			console.log(data.title); // "Bar"
 	*/
-	
+
 	dataBinding = function(config) {
 		var data = config.data;
 		var key = config.key;
@@ -3868,7 +3768,7 @@
 		this.getter = config.getter;
 		this.mode = config.mode;
 		this.parentKey = config.parentKey ? config.parentKey : "";
-	
+
 		this.key = config.key;
 		this.attributeFilter = config.attributeFilter;
 		this.elements = [];
@@ -3876,17 +3776,15 @@
 		var binding = this;
 		var shadowValue;
 		binding.resolveCounter = 0;
-	
+
 		var oldValue;
-	
+
 		if (!this.mode) {
 			this.mode = "field";
 		}
-	
 		if (Array.isArray(data[key])) {
 			if (this.mode == "field") {
 				console.log("Warning: databinding started in field mode but array-type data given; Switching to list mode.");
-				console.log(key);
 			}
 			this.mode = "list";
 			this.config.mode = "list";
@@ -3894,7 +3792,7 @@
 		if (!this.attributeFilter) {
 			this.attributeFilter = [];
 		}
-	
+
 		// If we already have a databinding on this data[key], re-use that one instead of creating a new one;
 		if (data.hasOwnProperty("_bindings_") && data._bindings_[key]) {
 			return data._bindings_[key];
@@ -3912,10 +3810,10 @@
 			data = newdata;
 			initBindings(data, key);
 		};
-	
+
 		var reconnectParentBindings = function(binding) {
 			var parent;
-	
+
 			if (binding.config.data._parentBindings_) {
 				parent = binding.config.data._parentBindings_[binding.key];
 				while (parent && parent.get()[binding.key] == binding.get()) {
@@ -3933,20 +3831,21 @@
 				}
 			}
 		};
-	
+
 		var setShadowValue = function(value) {
 			var valueBindings;
 			if (shadowValue && shadowValue._bindings_) {
 				valueBindings = shadowValue._bindings_;
 			}
-	
+
 			shadowValue = value;
+
 			reconnectParentBindings(binding);
-	
+
 			if (valueBindings && (typeof shadowValue === "object")) {
 				if (shadowValue && !shadowValue.hasOwnProperty("_bindings_")) {
 					var bindings = {};
-	
+
 					Object.defineProperty(shadowValue, "_bindings_", {
 						get : function() {
 							return bindings;
@@ -3956,7 +3855,7 @@
 						}
 					});
 				}
-	
+
 				var setRestoreTrigger = function(data, key, previousBinding) {
 					var prevDescriptor = Object.getOwnPropertyDescriptor(previousBinding.config.data, key);
 					var childTriggers = function(previousData) {
@@ -3978,16 +3877,16 @@
 							}
 						};
 					}(previousBinding.config.data[key]);
-	
+
 					previousBinding.config.data = data;
 				//	binding.config.data = data;
-	
+
 					// binding.set(null);
 					// delete data[key];
 					var restoreBinding = function(value) {
 						if (typeof value === "object" && !value.hasOwnProperty("_bindings_")) {
 							var bindings = {};
-	
+
 							Object.defineProperty(value, "_bindings_", {
 								get : function() {
 									return bindings;
@@ -4004,13 +3903,13 @@
 							prevDescriptor.set(value);
 						}
 					};
-	
+
 					Object.defineProperty(data, key, {
 						set : restoreBinding,
 						configurable : true
 					});
 				};
-	
+
 				for (var i in valueBindings) {
 					if (typeof shadowValue[i] === "undefined") {
 						if (typeof valueBindings[i].get() === "string") {
@@ -4022,7 +3921,7 @@
 								valueBindings[i].config.data[i] = {};
 							}
 						}
-	
+
 						setRestoreTrigger(shadowValue, i, valueBindings[i]);
 					} else {
 						valueBindings[i].set(shadowValue[i]);
@@ -4031,25 +3930,41 @@
 					shadowValue._bindings_[i] = valueBindings[i];
 				}
 			}
-	
+
 			if (typeof oldValue !== "undefined" && !isEqual(oldValue, shadowValue)) {
 				binding.config.resolve.call(binding, key, dereference(shadowValue), dereference(oldValue));
 			}
 			//if (typeof shadowValue === "object") {
 			//	shadowValue = dereference(shadowValue);
 			//}
+			updateConvertedDataParent(shadowValue);
 			monitorChildData(shadowValue);
 		};
+
+		var updateConvertedDataParent = function(data) {
+			if (binding.config.data._parentBindings_ && binding.config.data._parentBindings_[binding.key].config.data._simplyListEntryMapping) {
+				var listEntryMapping = binding.config.data._parentBindings_[binding.key].config.data._simplyListEntryMapping;
+				var convertedParent = binding.config.data._parentBindings_[binding.key].config.data._simplyConvertedParent;
+				var arrayPaths = binding.config.data._parentBindings_[binding.key].config.data[listEntryMapping]._parentBindings_[binding.key].parentKey.split("/");
+				var arrayIndex = arrayPaths.pop();
+				arrayIndex = arrayPaths.pop();
+				binding.config.data._parentBindings_[binding.key].config.data[binding.key] = data;
+				var parentData = convertedParent._parentBindings_[arrayIndex].config.data;
+				var parentKey = arrayPaths.pop();
+				parentData[parentKey][arrayIndex][binding.key] = data;
+			}
+		};
+
 		var monitorChildData = function(data) {
 			// Watch for changes in our child data, because these also need to register as changes in the databound data/elements;
 			// This allows the use of simple data structures (1 key deep) as databound values and still resolve changes on a specific entry;
 			var parentData = data;
-	
+
 			if (typeof data === "object") {
 				var monitor = function(data, key) {
 					if (!data.hasOwnProperty("_parentBindings_")) {
 						var bindings = {};
-	
+
 						Object.defineProperty(data, "_parentBindings_", {
 							get : function() {
 								return bindings;
@@ -4065,9 +3980,9 @@
 						});
 					}
 					data._parentBindings_[key] = binding;
-	
+
 					var myvalue = data[key];
-	
+
 					var renumber = function(key, value, parentBinding) {
 						var oldparent, newparent;
 						if (value && value._bindings_) {
@@ -4084,19 +3999,19 @@
 							}
 						}
 					};
-	
+
 					renumber(key, myvalue, binding);
-	
+
 					Object.defineProperty(data, key, {
 						set : function(value) {
 							myvalue = value;
 							renumber(key, value, binding);
-	
+
 							if (parentData._bindings_ && parentData._bindings_[key]) {
 								parentData._bindings_[key].set(value);
 								parentData._bindings_[key].resolve();
 							}
-	
+
 							// Marker is set by the array function, it will do the resolve after we're done.
 							if (!binding.runningArrayFunction) {
 								newValue = shadowValue;
@@ -4113,14 +4028,14 @@
 						}
 					});
 				};
-	
+
 				for (var key in data) {
 					if (typeof data[key] !== "function") { // IE11 has a function 'includes' for arrays;
 						monitor(data, key);
 					}
 				}
 			}
-	
+
 			// Override basic array functions in the databound data, if it is an array;
 			// Allows the use of basic array functions and still resolve changes.
 			if (data instanceof Array) {
@@ -4131,7 +4046,7 @@
 					Object.defineProperty(data, name, {
 						value : function() {
 							binding.resolve(); // make sure the shadowValue is in sync with the latest state;
-	
+
 							// Add a marker so that array value set does not trigger resolving, we will resolve after we're done.
 							binding.runningArrayFunction = true;
 							var result = Array.prototype[name].apply(shadowValue, arguments);
@@ -4139,16 +4054,15 @@
 								shadowValue[i] = shadowValue[i]; // this will force a renumber/reindex for the parentKeys;
 							}
 							binding.runningArrayFunction = false;
-	
-							for (var j=0; j<binding.elements.length; j++) {
-								binding.bind(binding.elements[j]);
-							}
-	
+
+							//for (var j=0; j<binding.elements.length; j++) {
+							//	binding.bind(binding.elements[j]);
+							//}
+
 							newValue = shadowValue;
 							shadowValue = null;
 							binding.set(newValue);
 							binding.resolve(); // and apply our array change;
-	
 							return result;
 						}
 					});
@@ -4172,7 +4086,7 @@
 			}
 			return false;
 		};
-	
+
 		var setElements = function() {
 			if (binding.elementTimer) {
 				window.clearTimeout(binding.elementTimer);
@@ -4199,16 +4113,16 @@
 			}
 			fireEvent(document, "resolved");
 		};
-	
+
 		var initBindings = function(data, key) {
 			if (typeof data != "object") {
 				console.log("Attempted to bind on non-object data for " + key);
 				return;
 			}
-	
+
 			if (!data.hasOwnProperty("_bindings_")) {
 				var bindings = {};
-	
+
 				Object.defineProperty(data, "_bindings_", {
 					get : function() {
 						return bindings;
@@ -4218,17 +4132,17 @@
 					}
 				});
 			}
-	
+
 			setShadowValue(data[key]);
 			oldValue = dereference(data[key]);
-	
+
 			data._bindings_[key] = binding;
 			if (binding.mode == "list") {
 				if (data[key] === null) {
 					data[key] = [];
 				}
 			}
-	
+
 			Object.defineProperty(data, key, {
 				set : function(value) {
 					if (!isEqual(value, shadowValue)) {
@@ -4236,7 +4150,7 @@
 						binding.resolve(true);
 					}
 					if (data._parentBindings_ && data._parentBindings_[key]) {
-						if (data._parentBindings_[key].get()[key] !== value) {
+						if (!isEqual(data._parentBindings_[key].get()[key], value)) {
 							data._parentBindings_[key].get()[key] = value;
 							data._parentBindings_[key].resolve(true);
 						}
@@ -4260,19 +4174,19 @@
 			return targetNode.dispatchEvent(event);
 		};
 		this.fireEvent = fireEvent;
-	
+
 		this.set = function (value) {
 			changeStack.push(value);
 			this.resolve();
 		};
-	
+
 		this.get = function() {
 			if (changeStack.length) {
 				this.resolve();
 			}
 			return shadowValue;
 		};
-	
+
 		this.resolve = function(instant) {
 			if (!changeStack.length) {
 				if (instant) {
@@ -4282,22 +4196,22 @@
 			}
 			var value = changeStack.pop(); // Only apply the last change;
 			changeStack = [];
-	
+
 			if (isEqual(value, shadowValue)) {
 				return; // The change is not actually a change, so no action needed;
 			}
-	
+
 			if (resolverIsLooping()) {
 				return; // The resolver is looping, yield to give everything time to settle down;
 			}
-	
+
 			setShadowValue(value);		// Update the shadowValue to the new value;
-	
+
 			if (binding.config.data._simplyConverted) {
 				// Update the reference in the parent to the new value as well;
 				binding.config.data._simplyConvertedParent[binding.config.data._simplyConvertedParent.indexOf(binding.config.data)] = value;
 			}
-	
+
 			if (instant) {
 				setElements();
 			} else {
@@ -4308,21 +4222,21 @@
 					setElements();	// Set the new value in all the databound elements;
 				}, 100);
 			}
-	
+
 			binding.resolveCounter--;
 		};
-	
+
 		this.bind = function(element, config) {
 			if (element.dataBinding) {
 				element.dataBinding.unbind(element);
 			}
-	
+
 			binding.elements.push(element);
 			element.getter 		= (config && typeof config.getter === "function") ? config.getter : binding.getter;
 			element.setter 		= (config && typeof config.setter === "function") ? config.setter : binding.setter;
 			element.dataBinding 	= binding;
 			element.dataBindingPaused = 0;
-	
+
 			element.setter(shadowValue);
 			var elementValue = element.getter();
 			window.setTimeout(function() { // defer adding listeners until the run is done, this is a big performance improvement;
@@ -4340,7 +4254,7 @@
 			}
 			binding.cleanupBindings();
 		};
-	
+
 		this.rebind = function(element, config) {
 			// Use this when a DOM node is cloned and the clone needs to be registered with the databinding, without setting its data.
 			if (element.dataBinding) {
@@ -4351,7 +4265,7 @@
 			element.setter 		= (config && typeof config.setter === "function") ? config.setter : binding.setter;
 			element.dataBinding 	= binding;
 			element.dataBindingPaused = 0;
-	
+
 			var elementValue = element.getter();
 			window.setTimeout(function() { // defer adding listeners until the run is done, this is a big performance improvement;
 				binding.addListeners(element);
@@ -4363,25 +4277,25 @@
 					changeStack.push(element.getter());
 				}
 			}, 0);
-	
+
 			if (!binding.resolveTimer) {
 				binding.resolveTimer = window.setTimeout(this.resolve, 100);
 			}
 			binding.cleanupBindings();
 		};
-	
+
 		this.unbind = function(element) {
 			if (binding.elements.indexOf(element) > -1) {
 				binding.removeListeners(element);
 				binding.elements.splice(binding.elements.indexOf(element), 1);
 			}
 		};
-	
+
 		this.cleanupBindings = function() {
 			if (binding.elements.length < 2) {
 				return;
 			}
-	
+
 			var inDocument = function(element) {
 				if (document.contains && document.contains(element)) {
 					return true;
@@ -4400,6 +4314,7 @@
 				}
 				return false;
 			};
+
 			binding.elements.forEach(function(element) {
 				if (!inDocument(element)) {
 					element.markedForRemoval = true;
@@ -4407,11 +4322,11 @@
 					element.markedForRemoval = false;
 				}
 			});
-	
+
 			if (binding.cleanupTimer) {
 				clearTimeout(binding.cleanupTimer);
 			}
-	
+
 			binding.cleanupTimer = window.setTimeout(function() {
 				binding.elements.filter(function(element) {
 					if (element.markedForRemoval && !inDocument(element)) {
@@ -4423,13 +4338,13 @@
 				});
 			}, 1000); // If after 1 second the element is still not in the dom, remove the binding;
 		};
-	
+
 		initBindings(data, key);
 		// Call the custom init function, if it is there;
 		if (typeof binding.config.init === "function") {
 			binding.config.init.call(binding);
 		}
-	
+
 		if (binding.mode == "list") {
 			document.addEventListener("databind:resolved", function() {
 				if (!binding.skipOldValueUpdate) {
@@ -4438,13 +4353,13 @@
 			});
 		}
 	};
-	
+
 	var fieldNodeRemovedHandler = function(evt) {
 		if (!this.parentNode && this.dataBinding) {
 			this.dataBinding.unbind(this);
 		}
 	};
-	
+
 	dataBinding.prototype.addListeners = function(element) {
 		if (element.dataBinding) {
 			element.dataBinding.removeListeners(element);
@@ -4470,7 +4385,7 @@
 			element.addEventListener("DOMNodeInserted", this.handleEvent);
 		}
 		element.addEventListener("databinding:valuechanged", this.handleEvent);
-	
+
 		element.addEventListener("databinding:pause", function() {
 			this.dataBinding.pauseListeners(this);
 		});
@@ -4506,7 +4421,7 @@
 		}
 		element.removeEventListener("databinding:valuechanged", this.handleEvent);
 	};
-	
+
 	dataBinding.prototype.handleMutation = function(event) {
 		// FIXME: assuming that one set of mutation events always have the same target; this might not be the case;
 		var target = event[0].target;
@@ -4516,7 +4431,7 @@
 		if (target.dataBindingPaused) {
 			return;
 		}
-	
+
 		if (target.dataBinding.paused) {
 			return;
 		}
@@ -4526,7 +4441,7 @@
 				handleMe = true; // only handle the event 
 			}
 		}
-	
+
 		if (handleMe) {
 			var self = target.dataBinding;
 			window.setTimeout(function() {
@@ -4536,11 +4451,11 @@
 			}, 0); // allow the rest of the mutation event to occur;
 		}
 	};
-	
+
 	dataBinding.prototype.handleEvent = function (event) {
 		var target = event.currentTarget;
 		var self = target.dataBinding;
-	
+
 		if (typeof self === 'undefined') {
 			return;
 		}
@@ -4556,13 +4471,12 @@
 				return;
 			}
 		}
-	
+
 		var i, data, items;
 		if (self.mode === "list" && event.type == "DOMNodeRemoved") {
 			if (event.target.nodeType != document.ELEMENT_NODE) {
 				return;
 			}
-			console.time("removing node");
 			// find the index of the removed target node;
 			items = this.querySelectorAll(":scope > [data-simply-list-item]");
 			for (i=0; i<items.length; i++) {
@@ -4572,9 +4486,8 @@
 					return;
 				}
 			}
-			console.timeEnd("removing node");
 		}
-	
+
 		if (self.mode === "list" && event.type == "DOMNodeInserted") {
 			// find the index of the inserted target node;
 			items = this.querySelectorAll(":scope > [data-simply-list-item]");
@@ -4588,7 +4501,7 @@
 				}
 			}
 		}
-	
+
 		switch (event.type) {
 			case "DOMCharacterDataModified":
 			case "databinding:valuechanged":
@@ -4598,12 +4511,12 @@
 			case "DOMSubtreeModified":
 			case "DOMNodeRemoved":
 				// Allow the browser to fix what it thinks needs to be fixed (node to be removed, cleaned etc) before setting the new data;
-	
+
 				// there are needed to keep the focus in an element while typing;
 				self.pauseListeners(target);
 				self.set(target.getter());
 				self.resumeListeners(target);
-	
+
 				// these are needed to update after the browser is done doing its thing;
 				window.setTimeout(function() {
 					self.pauseListeners(target);
@@ -4614,7 +4527,7 @@
 		}
 		self.fireEvent(target, "domchanged");
 	};
-	
+
 	// Housekeeping, remove references to deleted nodes
 	document.addEventListener("DOMNodeRemoved", function(evt) {
 		var target = evt.target;
@@ -4631,17 +4544,17 @@
 			}
 		}, 1000);
 	});
-	
+
 	// polyfill to add :scope selector for IE
 	(function() {
 	  if (!HTMLElement.prototype.querySelectorAll) {
 	    throw new Error('rootedQuerySelectorAll: This polyfill can only be used with browsers that support querySelectorAll');
 	  }
-	
+
 	  // A temporary element to query against for elements not currently in the DOM
 	  // We'll also use this element to test for :scope support
 	  var container = document.createElement('div');
-	
+
 	  // Check if the browser supports :scope
 	  try {
 	    // Browser supports :scope, do nothing
@@ -4650,58 +4563,58 @@
 	  catch (e) {
 	    // Match usage of scope
 	    var scopeRE = /\s*:scope/gi;
-	
+
 	    // Overrides
 	    function overrideNodeMethod(prototype, methodName) {
 	      // Store the old method for use later
 	      var oldMethod = prototype[methodName];
-	
+
 	      // Override the method
 	      prototype[methodName] = function(query) {
-	        var nodeList,
-	            gaveId = false,
-	            gaveContainer = false;
-	
-	        if (query.match(scopeRE)) {
-	          if (!this.parentNode) {
-	            // Add to temporary container
-	            container.appendChild(this);
-	            gaveContainer = true;
-	          }
-	
-	          parentNode = this.parentNode;
-	
-	          if (!this.id) {
-	            // Give temporary ID
-	            this.id = 'rootedQuerySelector_id_'+(new Date()).getTime();
-	            gaveId = true;
-	          }
-	
-	          // Remove :scope
-	          query = query.replace(scopeRE, '#' + this.id + " ");
-	
-	          // Find elements against parent node
-	          // nodeList = oldMethod.call(parentNode, '#'+this.id+' '+query);
-	          nodeList = parentNode[methodName](query);
-	          // Reset the ID
-	          if (gaveId) {
-	            this.id = '';
-	          }
-	
-	          // Remove from temporary container
-	          if (gaveContainer) {
-	            container.removeChild(this);
-	          }
-	
-	          return nodeList;
-	        }
-	        else {
-	          // No immediate child selector used
-	          return oldMethod.call(this, query);
-	        }
+		var nodeList,
+		    gaveId = false,
+		    gaveContainer = false;
+
+		if (query.match(scopeRE)) {
+		  if (!this.parentNode) {
+		    // Add to temporary container
+		    container.appendChild(this);
+		    gaveContainer = true;
+		  }
+
+		  parentNode = this.parentNode;
+
+		  if (!this.id) {
+		    // Give temporary ID
+		    this.id = 'rootedQuerySelector_id_'+(new Date()).getTime();
+		    gaveId = true;
+		  }
+
+		  // Remove :scope
+		  query = query.replace(scopeRE, '#' + this.id + " ");
+
+		  // Find elements against parent node
+		  // nodeList = oldMethod.call(parentNode, '#'+this.id+' '+query);
+		  nodeList = parentNode[methodName](query);
+		  // Reset the ID
+		  if (gaveId) {
+		    this.id = '';
+		  }
+
+		  // Remove from temporary container
+		  if (gaveContainer) {
+		    container.removeChild(this);
+		  }
+
+		  return nodeList;
+		}
+		else {
+		  // No immediate child selector used
+		  return oldMethod.call(this, query);
+		}
 	      };
 	    }
-	
+
 	    // Browser doesn't support :scope, add polyfill
 	    overrideNodeMethod(HTMLElement.prototype, 'querySelector');
 	    overrideNodeMethod(HTMLElement.prototype, 'querySelectorAll');
@@ -4716,6 +4629,7 @@
 
 	class SimplyComponent extends HTMLDivElement {
 		constructor() {
+			console.warn('simply-component is deprecated, use simply-render instead');
 			var self = super();
 			var templateId = self.getAttribute("rel");
 			var template = document.getElementById(templateId);
@@ -4736,5 +4650,29 @@
 	}
 	// Define the new element
 	customElements.define('simply-component', SimplyComponent, { extends: 'div' });
-}());
+	
+	class SimplyRender extends HTMLElement {
+		constructor() {
+			var self = super();
+			var templateId = self.getAttribute("rel");
+			var template = document.getElementById(templateId);
+			if (template) {
+				var content = editor.list.cloneTemplate(template);
+				for (var i=0; i<content.childNodes.length; i++) {
+					var clone = content.childNodes[i].cloneNode(true);
+					if (clone.nodeType == document.ELEMENT_NODE) {
+						clone.querySelectorAll("template").forEach(function(t) {
+							t.setAttribute("simply-component", "");
+						});
+					}
+					self.parentNode.insertBefore(clone, self);
+				}
+				self.parentNode.removeChild(self);
+			}
+		}
+	}
 
+	// Define the new element
+	customElements.define('simply-render', SimplyRender);
+
+}());
