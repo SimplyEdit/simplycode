@@ -1,0 +1,20 @@
+{
+  "name": "simply-code-app",
+  "version": "1.0.0",
+  "description": "simply code in electron to build websites",
+  "main": "../www/api/index.js",
+  "scripts": {
+    "test": "echo \"test not implemented yet\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [
+    "javascript",
+    "html",
+    "IDE"
+  ],
+  "author": "Govert Combee",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^30.0.2"
+  }
+}
