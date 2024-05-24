@@ -96,48 +96,68 @@ protocol.registerSchemesAsPrivileged([
     }
 ])
 
+async function createComponentDirectory(componentPath){
+    fs.mkdirSync(('../www/' + componentPath), { recursive: true }, (err) => {
+        if (err) throw err
+        console.log("making a component directory failed")
+    })
+     
+}
+
+async function createComponentFile(componentPath, filecontent){
+    filecontent.text()
+    .then(function(filecontent) {
+        fs.writeFileSync(('../www/' + componentPath), filecontent, (err) => {
+            if (err) throw err
+         console.log(" making a component file failed")
+        })
+    })
+}
+
 app.whenReady().then(() => {
 
     protocol.handle('simplycode', (request) => {
-        //console.log(request)
-        //console.log(path)
-       
-       
+        let componentPath = new URL(request.url).pathname
+        console.log(componentPath)   
+        if(componentPath.endsWith('\/')){
+            componentPath = componentPath.substring(0, (componentPath.length - 1))
+        }
+        const pathicles = componentPath.split('\/');
+        const componentName = pathicles.pop();
+        const componentDirectory = pathicles.join('/');
 
         switch (request.method){
             case 'PUT':
-                console.log('found a put')
-                let componentName = request.url                
-                if(componentName.endsWith('\/')){
-                    componentName = componentName.substring(0, (componentName.length - 11))
-                }
-                componentName = componentName.split('\/').pop()
 
-                try {
-                    fs.mkdir(('../www/api/components/' + componentName), { recursive: true }, (err) => {
-                        if (err) throw err;
-                      });
-                }catch(e) { 
-                    alert('Failed to save the file !'); 
-                }
-                
-                let pathname = '../www/api/components/' + componentName + '/meta.json';
-                //let contents = '{ "formatted" : "json" }'; // request.body
-                //fs.writeFileSync(pathname, "a string here?!");
-                fs.writeFileSync(pathname, "a string here?!", (err) => {
-                    if (err) throw err;
-                });
+
+                return createComponentDirectory(componentDirectory)
+                    .then(createComponentFile(componentDirectory + "/" + componentName, request))
+                    .then(function() { return new Response('"ok"', { status: 200})})
+                    .catch(function(){ return new Response('"something went wrong"', { status : 500 })}) // @TODO : return the error code 
             break
             case 'GET':
             default:
-                let path = request.url.replace(/^simplycode:\/\/index.html/, '')
-                if (!path || path === "/") {
-                    path = '/index.html'
+
+                if(componentPath.endsWith('\/')){
+                    componentPath = componentPath.substring(0, (componentPath.length - 1))
                 }
-                const filestuff = fs.readFileSync('../www' + path)
-                return new Response(filestuff, {
-                    // headers: { 'content-type': 'text/html' }
-                })
+
+                if (!componentPath || componentPath === "/") {
+                    const filestuff = fs.readFileSync('../www/index.html')
+                    return new Response(filestuff, {
+                        // headers: { 'content-type': 'text/html' }
+                    })
+                } else {
+                    var target = '../www/' + componentDirectory + '\/' + componentName;
+                    if (fs.lstatSync(target).isDirectory()) {
+                        // Do the recursive read thing;
+                    } else {
+                        const filestuff = fs.readFileSync('../www/' + componentDirectory + '\/' + componentName)
+                        return new Response(filestuff, {
+                            // headers: { 'content-type': 'text/html' }
+                        })
+                    }
+                }
             break    
         }
 
