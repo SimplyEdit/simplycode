@@ -22,47 +22,38 @@ const createWindow = () => {
     //win.loadFile('../www/index.html')
 }
 
-function readRecursive(path) {
-    let dirname = filesystem.dirname(path);
-    let filename = filesystem.basename(path);
-    if (filesystem.is_dir(path)) {
-        const files = filesystem.scandir(path);
+function readRecursive(componentPath) { 
+    if(componentPath.endsWith('\/')){
+        componentPath = componentPath.substring(0, (componentPath.length - 1))
+    }
+    const pathicles = componentPath.split('\/');
+    const componentName = pathicles.pop();
+    const componentDirectory = pathicles.join('/');
+
+    var target = '../www' + componentDirectory + '\/' + componentName;
+
+    if (fs.lstatSync(target).isDirectory()) {
+        const files = fs.readdirSync(target);
         const result = [];
         files.forEach((file) => {
-            if (file !== '.' && file !== '..') {
+            if (file !== '.' && file !== '..' && !file.startsWith('.')) {
                 let data = {};
-                if (filesystem.exists(`${path}/${file}/meta`)) {
-                    data = JSON.parse(filesystem.read(`${path}/${file}/meta`, 'meta'));
+                if (fs.existsSync(target + '/meta')) {
+                    data = JSON.parse(fs.readFileSync(target + '/meta', 'utf8'));
                 }
-                if (filesystem.exists(`${path}/${file}/meta.json`)) {
-                    data = JSON.parse(filesystem.read(`${path}/${file}/meta.json`, 'meta.json'));
+                if (fs.existsSync(target + '/meta.json')) {
+                    data = JSON.parse(fs.readFileSync(target + '/meta.json', 'utf8'));
                 }
                 data.id = file;
-                data['ctime'] = filesystem.ctime(path, file);
+                data['ctime'] = fs.lstatSync(target + '\/' + file).ctime;
                 data['ctime-human'] = new Date(data['ctime']).toISOString();
-                data['contents'] = readRecursive(`${path}/${file}`);
+                data['contents'] = readRecursive(componentPath + '\/' + file);
                 result.push(data);
             }
         });
         return result;
     } else {
-        return filesystem.read(dirname, filename);
-    }
-}
-
-function deleteRecursive(path) {
-    const dirname = filesystem.dirname(path);
-    const filename = filesystem.basename(path);
-    if (filesystem.is_dir(path)) {
-        const files = filesystem.scandir(path);
-        files.forEach((file) => {
-            if (file !== '.' && file !== '..') {
-                deleteRecursive(`${path}/${file}`);
-            }
-        });
-        filesystem.delete(dirname, filename);
-    } else {
-        filesystem.delete(dirname, filename);
+        return fs.readFileSync(target, 'utf8');
     }
 }
 
@@ -127,9 +118,18 @@ app.whenReady().then(() => {
         const componentDirectory = pathicles.join('/');
 
         switch (request.method){
+            case 'OPTIONS':
+                return new Response('"ok"', { status: 200})
+            break
+            case 'DELETE':
+                if(fs.existsSync('../www' + componentPath)){
+                    fs.rmSync(('../www' + componentPath), { recursive: true, force: true })
+                    return new Response('"deleted"', { status: 200})
+                } else {
+                    console.log("delete failed: file or folder not found")
+                }         
+            break        
             case 'PUT':
-
-
                 return createComponentDirectory(componentDirectory)
                     .then(createComponentFile(componentDirectory + "/" + componentName, request))
                     .then(function() { return new Response('"ok"', { status: 200})})
@@ -137,9 +137,15 @@ app.whenReady().then(() => {
             break
             case 'GET':
             default:
-
                 if(componentPath.endsWith('\/')){
                     componentPath = componentPath.substring(0, (componentPath.length - 1))
+                }
+
+                if(componentPath.startsWith('/api/')){
+                    const filestuff = readRecursive(componentPath)
+                    console.log('asking if api folder')
+                    console.log(filestuff)
+                    return new Response(JSON.stringify(filestuff), {})
                 }
 
                 if (!componentPath || componentPath === "/") {
