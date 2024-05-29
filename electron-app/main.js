@@ -178,7 +178,10 @@ app.whenReady().then(() => {
     })
 
 //    dataDir = dialog.showOpenDialogSync({properties: ['openDirectory']}) + "/";
-    dataDir = process.cwd() + "/";
+    dataDir = process.cwd();
+    if (!dataDir.match(/\/$/)) {
+        dataDir += "/";
+    }
     createWindow()
 
     app.on('activate', () => {
