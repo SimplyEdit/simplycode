@@ -177,12 +177,12 @@ app.whenReady().then(() => {
         }
     })
 
-    dataDir = dialog.showOpenDialogSync({properties: ['openDirectory']})
+    dataDir = dialog.showOpenDialogSync({properties: ['openDirectory']}) + "/";
     createWindow()
 
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
-            dataDir = dialog.showOpenDialogSync({properties: ['openDirectory']});
+            dataDir = dialog.showOpenDialogSync({properties: ['openDirectory']}) + "/";
             createWindow()
         }
     })
