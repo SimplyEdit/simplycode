@@ -1,0 +1,20 @@
+{
+  "author": "SimplyEdit",
+  "description": "Code editor in the SimplyEdit family",
+  "keywords": [
+    "code",
+    "ide",
+    "editor",
+    "lowcode",
+    "nocode",
+    "low-code",
+    "no-code"
+  ],
+  "license": "MIT",
+  "main": "index.html",
+  "name": "simplycode",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SimplyEdit/simplycode.git"
+  }
+}
