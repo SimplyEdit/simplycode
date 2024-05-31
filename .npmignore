@@ -1,0 +1,48 @@
+# The .npmignore file defines which files and folders should not be included in a package
+#
+# .npmignore files follow the same pattern rules as .gitignore files.
+# Like git, npm looks for .npmignore and .gitignore files in all subdirectories of your package, not only the root directory.
+#
+# By default, NPM ignores entries in the .gitignore file. However, since this .npmignore file exists, the .gitignore is not used.
+#
+# The following are always ignored:
+#
+# - .*.swp
+# - ._*
+# - .DS_Store
+# - .git
+# - .gitignore
+# - .hg
+# - .npmignore
+# - .npmrc
+# - .lock-wscript
+# - .svn
+# - .wafpickle-*
+# - config.gypi
+# - CVS
+# - npm-debug.log
+#
+# The following are never ignored:
+#
+# - package.json
+# - README (and its variants)
+# - CHANGELOG (and its variants)
+# - LICENSE / LICENCE
+#
+# For more details see: https://docs.npmjs.com/cli/v10/using-npm/developers#keeping-files-out-of-your-package
+
+# Directories to ignore
+.github/
+lib/
+www/api/
+www/data/
+www/files/
+www/simply-edit/
+
+# Files to ignore
+www/.htaccess
+www/generated.html
+000-default.conf
+docker-compose.yml
+Dockerfile
+TODO
