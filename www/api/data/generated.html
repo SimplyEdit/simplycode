@@ -4,115 +4,6 @@
     <meta charset="utf-8">
     <!-- Component CSS -->
     <style>
-      /* QUnit iframe */
-      .qunit-code {
-        display: none;
-      }
-      iframe.qunit {
-        border: 0;
-        width: 100%;
-        height: 0px;
-      }
-      /* code-method block */
-      .sb-code-method {
-        width: 100%;
-      }
-      .sb-component summary span[data-count] {
-        font-weight: bold;
-      }
-      .sb-component summary span[data-count]:after {
-        content: '(' attr(data-count) ')';
-      }
-      .sb-component summary span[data-count=""],
-      .sb-component summary span[data-count="0"] {
-        font-weight: normal;
-      }
-      .sb-component summary span[data-count=""]:after,
-      .sb-component summary span[data-count="0"]:after {
-        content: '';
-      }
-      /* deleted-parts */
-      .sb-part[data-deleted="true"] {
-        opacity: 0.3;
-      }
-      /* simply dragdrop */
-      [data-simply-list].simply-dragdrop-receiving {
-        outline: 2px dashed var(--highlight-dark);
-      }
-      .sb-component [data-simply-list].sb-code-method.simply-empty:before {
-        content: "Nothing here yet... add or drop code blocks here.";
-        font-style: italic;
-      }
-      .sb-component [data-simply-list].sb-code-method:before {
-        content: "Drop code blocks here.";
-        font-style: italic;
-      }
-      [draggable] {
-        cursor: move;
-      }
-      /* HTML validator */
-      .sb-html-valid,
-      .sb-html-invalid {
-        padding: 4px 10px;
-        background-color: #D2E0E6;
-        color: #2B81AF;
-      }
-      .sb-html-valid {
-        border-top: 5px solid #C6E746; /* pass color from qunit */
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-        margin-bottom: 10px;
-      }
-      .sb-html-invalid {
-        border-top: 5px solid #EE5757; /* fail color from qunit */
-      }
-      .sb-html-messages:not(.simply-empty) {
-        padding: 4px 10px;
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-        margin-bottom: 10px;
-        background-color: #D2E0E6;
-        color: #2B81AF;
-      }
-      .sb-html-message:not(:last-child) {
-        border-bottom: 1px solid #2B81AF;
-      }
-      .sb-html-message [data-simply-field=firstLine]:not(:empty):after {
-        content: " - ";
-      }
-      /* App full preview */
-      .sb-preview-code {
-        display: none;
-      }
-      .sb-preview-data {
-        display: none;
-      }
-      .sb-preview-code [data-simply-list-item]:last-child .trailingComma {
-        display: none;
-      }
-      .sb-full-preview-container {
-        height: calc(0.6 * 768px);
-        width: calc(0.6 * 1280px);
-      }
-      iframe.sb-full-preview {
-        width: 1280px;
-        height: 768px;
-        transform: scale(0.6);
-        transform-origin: top left;
-        position: absolute;
-        background-color: white;
-      }
-      :root {
-        --sb-component-preview-scale: 0.4;
-      }
-      iframe.sb-component-preview {
-        width: calc(480px/var(--sb-component-preview-scale));
-        height: calc(300px/var(--sb-component-preview-scale));
-        transform: scale(var(--sb-component-preview-scale));
-        transform-origin: top left;
-        position: absolute;
-        background-color: white;
-      }
       /* extra */
       html, body {
       	margin: 0;
@@ -523,6 +414,115 @@
           animation-delay: 0s, var(--simply-toast-hide-delay);
       }
       
+      /* QUnit iframe */
+      .qunit-code {
+        display: none;
+      }
+      iframe.qunit {
+        border: 0;
+        width: 100%;
+        height: 0px;
+      }
+      /* code-method block */
+      .sb-code-method {
+        width: 100%;
+      }
+      .sb-component summary span[data-count] {
+        font-weight: bold;
+      }
+      .sb-component summary span[data-count]:after {
+        content: '(' attr(data-count) ')';
+      }
+      .sb-component summary span[data-count=""],
+      .sb-component summary span[data-count="0"] {
+        font-weight: normal;
+      }
+      .sb-component summary span[data-count=""]:after,
+      .sb-component summary span[data-count="0"]:after {
+        content: '';
+      }
+      /* deleted-parts */
+      .sb-part[data-deleted="true"] {
+        opacity: 0.3;
+      }
+      /* simply dragdrop */
+      [data-simply-list].simply-dragdrop-receiving {
+        outline: 2px dashed var(--highlight-dark);
+      }
+      .sb-component [data-simply-list].sb-code-method.simply-empty:before {
+        content: "Nothing here yet... add or drop code blocks here.";
+        font-style: italic;
+      }
+      .sb-component [data-simply-list].sb-code-method:before {
+        content: "Drop code blocks here.";
+        font-style: italic;
+      }
+      [draggable] {
+        cursor: move;
+      }
+      /* HTML validator */
+      .sb-html-valid,
+      .sb-html-invalid {
+        padding: 4px 10px;
+        background-color: #D2E0E6;
+        color: #2B81AF;
+      }
+      .sb-html-valid {
+        border-top: 5px solid #C6E746; /* pass color from qunit */
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        margin-bottom: 10px;
+      }
+      .sb-html-invalid {
+        border-top: 5px solid #EE5757; /* fail color from qunit */
+      }
+      .sb-html-messages:not(.simply-empty) {
+        padding: 4px 10px;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+        margin-bottom: 10px;
+        background-color: #D2E0E6;
+        color: #2B81AF;
+      }
+      .sb-html-message:not(:last-child) {
+        border-bottom: 1px solid #2B81AF;
+      }
+      .sb-html-message [data-simply-field=firstLine]:not(:empty):after {
+        content: " - ";
+      }
+      /* App full preview */
+      .sb-preview-code {
+        display: none;
+      }
+      .sb-preview-data {
+        display: none;
+      }
+      .sb-preview-code [data-simply-list-item]:last-child .trailingComma {
+        display: none;
+      }
+      .sb-full-preview-container {
+        height: calc(0.6 * 768px);
+        width: calc(0.6 * 1280px);
+      }
+      iframe.sb-full-preview {
+        width: 1280px;
+        height: 768px;
+        transform: scale(0.6);
+        transform-origin: top left;
+        position: absolute;
+        background-color: white;
+      }
+      :root {
+        --sb-component-preview-scale: 0.4;
+      }
+      iframe.sb-component-preview {
+        width: calc(480px/var(--sb-component-preview-scale));
+        height: calc(300px/var(--sb-component-preview-scale));
+        transform: scale(var(--sb-component-preview-scale));
+        transform-origin: top left;
+        position: absolute;
+        background-color: white;
+      }
     </style>
     <!-- /Component CSS -->
     <!-- Page CSS -->
@@ -545,9 +545,7 @@
     </style>
     <!-- /Page CSS -->
     <!-- Head HTML -->
-    <!-- base layout -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/extra.css">
+    
     <!-- /Head HTML -->
     <script>
       var simplyDataApi = {};
