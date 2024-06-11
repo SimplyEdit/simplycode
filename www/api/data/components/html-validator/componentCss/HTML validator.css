@@ -1,19 +1,19 @@
-.sb-html-valid,
-.sb-html-invalid {
+.simplycode-html-valid,
+.simplycode-html-invalid {
   padding: 4px 10px;
   background-color: #D2E0E6;
   color: #2B81AF;
 }
-.sb-html-valid {
+.simplycode-html-valid {
   border-top: 5px solid #C6E746; /* pass color from qunit */
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   margin-bottom: 10px;
 }
-.sb-html-invalid {
+.simplycode-html-invalid {
   border-top: 5px solid #EE5757; /* fail color from qunit */
 }
-.sb-html-messages:not(.simply-empty) {
+.simplycode-html-messages:not(.simply-empty) {
   padding: 4px 10px;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
@@ -21,9 +21,9 @@
   background-color: #D2E0E6;
   color: #2B81AF;
 }
-.sb-html-message:not(:last-child) {
+.simplycode-html-message:not(:last-child) {
   border-bottom: 1px solid #2B81AF;
 }
-.sb-html-message [data-simply-field=firstLine]:not(:empty):after {
+.simplycode-html-message [data-simply-field=firstLine]:not(:empty):after {
   content: " - ";
 }

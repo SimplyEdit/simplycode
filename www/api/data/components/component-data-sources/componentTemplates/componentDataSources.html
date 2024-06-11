@@ -1,69 +1,69 @@
-<details class="sb-component">
+<details class="simplycode-component">
   <summary data-simply-command="initEditors" title="Data sources provide list information from an external data source. Use this to provide lists that are not part of the subject of the page. Used as data-simply-data on data-simply-lists">
     <span data-simply-field="count.dataSources" data-simply-content="attributes" data-simply-attributes="data-count">
       Data sources
     </span>
-    <span class="sb-controls">
-      <button class="sb-button" data-simply-command="addDataSource">Add data source</button>
+    <span class="simplycode-controls">
+      <button class="simplycode-button" data-simply-command="addDataSource">Add data source</button>
     </span>
   </summary>
-  <div class="sb-code-method" data-simply-list="component.parts.dataSources">
+  <div class="simplycode-code-method" data-simply-list="component.parts.dataSources">
     <template>
-      <div class="sb-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
-        <div class="sb-part-header">
-          <div class="sb-tabs">
-            <input class="sb-tab" data-simply-field="dataSource" placeholder="Data source name, eg itemList">
-            <label class="sb-tab" title="Load code is used to fetch the data source and render it in the list. Save code is used to gather data from the data source and save it back to where it came from.">
+      <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
+        <div class="simplycode-part-header">
+          <div class="simplycode-tabs">
+            <input class="simplycode-tab" data-simply-field="dataSource" placeholder="Data source name, eg itemList">
+            <label class="simplycode-tab" title="Load code is used to fetch the data source and render it in the list. Save code is used to gather data from the data source and save it back to where it came from.">
               <input type="radio" checked name="dataSourceEditor" value="code" data-simply-field="editor">
               <span>Load/Save</span>
             </label>
-            <label class="sb-tab" title="Get/Set is used to populate the data-simply-list value.">
+            <label class="simplycode-tab" title="Get/Set is used to populate the data-simply-list value.">
               <input type="radio" checked name="dataSourceEditor" value="getset" data-simply-field="editor">
               <span>Get/Set</span>
             </label>
-            <label class="sb-tab">
+            <label class="simplycode-tab">
               <input type="radio" name="dataSourceEditor" value="tests" data-simply-field="editor">
               <span>Tests</span>
             </label>
           </div>
-          <div class="sb-options">
-			<button class="sb-button" draggable="true">Drag to move</button>
-            <button class="sb-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-simply-command="deleteEntry">Delete data source</button>
+          <div class="simplycode-options">
+			<button class="simplycode-button" draggable="true">Drag to move</button>
+            <button class="simplycode-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-simply-command="deleteEntry">Delete data source</button>
           </div>
         </div>
-        <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+        <div class="simplycode-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
           <template data-simply-template="code">
-            <div class="sb-editor-code sb-dual">
+            <div class="simplycode-editor-code simplycode-dual">
               <textarea data-codemirror-mode="javascript" data-simply-field="load-code" placeholder="function() {...}"></textarea>
               <textarea data-codemirror-mode="javascript" data-simply-field="save-code" placeholder="function() {...}"></textarea>
             </div>
           </template>
           <template data-simply-template="getset">
-            <div class="sb-editor-code sb-dual">
+            <div class="simplycode-editor-code simplycode-dual">
               <textarea data-codemirror-mode="javascript" data-simply-field="get-code" placeholder="function() {...}"></textarea>
               <textarea data-codemirror-mode="javascript" data-simply-field="set-code" placeholder="function() {...}"></textarea>
             </div>
           </template>
           <template data-simply-template="tests">
-            <div class="sb-editor-code">
+            <div class="simplycode-editor-code">
               <simply-render rel="componentQUnitTests"></simply-render>
             </div>
           </template>
-          <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+          <div class="simplycode-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
             <template data-simply-template="code">
-              <div class="sb-editor-code sb-dual">
+              <div class="simplycode-editor-code simplycode-dual">
                 <textarea data-codemirror-mode="javascript" data-simply-field="load-code" placeholder="function() {...}"></textarea>
                 <textarea data-codemirror-mode="javascript" data-simply-field="save-code" placeholder="function() {...}"></textarea>
               </div>
             </template>
             <template data-simply-template="getset">
-              <div class="sb-editor-code sb-dual">
+              <div class="simplycode-editor-code simplycode-dual">
                 <textarea data-codemirror-mode="javascript" data-simply-field="get-code" placeholder="function() {...}"></textarea>
                 <textarea data-codemirror-mode="javascript" data-simply-field="set-code" placeholder="function() {...}"></textarea>
               </div>
             </template>
             <template data-simply-template="tests">
-              <div class="sb-editor-code">
+              <div class="simplycode-editor-code">
                 <simply-render rel="componentQUnitTests"></simply-render>
               </div>
             </template>
