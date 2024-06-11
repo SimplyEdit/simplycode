@@ -1,5 +1,5 @@
 function(el) {
-  var testRunners = document.querySelectorAll(".sb-component[open] iframe.qunit");
+  var testRunners = document.querySelectorAll(".simplycode-component[open] iframe.qunit");
   testRunners.forEach(function(testRunner) {
     testRunner.contentWindow.document.testRunner = testRunner;
     testRunner.contentWindow.document.open();

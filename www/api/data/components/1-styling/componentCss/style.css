@@ -77,8 +77,8 @@ a:visited {
 
 /* custom styling for custom elements */
 
-.sb-button,
-a.sb-button {
+.simplycode-button,
+a.simplycode-button {
     background: var(--support-background);
     color: var(--support-color);
     padding: 0.3em 0.5em;
@@ -87,13 +87,13 @@ a.sb-button {
     text-decoration: none;
 }
 
-.sb-button:first-child {
+.simplycode-button:first-child {
     margin-left: 0;
 }
-.sb-button:last-child {
+.simplycode-button:last-child {
     margin-right: 0;
 }
-.sb-button.highlight {
+.simplycode-button.highlight {
     background: var(--highlight-background);
     color: var(--highlight-color);
 }
@@ -125,7 +125,7 @@ body > nav {
 body > div.main {
     grid-area: pane;
 }
-nav ul ul .sb-expand {
+nav ul ul .simplycode-expand {
     display: none;
     padding: 0 1.7em;
 }
@@ -146,18 +146,18 @@ nav > ul > li[data-simply-command=expandMenu]::before {
     content: "[+] ";
     font-family: monospace;
 }
-.sb-part {
+.simplycode-part {
     margin-top: 1em;
 }
 
-.sb-part-header {
+.simplycode-part-header {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
-.sb-part-header .sb-options {
+.simplycode-part-header .simplycode-options {
     text-align: right;
 }
-.sb-part .sb-tab {
+.simplycode-part .simplycode-tab {
     padding: 10px 5px;
     margin: 0;
     background-color: #151515;
@@ -166,54 +166,54 @@ nav > ul > li[data-simply-command=expandMenu]::before {
     text-align: center;
     margin-right: 5px;
 }
-.sb-part .sb-tab input[type=radio] {
+.simplycode-part .simplycode-tab input[type=radio] {
     display: none;
 }
-.sb-part .sb-tab input[type=radio]:checked ~ span {
+.simplycode-part .simplycode-tab input[type=radio]:checked ~ span {
     font-weight: bold;
     border-bottom: 2px solid var(--support-background);
 }
-.sb-part .sb-editor-code {
+.simplycode-part .simplycode-editor-code {
     display: grid;
     grid-template-columns: 1fr;
 }
-.sb-part .sb-dual {
+.simplycode-part .simplycode-dual {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
-.sb-part .sb-dual-preview {
+.simplycode-part .simplycode-dual-preview {
     display: grid;
     grid-template-columns: auto 480px;
 }
-.sb-test-header {
+.simplycode-test-header {
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
-.sb-test-header .sb-options {
+.simplycode-test-header .simplycode-options {
     text-align: right;
 }
-.sb-component summary {
+.simplycode-component summary {
     font-size: 1.2em;
 }
-.sb-component {
+.simplycode-component {
     margin: 10px 0px;
 }
-.sb-header {
+.simplycode-header {
     display: grid;
     grid-template-columns: 3fr 1fr;
     vertical-align: middle;
 }
-.sb-header .sb-controls {
+.simplycode-header .simplycode-controls {
     text-align: right;
 }
-.sb-header h1 span {
+.simplycode-header h1 span {
     white-space: nowrap;
 }
-.sb-component summary .sb-controls {
+.simplycode-component summary .simplycode-controls {
     display: none;
     margin-left: 1em;
 }
-.sb-component[open] summary .sb-controls {
+.simplycode-component[open] summary .simplycode-controls {
     display: inline-block;
 }
 header {
@@ -231,16 +231,16 @@ header {
 header h1 {
     margin: 0;
 }
-header .sb-controls {
+header .simplycode-controls {
     padding-top: 5px;
     padding-right: 5px;
     text-align: right;
 }
-.sb-editor-code textarea {
+.simplycode-editor-code textarea {
     margin-top: -1px;
 }
 
-ul.sb-components-list {
+ul.simplycode-components-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -249,7 +249,7 @@ ul.sb-components-list {
     gap: 10px;
     margin-bottom: 1em;
 }
-ul.sb-components-list li {
+ul.simplycode-components-list li {
     border: 1px solid #555;
     background-color: #2a2a2a;
     padding: 10px;
