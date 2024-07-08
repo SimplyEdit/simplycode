@@ -20,11 +20,11 @@ function(data) {
       .then(function(validateResult) {
       element.dataBinding.config.data.validateResult = validateResult;
       if(validateResult.messages.length) {
-        element.className = "sb-html-invalid";
+        element.className = "simplycode-html-invalid";
         element.innerHTML = "HTML validation failed:";
       } else {
         element.innerHTML = "HTML validated!";
-        element.className = "sb-html-valid";
+        element.className = "simplycode-html-valid";
       }
     });
   }, 1000);

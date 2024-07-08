@@ -1,5 +1,5 @@
 function() {
-  var textareas = document.querySelectorAll(".sb-component[open] textarea[data-codemirror-mode]:not([style])");
+  var textareas = document.querySelectorAll(".simplycode-component[open] textarea[data-codemirror-mode]:not([style])");
   textareas.forEach(function(textarea) {
     var mode = "javascript";
     if (textarea.hasAttribute("data-codemirror-mode")) {
