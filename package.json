@@ -1,6 +1,9 @@
 {
   "author": "SimplyEdit",
   "description": "Code editor in the SimplyEdit family",
+  "dependencies": {
+    "codemirror": "5.65.2"
+  },
   "keywords": [
     "code",
     "ide",
@@ -16,5 +19,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SimplyEdit/simplycode.git"
+  },
+  "scripts": {
+    "postinstall": "./npm_post_install.sh"
   }
 }
