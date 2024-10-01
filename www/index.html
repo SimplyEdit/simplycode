@@ -3970,12 +3970,14 @@
               "footHtml": editor.transformers.simplyPreviewFootHtml.render(data.footHtml ?? []),
               "bodyHtml" : editor.transformers.simplyPreviewBodyHtml.render(data.bodyHtml ?? [])
             };
-          
+
             Object.keys(replacements).forEach(function(replacement) {
               matches = fullApp.match("(\\s+){{" + replacement + "}}");
-              fullApp = fullApp.replace("{{" + replacement + "}}", replacements[replacement].replace(/\n/g, matches[1]));
+              if (matches) {
+                fullApp = fullApp.replace("{{" + replacement + "}}", replacements[replacement].replace(/\n/g, matches[1]));
+              }
             });
-          
+
             // escape html
             var dataDiv = document.createElement("div");
             dataDiv.appendChild(document.createTextNode(fullApp));
