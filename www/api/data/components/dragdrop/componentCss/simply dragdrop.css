@@ -1,11 +1,11 @@
 [data-simply-list].simply-dragdrop-receiving {
   outline: 2px dashed var(--highlight-dark);
 }
-.sb-component [data-simply-list].sb-code-method.simply-empty:before {
+.simplycode-component [data-simply-list].simplycode-code-method.simply-empty:before {
   content: "Nothing here yet... add or drop code blocks here.";
   font-style: italic;
 }
-.sb-component [data-simply-list].sb-code-method:before {
+.simplycode-component [data-simply-list].simplycode-code-method:before {
   content: "Drop code blocks here.";
   font-style: italic;
 }

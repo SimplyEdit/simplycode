@@ -1,41 +1,41 @@
-<details class="sb-component">
+<details class="simplycode-component">
   <summary data-simply-command="initEditors" title="Commands come from user interaction on the DOM, for instance clicking a button. Commands are aware of the DOM, and use actions to execute logic.">
     <span data-simply-field="count.commands" data-simply-content="attributes" data-simply-attributes="data-count">
       Commands
     </span>
-    <span class='sb-controls'>
-      <button class="sb-button" data-simply-command="addCommand">Add command</button>
+    <span class='simplycode-controls'>
+      <button class="simplycode-button" data-simply-command="addCommand">Add command</button>
     </span>
   </summary>
-  <div class="sb-code-method" data-simply-list="component.parts.commands">
+  <div class="simplycode-code-method" data-simply-list="component.parts.commands">
     <template>
-      <div class="sb-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
-        <div class="sb-part-header">
-          <div class="sb-tabs">
-            <input class="sb-tab" data-simply-field="command" placeholder="Command name, eg getItemList">
-            <label class="sb-tab">
+      <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
+        <div class="simplycode-part-header">
+          <div class="simplycode-tabs">
+            <input class="simplycode-tab" data-simply-field="command" placeholder="Command name, eg getItemList">
+            <label class="simplycode-tab">
               <input type="radio" name="commandEditor" checked value="code" data-simply-field="editor">
               <span>Code</span>
             </label>
-            <label class="sb-tab">
+            <label class="simplycode-tab">
               <input type="radio" name="commandEditor" value="tests" data-simply-field="editor">
               <span>Tests</span>
             </label>
           </div>
-          <div class="sb-options">
-			<button class="sb-button" draggable="true">Drag to move</button>
-            <button class="sb-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-simply-command="deleteEntry">Delete command</button>
+          <div class="simplycode-options">
+			<button class="simplycode-button" draggable="true">Drag to move</button>
+            <button class="simplycode-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-simply-command="deleteEntry">Delete command</button>
           </div>
         </div>
-        <div class="sb-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+        <div class="simplycode-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
           <template data-simply-template="code">
-            <div class="sb-editor-code">
+            <div class="simplycode-editor-code">
               <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
               <simply-render rel="componentQUnitCommandRunner"></simply-render>
             </div>
           </template>
           <template data-simply-template="tests">
-            <div class="sb-editor-code">
+            <div class="simplycode-editor-code">
               <simply-render rel="componentQUnitTests"></simply-render>
             </div>
           </template>
