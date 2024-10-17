@@ -2,7 +2,8 @@
   "author": "SimplyEdit",
   "description": "Code editor in the SimplyEdit family",
   "dependencies": {
-    "codemirror": "5.65.2"
+    "codemirror": "5.65.2",
+    "simplyedit": "github:simplyedit/simplyedit"
   },
   "keywords": [
     "code",
