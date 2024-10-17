@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-npm_post_install() {
+installCodeMirror() {
     sSourceDir="${npm_config_local_prefix}/node_modules"
     sTargetDir="${npm_config_local_prefix}/www/js"
 
@@ -21,4 +21,29 @@ npm_post_install() {
     cp -f "${sSourceDir}/codemirror/theme/base16-dark.css" "${sTargetDir}/codemirror/theme/base16-dark.css"
 }
 
-npm_post_install
+installSimplyEdit() {
+    local sSourceDir sTargetDir
+
+    readonly sSourceDir="${npm_config_local_prefix}/node_modules/simplyedit"
+    readonly sTargetDir="${npm_config_local_prefix}/www"
+
+    mkdir -p \
+        "${sTargetDir}/js/" \
+        "${sTargetDir}/hope/" \
+        "${sTargetDir}/simply/" \
+
+    cp -a "${sSourceDir}/js/*" "${sTargetDir}/js"
+    cp -a "${sSourceDir}/js/*" "${sTargetDir}/hope"
+    cp -a "${sSourceDir}/js/*" "${sTargetDir}/simply"
+}
+
+if [[ ${BASH_SOURCE[0]} != "${0}" ]]; then
+    export -f installSimplyEdit
+    export -f installCodeMirror
+else
+    installSimplyEdit
+    installCodeMirror
+    exit $?
+fi
+
+
