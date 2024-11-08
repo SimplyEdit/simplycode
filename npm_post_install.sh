@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 installCodeMirror() {
     sSourceDir="${npm_config_local_prefix}/node_modules"
@@ -32,9 +32,9 @@ installSimplyEdit() {
         "${sTargetDir}/hope/" \
         "${sTargetDir}/simply/" \
 
-    cp -a "${sSourceDir}/js/*" "${sTargetDir}/js"
-    cp -a "${sSourceDir}/js/*" "${sTargetDir}/hope"
-    cp -a "${sSourceDir}/js/*" "${sTargetDir}/simply"
+    cp -a "${sSourceDir}/js/"* "${sTargetDir}/js"
+    cp -a "${sSourceDir}/hope/"* "${sTargetDir}/hope"
+    cp -a "${sSourceDir}/simply/"* "${sTargetDir}/simply"
 }
 
 if [[ ${BASH_SOURCE[0]} != "${0}" ]]; then
