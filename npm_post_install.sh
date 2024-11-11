@@ -1,4 +1,13 @@
 #!/usr/bin/env bash
+current_pwd=`pwd`
+
+if [[ ${INIT_CWD} != ${current_pwd} ]]; then
+  exit 0; # Skip posinstall when we are installed as a dependancy
+fi
+
+#if (process.cwd().includes('node_modules')) {
+# return; # Skip postinstall when we are installed as a dependancy.
+#}
 
 installCodeMirror() {
     sSourceDir="${npm_config_local_prefix}/node_modules"
