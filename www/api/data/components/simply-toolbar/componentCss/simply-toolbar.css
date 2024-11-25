@@ -1,0 +1,377 @@
+:root {
+  --simply-toolbar-font-size: 11px;
+  --simply-toolbar-font-family: arial;
+  
+  --simply-toolbar-box-shadow: 0px 0px 4px var(--simply-toolbar-background-secondary);  
+  --simply-toolbar-gradient-background: linear-gradient(to bottom, var(--simply-toolbar-background) 0%, var(--simply-toolbar-background) 95%, var(--simply-toolbar-background-secondary) 100%);
+  
+  --simply-toolbar-base-height: 60px;
+  --simply-toolbar-marker-size: 12px;
+}
+.simply-toolbar {
+  font-family: var(--simply-toolbar-font-family);
+  font-size: var(--simply-toolbar-font-size);
+  color: var(--simply-toolbar-font-color);
+  background: var(--simply-toolbar-background);
+
+  -webkit-border-radius: 0px 0px 3px 3px;
+  -moz-border-radius: 0px 0px 3px 3px;
+  border-radius: 0px 0px 3px 3px;
+  line-height: 0px;
+  position: relative;
+  border: 1px solid var(--simply-toolbar-color-support);
+  border-top: 5px solid var(--simply-toolbar-color-primary);
+  box-shadow:  var(--simply-toolbar-box-shadow);
+  z-index: 1000;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ie-user-select: none;
+  user-select: none;
+}
+.simply-toolbar::after, .simply-toolbar > ul::after, .simply-toolbar-section > ul::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+.simply-toolbar .marker {
+  content: "";
+  display: block;
+  position: absolute;
+  margin-top: calc(-1 * var(--simply-toolbar-marker-size));
+  left: 50%;
+  margin-left: calc(-1 * var(--simply-toolbar-marker-size));
+  width: 0;
+  border-bottom: var(--simply-toolbar-marker-size) solid var(--simply-toolbar-color-primary);
+  border-top: 0px;
+  border-left: var(--simply-toolbar-marker-size) solid transparent;
+  border-right: var(--simply-toolbar-marker-size) solid transparent;
+}
+.simply-toolbar > ul {
+  background: var(--simply-toolbar-submenu-background);
+  min-width: 100%;
+  line-height: 0px;
+}
+.simply-toolbar > ul,
+.simply-toolbar > ul > li,
+.simply-toolbar-section > ul,
+.simply-toolbar-section > ul > li {
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  list-style: none;
+  white-space: nowrap;
+}
+.simply-toolbar-section > ul > li.simply-text-format {
+  margin-right: 4px;
+}
+.simply-toolbar li {
+  position: relative;
+  float: left;
+}
+.simply-main-toolbar .simply-toolbar {
+  min-height: var(--simply-toolbar-base-height);
+  transform: translate3d(0,0,0);
+  box-sizing: content-box;
+}
+.simply-main-toolbar .simply-buttons {
+  white-space: nowrap !important;
+  position: absolute;
+}
+.simply-main-toolbar .simply-toolbar li {
+  float: none;
+  display: inline-block;
+}
+
+.simply-toolbar button {
+  border: 0px;
+  margin: 0px;
+  padding: 0px 2px;
+  background: transparent;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  position: relative;
+  min-width: 50px;
+  text-align: center;
+  height: var(--simply-toolbar-base-height);
+  font-size: var(--simply-toolbar-font-size);
+  color: var(--simply-toolbar-font-color) !important;
+  box-sizing: border-box;
+  font-weight: inherit;
+  letter-spacing: 0;
+  line-height: inherit;
+  text-transform: inherit;
+  font-family: inherit;
+  box-shadow: inherit;
+  border-radius: 0;
+  transition: inherit;
+  font-variant-caps: normal;
+}
+@media (max-width: 480px) {
+  .simply-toolbar button {
+    min-width: 48px;
+  }
+}
+@media (max-width: 320px) {
+  .simply-toolbar button {
+    min-width: 40px;
+  }
+}
+.simply-main-toolbar button {
+  vertical-align: top;
+}
+.simply-toolbar button[disabled] {
+  opacity: 0.3;
+}
+.simply-toolbar button > i,
+.simply-toolbar button > span.fa-stack {
+  line-height: 50px;
+  font-size: 19px;
+  display: inline-block;
+  padding: 0px 4px;
+  line-height: 38px;
+  display: block;
+  margin: -13px auto 0px;
+  position: relative;
+}
+.simply-toolbar button.simply-selected {
+  background-color: #EEE;
+  position: relative;
+  border-left: 1px solid #DDD;
+  border-right: 1px solid white;
+}
+.simply-toolbar button.simply-disabled {
+  opacity: 0.3;
+}
+
+.simply-toolbar button:focus {
+  border-bottom: 2px solid var(--simply-toolbar-focus-color) !important;
+}
+.simply-toolbar label button:focus {
+  border-bottom: 0px !important;
+}
+button.simply-selected::first-child {
+  border-left: 0px;
+}
+button.simply-selected::last-child {
+  border-right: 0px;
+}
+
+.simply-toolbar-section {
+  background-color: #EEE;
+  display: none;
+  clear: both;
+}
+section.simply-section.active {
+  opacity: 1;
+  z-index: 99999;
+}
+section.simply-section {
+  position: absolute;
+  opacity: 0;
+  -webkit-transition: opacity 0.2s ease-in-out;
+  -moz-transition: opacity 0.2s ease-in-out;
+  -ms-transition: opacity 0.2s ease-in-out;
+  -o-transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
+  left: -10000px; /* position off screen initially */
+  height: inherit;
+}
+.simply-toolbar-section ul {
+  background: linear-gradient(to bottom, #EEE 0%, #DDD 100%);
+  padding: 4px 2px;
+}
+.simply-toolbar-section.simply-selected {
+  display: block;
+  white-space: nowrap; 
+}
+.simply-toolbar-section button {
+  height: 40px;
+  min-width: 23px;
+  border: 1px solid transparent;
+  line-height: 6px;
+}
+.simply-toolbar-section button > i,
+.simply-toolbar-section button > span.fa-stack {
+  font-size: 14px;
+  line-height: 16px;
+  width: 23px;
+  margin: 0px auto 4px;
+}
+.simply-toolbar-section button.simply-selected {
+  background-color: #D7D7D7;
+  border: 1px solid #EEE;
+  border-left: 1px solid #888;
+  border-top: 1px solid #888;
+  border-radius: 2px;
+}
+section.simply-section {
+  margin-bottom: 150px;
+}
+section.simply-section h1 {
+  font-size: 16px;
+  font-weight: bold;
+  display: none;
+}
+button.simply-expands::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  margin-left: -3px;
+  width: 0;
+  border-top: 3px solid #888;
+  border-bottom: 0px;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  opacity: 1;
+  transform: inherit;
+  -webkit-transform: inherit;
+  top: inherit;
+  height: 0;
+}
+button.simply-selected.simply-expands::after {
+  display: none;
+}
+.simply-toolbar-section > div {
+  padding-left: 80px;
+}
+
+.simply-toolbar-section label {
+  width: 60px;
+  font-size: 12px;
+  display: inline-block;
+  font-weight: normal;
+  padding-left: 10px;
+  margin: inherit;
+  margin-left: -80px;
+  color: inherit;
+}
+.simply-toolbar-section input,
+.simply-toolbar-section select {
+  background-color: white;
+  color: black;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  border: 1px solid #888;
+  border-bottom-color: #EEE;
+  border-right-color: #EEE;
+  border-radius: 2px;
+  line-height: 22px;
+  min-height: 22px;
+  width: 100%;
+  font-family: inherit;
+  font-size: inherit;
+  display: inline-block;
+  box-sizing: border-box !important;
+  padding: 2px 0 !important;
+  margin: 3px 0 !important;
+}
+.simply-toolbar-section select {
+  padding: 4px 0px !important;
+}
+.simply-toolbar button:focus {
+  outline: none;
+}
+.simply-float-right {
+  float: right;
+}
+.simply-toolbar button.simply-small > i,
+.simply-toolbar button.simply-small > span.fa-stack {
+  line-height: 24px;
+  font-size: 14px;
+  margin: 0px;
+}
+.simply-toolbar button.simply-small {
+  height: auto;
+  width: auto;
+  min-width: 20px;
+}
+/* end */
+
+li.simply-text-format {
+  line-height: 32px;
+  vertical-align: top;
+  width: 100%;
+}
+
+li.simply-seperator label:before {
+  display: block;
+  position: absolute;
+  border-left: 1px solid #DDD;
+  border-right: 1px solid white;
+  height: 40px;
+  content: "";
+  margin-top: -14px;
+  margin-left: -4px;
+}
+
+label.simply-subsection {
+  text-align: center;
+  vertical-align: top;
+  line-height: 14px;
+}
+.simply-disabled {
+  color: #BBB;
+}
+
+.simply-main-toolbar {
+  left: 0px !important;
+  opacity: 1 !important;
+  position: fixed;
+  margin-bottom: auto;
+  top: 0px;
+  right: 0px;
+  z-index: 100000;
+}
+.simply-main-toolbar .simply-toolbar {
+  position: static;
+}
+.simply-main-toolbar .simply-toolbar:before {
+  display: none;
+}
+
+.simply-main-toolbar .simply-selected {
+  border: 0px;
+}
+
+.simply-main-toolbar .simply-buttons {
+  white-space: normal;
+}
+.simply-main-toolbar > .simply-toolbar > ul.simply-buttons > li.simply-seperator {
+  border-right: 1px solid #ddd;
+  height: 58px;
+  vertical-align: top;
+}
+.simply-main-toolbar i.simply-logo {
+  margin-bottom: 10px;
+  position: relative;
+  top: 4px;
+  width: 24px;
+  box-sizing: border-box;
+}
+.simply-hidden {
+  display: none !important;
+}
+
+.simply-main-toolbar.simply-collapse .simply-toolbar .marker {
+  margin-top: -5px;
+  margin-left: 0px;
+  left: 0;
+  width: 0;
+  border-bottom: 0;
+  border-top: 25px solid var(--simply-toolbar-color-primary);
+  border-left: 0;
+  border-right: 25px solid transparent;
+}
+.simply-main-toolbar.simply-collapse .simply-toolbar {
+  border-top-color: transparent;
+}
+
+.simply-main-toolbar.simply-collapse {
+  right: auto;
+}
+.simply-main-toolbar.simply-collapse li:nth-child(n+2) {
+  display: none;
+}

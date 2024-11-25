@@ -1,0 +1,4 @@
+:root {
+  --simply-logo-color-primary: var(--simply-toolbar-color-primary);
+  --simply-logo-color-secondary: var(--simply-toolbar-color-secondary);
+}

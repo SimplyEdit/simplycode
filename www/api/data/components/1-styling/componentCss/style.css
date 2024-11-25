@@ -107,7 +107,7 @@ a.simplycode-button {
 body {
   display: grid; 
   grid-template-columns: 210px 2fr 2fr; 
-  grid-template-rows: 60px 2fr 2fr; 
+  grid-template-rows: 80px 2fr 2fr; 
   gap: 0px 0px; 
   grid-template-areas: 
     "header header header"
