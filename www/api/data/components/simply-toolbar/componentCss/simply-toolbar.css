@@ -61,6 +61,7 @@
   list-style: none;
   white-space: nowrap;
 }
+
 .simply-toolbar-section > ul > li.simply-text-format {
   margin-right: 4px;
 }
@@ -72,6 +73,9 @@
   min-height: var(--simply-toolbar-base-height);
   transform: translate3d(0,0,0);
   box-sizing: content-box;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
 }
 .simply-main-toolbar .simply-buttons {
   white-space: nowrap !important;
@@ -374,4 +378,8 @@ label.simply-subsection {
 }
 .simply-main-toolbar.simply-collapse li:nth-child(n+2) {
   display: none;
+}
+.simply-toolbar button.simply-toolbar-logo {
+  padding: 0px 5px;
+  box-sizing: content-box;
 }
