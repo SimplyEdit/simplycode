@@ -27,16 +27,14 @@
       }
     </script>
   </head>
-  <body>
+  <body class="ds-nightmode">
     <!-- Component HTML templates -->
     {{componentTemplates}}
     <!-- /Component HTML templates -->
     <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
       <template data-simply-template='Header' rel="header"></template>
     </header>
-    <nav>
-      <simply-render rel="menu"></simply-render>
-    </nav>
+    <simply-render rel="menu"></simply-render>
     <div class="main" data-simply-field="page" data-simply-content="template">
       {{pagePreview}}
     </div>

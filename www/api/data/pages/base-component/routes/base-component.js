@@ -32,6 +32,6 @@ function(params) {
     editor.pageData.component = component;
     editor.pageData.parts = parts;
     editor.pageData.count = count;
-    editor.pageData.page = "Edit base component";
+    editor.pageData.page = "Edit-base-component";
   });
 }
