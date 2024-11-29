@@ -1,0 +1,25 @@
+{
+  "menu": [
+    {
+      "item": {
+        "icon": "/assets/img/feather-sprite.svg#briefcase",
+        "innerHTML": "option 1"
+      },
+      "menu": [
+        {
+          "item": {
+            "icon": "/assets/img/feather-sprite.svg#box",
+            "innerHTML": "sub 1"
+          }
+        }
+      ]
+    },
+    {
+      "item": {
+        "icon": "/assets/img/feather-sprite.svg#box",
+        "innerHTML": "option 2"
+      }
+    }
+  ]
+}
+      

@@ -21,6 +21,6 @@ function() {
     });
     editor.pageData.component = component;
     editor.pageData.count = {};
-    editor.pageData.page = "Edit page frame";
+    editor.pageData.page = "Edit-page-frame";
   });
 }

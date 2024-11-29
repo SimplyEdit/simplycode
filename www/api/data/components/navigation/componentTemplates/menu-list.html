@@ -1,0 +1,15 @@
+<ul class="ds-navbar-nav" data-simply-list="menu">
+  <template>
+    <li data-simply-command="expandMenu">
+      <a class="ds-nav" data-simply-command="navigate" 
+         href="#" data-simply-field="item.href" data-simply-content="fixed">
+        <svg class="ds-icon ds-icon-feather">
+        	<use xlink:href="/assets/img/feather-sprite.svg#x" 
+                 data-simply-field="item.icon" data-simply-transformer="icon">
+      	</use></svg>
+        <span data-simply-field="item.innerHTML"></span>
+     </a>
+      <simply-render rel="menu-list"></simply-render>
+    </li>
+  </template>
+</ul>

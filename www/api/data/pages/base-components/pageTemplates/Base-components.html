@@ -1,0 +1,24 @@
+<main>
+  <h1>Base components</h1>
+  <div class="simplycode-boxes" data-simply-list="components">
+    <template>
+      <a class="simplycode-box" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="baseComponentLink">
+        <span data-simply-field="id"></span>
+        <p data-simply-field="description"></p>
+      </a>
+    </template>
+  </div>
+  <form class="simplycode-form">
+    <label>
+        Name
+        <input type="text" data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your base component">
+    </label>
+    <label>
+        Description
+        <textarea data-simply-field="newComponent.description" placeholder="Describe what this base component should do, for your own use."></textarea>
+    </label>
+    <div class="ds-form-buttons">
+        <button class="ds-button" data-simply-command="createBaseComponent">Add Base Component</button>
+    </div>
+  </form>
+</main>
