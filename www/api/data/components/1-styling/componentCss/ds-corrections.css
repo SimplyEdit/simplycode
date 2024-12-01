@@ -3,7 +3,7 @@ main {
   margin-bottom: initial;
 }
 
-nav li {
+li {
   margin-left: initial;
 }
 a:link {
@@ -14,4 +14,9 @@ textarea {
 }
 :root {
   --simply-button-primary: var(--highlight-dark);
+  --ds-heading-font: var(--font-family);
+}
+
+.simply-toolbar-title {
+  width: 70px;
 }
