@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,700,700i');
+:root {
+    --ds-primary: var(--ds-simplyedit);
+    --ds-primary-dark: var(--ds-simplyedit-dark);
+    --ds-primary-contrast: var(--ds-white);
+    --ds-primary-light: var(--ds-simplyedit-light);
+    --ds-primary-gradient: var(--ds-simplyedit-gradient);
+    --ds-primary-gradient-bump: var(--ds-simplyedit-gradient-bump);
+    --ds-support: #06CC06;
+    --ds-support-dark: #05BB05;
+    --ds-support-light: #07DE07;
+    --ds-support-contrast: #FFF;
+    --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
+}
+html, body {
+  height: 100%;
+}
+body {
+  display: grid;
+  grid-template-columns: 210px 2fr 2fr; 
+  grid-template-rows: 60px 2fr 2fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "header header header"
+    "nav pane pane"
+    "nav pane pane"
+}
+body > header {
+  grid-area: header;
+}
+body > nav {
+    grid-area: nav;
+    overflow: auto;
+}
+body > div.main {
+    grid-area: pane;
+    overflow: auto;
+}
