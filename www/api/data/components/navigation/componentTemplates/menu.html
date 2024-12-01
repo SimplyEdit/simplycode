@@ -1,3 +1,8 @@
-<nav class="ds-navbar ds-navbar-side">
-  <simply-render rel="menu-list"></simply-render>
-</nav>
+<ul data-simply-list="menu">
+  <template>
+    <li data-simply-command="expandMenu">
+      <a data-simply-command="navigate" href="#" data-simply-field="item"></a>
+      <simply-render rel="menu"></simply-render>
+    </li>
+  </template>
+</ul>
