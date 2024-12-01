@@ -1,0 +1,17 @@
+main {
+  margin-top: initial;
+  margin-bottom: initial;
+}
+
+nav li {
+  margin-left: initial;
+}
+a:link {
+  color: var(--highlight-dark);
+}
+textarea {
+  outline: initial;
+}
+:root {
+  --simply-button-primary: var(--highlight-dark);
+}

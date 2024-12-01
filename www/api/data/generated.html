@@ -4,7 +4,46 @@
     <meta charset="utf-8">
     <!-- Component CSS -->
     <style>
-      /* 1-style */
+      /* extra */
+      @import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,700,700i');
+      :root {
+          --ds-primary: var(--ds-simplyedit);
+          --ds-primary-dark: var(--ds-simplyedit-dark);
+          --ds-primary-contrast: var(--ds-white);
+          --ds-primary-light: var(--ds-simplyedit-light);
+          --ds-primary-gradient: var(--ds-simplyedit-gradient);
+          --ds-primary-gradient-bump: var(--ds-simplyedit-gradient-bump);
+          --ds-support: #06CC06;
+          --ds-support-dark: #05BB05;
+          --ds-support-light: #07DE07;
+          --ds-support-contrast: #FFF;
+          --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
+      }
+      html, body {
+        height: 100%;
+      }
+      body {
+        display: grid;
+        grid-template-columns: 210px 2fr 2fr; 
+        grid-template-rows: 60px 2fr 2fr; 
+        gap: 0px 0px; 
+        grid-template-areas: 
+          "header header header"
+          "nav pane pane"
+          "nav pane pane"
+      }
+      body > header {
+        grid-area: header;
+      }
+      body > nav {
+          grid-area: nav;
+          overflow: auto;
+      }
+      body > div.main {
+          grid-area: pane;
+          overflow: auto;
+      }
+      /* style */
       
       
       /* Simply Branding
@@ -2425,28 +2464,164 @@
           color: var(--ds-color);
           text-shadow: 0 0 3px white;
       }
+      /* ds-corrections */
+      main {
+        margin-top: initial;
+        margin-bottom: initial;
+      }
+      
+      nav li {
+        margin-left: initial;
+      }
+      a:link {
+        color: var(--highlight-dark);
+      }
+      textarea {
+        outline: initial;
+      }
+      :root {
+        --simply-button-primary: var(--highlight-dark);
+      }
       /* extra */
       @import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,700,700i');
-      :root {
-          --ds-primary: var(--ds-simplyedit);
-          --ds-primary-dark: var(--ds-simplyedit-dark);
-          --ds-primary-contrast: var(--ds-white);
-          --ds-primary-light: var(--ds-simplyedit-light);
-          --ds-primary-gradient: var(--ds-simplyedit-gradient);
-          --ds-primary-gradient-bump: var(--ds-simplyedit-gradient-bump);
-          --ds-support: #06CC06;
-          --ds-support-dark: #05BB05;
-          --ds-support-light: #07DE07;
-          --ds-support-contrast: #FFF;
-          --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
-      }
+      
       html, body {
-        height: 100%;
+      	margin: 0;
+      	padding: 0;
+      	width: 100%;
+      }
+      main {
+      	padding: 0px 15px;
+      }
+      [data-simply-command] {
+      	cursor: pointer; /* Dear iOS, why don't you have a click event when the cursor is not a pointer? */
+      }
+      textarea {
+      	width: 100%;
+      	height: 120px;
+      	color: #e0e0e0;
+      	background-color: #151515;
+      	border: 0;
+      	padding: 10px;
+      }
+      input:not([type]),
+      input[type=text] {
+      	color: #e0e0e0;
+      	background-color: #151515;
+      	border: 0;
+      	padding: 5px;
+      }
+      /* style */
+      :root {
+          --highlight-dark: #f16623;
+          --highlight-light: #ff8003;
+          --highlight-color: #fff;
+          --highlight-background: linear-gradient( to left, var(--highlight-light), var(--highlight-dark) );
+      
+          --support-dark: #444;
+          --support-light: #484848;
+          --support-color: #eee;
+          --support-background: linear-gradient( to left, var(--support-light), var(--support-dark) );
+      
+          --grey-dark: #38393c;
+          --grey-medium: #7f8185;
+          --grey-light: #e9ebec;
+          --grey-dark: #38393c;
+          --black: #000;
+          --white: #fff;
+          --grey-background: var(--grey-dark);
+      
+          --font-family: 'Alegreya Sans', sans-serif;
+          --font-size: 14px;
+          --line-height: 1.5em;
+          --color: #7f8185;
+          --background: #333;
+      }
+      
+      /* general styling on default elements */
+      
+      html, body {
+          margin: 0;
+          padding: 0;
+          font-family: var(--font-family);
+          font-size: var(--font-size);
+          line-height: var(--line-height);
+          color: var(--color); 
+          background-color: var(--background);
       }
       body {
-        display: grid;
+          overflow-y: scroll;
+      }
+      body:last-child {
+          margin-bottom: 1.5em;
+      }
+      h1 {
+          font-size: 2em;
+          font-weight: 300;
+          line-height: 1.1em;
+          margin: 0;
+          margin-bottom: 0.5em;
+      }
+      
+      h2 {
+          font-size: 1.6em;
+          font-weight: 400;
+          line-height: 1.1em;
+          margin: 0;
+          margin-bottom: 0.5em;
+      }
+      
+      * {
+          box-sizing: border-box;
+      }
+      
+      img {
+          display: block;
+          max-width: 100%;
+      }
+      
+      a {
+          color: var(--highlight-dark);
+      }
+      a:visited {
+          color: var(--highlight-dark);
+      }
+      
+      /* custom styling for custom elements */
+      
+      .simplycode-button,
+      a.simplycode-button {
+          background: var(--support-background);
+          color: var(--support-color);
+          padding: 0.3em 0.5em;
+          margin: 0 0.3em;
+          border: 1px solid #ccc;
+          text-decoration: none;
+      }
+      
+      .simplycode-button:first-child {
+          margin-left: 0;
+      }
+      .simplycode-button:last-child {
+          margin-right: 0;
+      }
+      .simplycode-button.highlight {
+          background: var(--highlight-background);
+          color: var(--highlight-color);
+      }
+      
+      .text-content {
+          padding: 2.2375em;
+          max-width: 50em;
+      }
+      .text-content *:first-child {
+          margin-top: 0;
+      }
+      
+      body {
+        display: grid; 
         grid-template-columns: 210px 2fr 2fr; 
-        grid-template-rows: 60px 2fr 2fr; 
+        grid-template-rows: 80px 2fr 2fr; 
         gap: 0px 0px; 
         grid-template-areas: 
           "header header header"
@@ -2454,20 +2629,39 @@
           "nav pane pane"
       }
       body > header {
-        grid-area: header;
+          grid-area: header;
       }
       body > nav {
           grid-area: nav;
-          overflow: auto;
       }
       body > div.main {
           grid-area: pane;
-          overflow: auto;
       }
-      /* simplycode-manual */
+      nav ul ul .simplycode-expand {
+          display: none;
+          padding: 0 1.7em;
+      }
+      nav ul {
+          list-style: none;
+          margin: 0 0.5em;
+          padding: 0;
+      }
+      nav ul ul {
+          padding: 0 1.7em;
+      }
+      
+      nav > ul > li[data-simply-command=expandMenu][open]::before {
+          content: "[-] ";
+          font-family: monospace;
+      }
+      nav > ul > li[data-simply-command=expandMenu]::before {
+          content: "[+] ";
+          font-family: monospace;
+      }
       .simplycode-part {
           margin-top: 1em;
       }
+      
       .simplycode-part-header {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -2534,8 +2728,168 @@
       .simplycode-component[open] summary .simplycode-controls {
           display: inline-block;
       }
+      header {
+          position: fixed;
+          padding: 8px 10px 6px 10px;
+          left: 0;
+          right: 0;
+          display: grid;
+          grid-template-columns: 2fr 1fr;
+          background-color: #404040;
+          border-bottom: 2px solid #2222;
+          vertical-align: middle;
+          z-index: 1;
+      }
+      header h1 {
+          margin: 0;
+      }
+      header .simplycode-controls {
+          padding-top: 5px;
+          padding-right: 5px;
+          text-align: right;
+      }
       .simplycode-editor-code textarea {
           margin-top: -1px;
+      }
+      
+      ul.simplycode-components-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 10px;
+          margin-bottom: 1em;
+      }
+      ul.simplycode-components-list li {
+          border: 1px solid #555;
+          background-color: #2a2a2a;
+          padding: 10px;
+          border-radius: 2px;
+      }
+      
+      /* Components: Toast */
+      
+      :root {
+          --simply-toast-height: 60px;
+          --simply-toast-hide-delay: 3s;
+          --simply-toast-show-duration: 0.3s;
+          --simply-toast-hide-duration: 0.5s;
+          --simply-toast-margin: 20px;
+          --simply-error-color: rgb(253, 143, 143);
+          --simply-warning-color: #FFFFCC;
+          --simply-info-color: rgb(140, 180, 250);
+          --simply-white: #FFF;
+          --simply-grey-50: #a8b4c0;
+          --simply-grey-80: #4d565c;
+          --simply-font-size: calc(1.1 * 1rem);
+          --simply-font-weight: 300;
+          --simply-line-height: calc(1.5 * var(--simply-font-size));
+          --simply-color: var(--grey-medium);
+          --simply-contrast: var(--grey-medium);
+          --simply-background:var(--white);
+          --simply-heading-weight: 900;
+          --simply-heading-multiplier: 1.1;
+      }
+      
+      ul.simply-toasts,
+      ol.simply-toasts,
+      .simply-toasts {
+          position: fixed;
+          right: 0;
+          top: 0;
+          z-index: 101;
+          display: block;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          max-width: 50%;
+          min-width: 300px;
+      }
+      .simply-toast,
+      li.simply-toast {
+          min-width: 300px;
+          float: right;
+          clear: both;
+          margin-right: 0;
+          margin-top: 60px;
+          background-color: var(--simply-grey-80);
+          color: var(--simply-white);
+          display: block;
+          border-left: 10px solid var(--simply-grey-50);
+          padding: 20px;
+          border-radius: 2px;
+      }
+      .simply-toast-error,
+      li.simply-toast-error {
+          border-color: var(--simply-error-color);
+      }
+      .simply-toast-info,
+      li.simply-toast-info {
+          border-color: var(--simply-info-color);
+      }
+      .simply-toast-warning,
+      li.simply-toast-warning {
+          border-color: var(--simply-warning-color);
+      }
+      
+      @keyframes simply-toast-show {
+          0% {
+              transform: scaleX(0);
+              transform-origin: right;
+              opacity: 0;
+          }
+          50% {
+              transform: scaleX(0);
+              transform-origin: right;
+              opacity: 0;
+          }
+          75% {
+              opacity: 1;
+          }
+          100% {
+              transform: scaleX(1);
+              transform-origin: right;
+              opacity: 1;
+          }
+      }
+      @keyframes simply-toast-hide {
+          0% {
+              transform: scaleX(1);
+              transform-origin: right;
+              opacity: 1;
+          }
+          50% {
+              opacity: 1;
+          }
+          100% {
+              transform: scaleX(0);
+              transform-origin: right;
+              opacity: 0;
+          }
+      }
+      @keyframes simply-toast-move {
+          0% {
+              transform: translateY(-80px); /* toast-height + toast-margin */
+          }
+          100% {
+              transform: translateY(0px);
+          }
+      }
+      .simply-toast[data-state="new"] {
+          animation: simply-toast-show var(--simply-toast-show-duration) forwards;
+      }
+      .simply-toast-autohide[data-state="new"] {
+          animation: simply-toast-show var(--simply-toast-show-duration);
+          animation-delay: 0s;
+      }
+      .simply-toast-autohide.simply-toast-animated[data-state="shown"] {
+          animation: simply-toast-hide var(--simply-toast-hide-duration) forwards;
+          animation-delay: calc(var(--simply-toast-hide-delay) - var(--simply-toast-show-duration));
+      }
+      .simply-toast-autohide:not(.simply-toast-animated)[data-state="shown"] {
+          animation: simply-toast-move var(--simply-toast-show-duration), simply-toast-hide var(--simply-toast-hide-duration) forwards;
+          animation-delay: 0s, var(--simply-toast-hide-delay);
       }
       
       /* QUnit iframe */
@@ -4538,7 +4892,7 @@
                 editor.pageData.component = component;
                 editor.pageData.parts = parts;
                 editor.pageData.count = count;
-                editor.pageData.page = "Edit-base-component";
+                editor.pageData.page = "Edit base component";
               });
             },
             "#components/:component" : function(params) {
@@ -4647,14 +5001,14 @@
               simplyApp.actions.listBaseComponents()
                 .then(function(components) {
                 editor.pageData.components = components;
-                editor.pageData.page = "Base-components";
+                editor.pageData.page = "Base components";
               });
             },
             "#components" : function() {
                 simplyApp.actions.listComponents()
                 .then(function(components) {
                     editor.pageData.components = components;
-                    editor.pageData.page = "List-components";
+                    editor.pageData.page = "List components";
                 });
             },
             "#page-frame" : function() {
@@ -4680,7 +5034,7 @@
                 });
                 editor.pageData.component = component;
                 editor.pageData.count = {};
-                editor.pageData.page = "Edit-page-frame";
+                editor.pageData.page = "Edit page frame";
               });
             },
             "#pages" : function() {
@@ -4716,7 +5070,7 @@
                 simplyApp.actions.listComponents()
                 .then(function(components) {
                     editor.pageData.components = components;
-                    editor.pageData.page = "List-components";
+                    editor.pageData.page = "List components";
                 });
             }
           }
@@ -4734,7 +5088,7 @@
       }
     </script>
   </head>
-  <body class="ds-nightmode">
+  <body>
     <!-- Body HTML -->
     <!-- Load main menu -->
     <script>
@@ -4782,7 +5136,7 @@
           Actions
         </span>
         <span class="simplycode-controls">
-          <button class="ds-button" data-simply-command="addAction">Add action</button>
+          <button class="simplycode-button" data-simply-command="addAction">Add action</button>
         </span>
       </summary>
       <div class="simplycode-code-method" data-simply-list="component.parts.actions">
@@ -5657,28 +6011,15 @@
       </template>
     </div>
     </template>
-    <template id="menu-list">
-      <ul class="ds-navbar-nav" data-simply-list="menu">
+    <template id="menu">
+      <ul data-simply-list="menu">
       <template>
         <li data-simply-command="expandMenu">
-          <a class="ds-nav" data-simply-command="navigate" 
-             href="#" data-simply-field="item.href" data-simply-content="fixed">
-            <svg class="ds-icon ds-icon-feather">
-            	<use xlink:href="/assets/img/feather-sprite.svg#x" 
-                     data-simply-field="item.icon" data-simply-transformer="icon">
-          	</use></svg>
-            <span data-simply-field="item.innerHTML"></span>
-         </a>
-          <simply-render rel="menu-list"></simply-render>
+          <a data-simply-command="navigate" href="#" data-simply-field="item"></a>
+          <simply-render rel="menu"></simply-render>
         </li>
       </template>
     </ul>
-    </template>
-    <template id="menu">
-      <nav class="ds-navbar ds-navbar-side">
-      <simply-render rel="menu-list"></simply-render>
-    </nav>
-    
     </template>
     <template id="componentPreview">
       <div class="simplycode-component-preview-container">
@@ -5717,10 +6058,12 @@
     </div>
     </template>
     <!-- /Component HTML templates -->
-    <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
+    <header class="ds-nightmode" data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
       <template data-simply-template='Header' rel="header"></template>
     </header>
-    <simply-render rel="menu"></simply-render>
+    <nav>
+      <simply-render rel="menu"></simply-render>
+    </nav>
     <div class="main" data-simply-field="page" data-simply-content="template">
     <!-- Page HTML templates -->
     <template data-simply-template="Edit base component">
@@ -5742,49 +6085,33 @@
       <simply-render rel="componentRawApi"></simply-render>
     </main>
     </template>
-    <template data-simply-template="Edit-base-component">
-      <main>
-      <div>
-        <h1>Edit base component: <span data-simply-field="component.id"></span></h1>
-        <div class="simplycode-controls">
-          <button class="simplycode-button" data-simply-command="saveBaseComponent">Save</button>
-          <button class="simplycode-button" data-simply-command="deleteBaseComponent">Delete</button>
-        </div>
-      </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentHeadHtml"></simply-render>
-      <simply-render rel="componentBodyHtml"></simply-render>
-      <simply-render rel="componentFootHtml"></simply-render>
-      <simply-render rel="componentCommands"></simply-render>
-      <simply-render rel="componentActions"></simply-render>
-      <simply-render rel="componentRoutes"></simply-render>
-      <simply-render rel="componentRawApi"></simply-render>
-    </main>
-    </template>
-    <template data-simply-template="Base-components">
+    <template data-simply-template="Base components">
       <main>
       <h1>Base components</h1>
-      <div class="simplycode-boxes" data-simply-list="components">
+      <ul class="simplycode-components-list" data-simply-list="components">
         <template>
-          <a class="simplycode-box" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="baseComponentLink">
-            <span data-simply-field="id"></span>
+          <li data-simply-command="navigate">
+            <a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="baseComponentLink"><span data-simply-field="id"></span></a>
             <p data-simply-field="description"></p>
-          </a>
+          </li>
         </template>
-      </div>
-      <form class="simplycode-form">
-        <label>
-            Name
-            <input type="text" data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your base component">
-        </label>
-        <label>
-            Description
-            <textarea data-simply-field="newComponent.description" placeholder="Describe what this base component should do, for your own use."></textarea>
-        </label>
-        <div class="ds-form-buttons">
-            <button class="ds-button" data-simply-command="createBaseComponent">Add Base Component</button>
+      </ul>
+      <h1>Add base component</h1>
+      <div class="simplycode-part">
+        <div class="simplycode-part-header">
+          <div class="simplycode-tabs">
+            <input data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+          </div>
+          <div class="simplycode-options">
+            <button class="simplycode-button" data-simply-command="createBaseComponent">Create</button>
+          </div>
         </div>
-      </form>
+        <div class="simplycode-editors">
+          <div class="simplycode-editor-code">
+            <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+          </div>
+        </div>
+      </div>
     </main>
     </template>
     <template data-simply-template="Edit component">
@@ -5808,57 +6135,37 @@
       <simply-render rel="componentSorters"></simply-render>
     </main>
     </template>
-    <template data-simply-template="List-components">
+    <template data-simply-template="List components">
       <main>
       <h1>Components</h1>
-      <div class="simplycode-boxes simplycode-components-list" data-simply-list="components">
+      <ul class="simplycode-components-list" data-simply-list="components">
         <template>
-          <a class="simplycode-box" data-simply-command="navigate"
-             href="#" data-simply-field="id" 
-             data-simply-content="fixed" data-simply-transformer="componentLink">
-            <span data-simply-field="id"></span>
+          <li data-simply-command="navigate">
+            <a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="componentLink"><span data-simply-field="id"></span></a>
             <p data-simply-field="description"></p>
-          </a>
+          </li>
         </template>
-      </div>
-      <form class="simplycode-form">
-        <label>
-            Name
-            <input type="text" data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
-        </label>
-        <label>
-            Description
-            <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
-        </label>
-        <div class="ds-form-buttons">
-            <button class="ds-button" data-simply-command="createComponent">Add Component</button>
+      </ul>
+      <h1>Add component</h1>
+      <div class="simplycode-part">
+        <div class="simplycode-part-header">
+          <div class="simplycode-tabs">
+            <input data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+          </div>
+          <div class="simplycode-options">
+            <button class="simplycode-button" data-simply-command="createComponent">Create</button>
+          </div>
         </div>
-      </form>
+        <div class="simplycode-editors">
+          <div class="simplycode-editor-code">
+            <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+          </div>
+        </div>
+      </div>
     </main>
     
     </template>
     <template data-simply-template="Edit page">
-      <main>
-      <div class="simplycode-header">
-        <h1>Edit page: <span data-simply-field="component.id"></span></h1>
-        <div class="simplycode-controls">
-          <button class="simplycode-button" data-simply-command="savePage">Save</button>
-          <button class="simplycode-button" data-simply-command="deletePage">Delete</button>
-        </div>
-      </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentPageTemplate"></simply-render>
-      <simply-render rel="componentPageCss"></simply-render>
-      <simply-render rel="componentCommands"></simply-render>
-      <simply-render rel="componentActions"></simply-render>
-      <simply-render rel="componentDataApi"></simply-render>
-      <simply-render rel="componentRoutes"></simply-render>
-      <simply-render rel="componentTransformers"></simply-render>
-      <simply-render rel="componentDataSources"></simply-render>
-      <simply-render rel="componentSorters"></simply-render>
-    </main>
-    </template>
-    <template data-simply-template="Edit%20page">
       <main>
       <div class="simplycode-header">
         <h1>Edit page: <span data-simply-field="component.id"></span></h1>
@@ -5891,63 +6198,33 @@
       <simply-render rel="componentPageFrame"></simply-render>
     </main>
     </template>
-    <template data-simply-template="Edit%20page%20frame">
-      <main>
-<<<<<<< HEAD
-      <div class="sb-header">
-        <h1>Edit page frame</h1>
-        <div class="sb-controls">
-          <button class="sb-button" data-simply-command="savePageFrame">Save</button>
-=======
-      <div class="simplycode-header">
-        <h1>Edit page frame</h1>
-        <div class="simplycode-controls">
-          <button class="simplycode-button" data-simply-command="savePageFrame">Save</button>
-        </div>
-      </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentPageFrame"></simply-render>
-    </main>
-    </template>
-    <template data-simply-template="Edit-page-frame">
-      <main>
-      <div>
-        <h1>Edit page frame</h1>
-        <div class="simplycode-controls">
-          <button class="ds-button" data-simply-command="savePageFrame">Save</button>
->>>>>>> 676d274 (updated toolbar, side menu, components list and add component form to use .ds styling)
-        </div>
-      </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentPageFrame"></simply-render>
-    </main>
-    </template>
     <template data-simply-template="Pages">
       <main>
       <h1>Pages</h1>
-      <div class="simplycode-boxes" data-simply-list="components">
+      <ul class="simplycode-components-list" data-simply-list="components">
         <template>
-          <a class="simplycode-box" data-simply-command="navigate"
-             href="#" data-simply-field="id" 
-             data-simply-content="fixed" data-simply-transformer="pageLink">
-            <span data-simply-field="id"></span>
+          <li data-simply-command="navigate">
+            <a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="pageLink"><span data-simply-field="id"></span></a>
             <p data-simply-field="description"></p>
-          </a>
+          </li>
         </template>
-      </div>
-      <form class="simplycode-form">
-        <label>
-            Name
-            <input type="text" data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your page">
-        </label>
-        <label>
-            Description
-            <textarea data-simply-field="newComponent.description" placeholder="Describe what this page should do, for your own use."></textarea>
-        </label>
-        <div class="ds-form-buttons">
-            <button class="ds-button" data-simply-command="createPage">Add Page</button>
+      </ul>
+      <h1>Add page</h1>
+      <div class="simplycode-part">
+        <div class="simplycode-part-header">
+          <div class="simplycode-tabs">
+            <input data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+          </div>
+          <div class="simplycode-options">
+            <button class="simplycode-button" data-simply-command="createPage">Create</button>
+          </div>
         </div>
-      </form>
+        <div class="simplycode-editors">
+          <div class="simplycode-editor-code">
+            <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+          </div>
+        </div>
+      </div>
     </main>
     
     </template>
@@ -5968,15 +6245,6 @@
       <h1>App preview</h1>
       <div class="field">
         <button class="simplycode-button" data-simply-command="saveAppHtml">Publish App</button>
-      </div>
-      <simply-render rel="fullAppPreview"></simply-render>
-    </main>
-    </template>
-    <template data-simply-template="Publish%20App">
-      <main>
-      <h1>App preview</h1>
-      <div class="field">
-        <button class="ds-button" data-simply-command="saveAppHtml">Publish App</button>
       </div>
       <simply-render rel="fullAppPreview"></simply-render>
     </main>
@@ -6024,15 +6292,6 @@
           },
           extract : function(data) {
             return this.simplyData;
-          }
-        },
-        "icon" : {
-          render : function(data) {
-            this.setAttribute('xlink:href',data);
-            return data;
-          },
-          extract : function(data) {
-            return this.getAttribute('xlink:href');
           }
         },
         "simplyPreviewActions" : {

@@ -59,17 +59,19 @@
       }
     </script>
   </head>
-  <body class="ds-nightmode">
+  <body>
     <!-- Body HTML -->
     {{bodyHtml}}
     <!-- /Body HTML -->
     <!-- Component HTML templates -->
     {{componentTemplates}}
     <!-- /Component HTML templates -->
-    <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
+    <header class="ds-nightmode" data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
       <template data-simply-template='Header' rel="header"></template>
     </header>
-    <simply-render rel="menu"></simply-render>
+    <nav>
+      <simply-render rel="menu"></simply-render>
+    </nav>
     <div class="main" data-simply-field="page" data-simply-content="template">
     <!-- Page HTML templates -->
     {{pageTemplates}}
