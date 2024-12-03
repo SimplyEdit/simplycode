@@ -6,19 +6,6 @@
     <style>
       /* extra */
       @import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,700,700i');
-      :root {
-          --ds-primary: var(--ds-simplyedit);
-          --ds-primary-dark: var(--ds-simplyedit-dark);
-          --ds-primary-contrast: var(--ds-white);
-          --ds-primary-light: var(--ds-simplyedit-light);
-          --ds-primary-gradient: var(--ds-simplyedit-gradient);
-          --ds-primary-gradient-bump: var(--ds-simplyedit-gradient-bump);
-          --ds-support: #06CC06;
-          --ds-support-dark: #05BB05;
-          --ds-support-light: #07DE07;
-          --ds-support-contrast: #FFF;
-          --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
-      }
       /* style */
       /* ds-alert-root */
       :root {
@@ -332,24 +319,6 @@
         --ds-warning-color: #FFFFCC;
         --ds-info-color: rgb(140, 180, 250);
       }
-      /* simplycode-ds-core-colors */
-      :root {
-        --ds-simplycode: #ae47ff;
-        --ds-simplycode-light:#c880ff;
-        --ds-simplycode-dark:#8d00f8;
-        --ds-simplycode-bump:#b65cfc;
-        --ds-simplycode-contrast: var(--ds-white);
-        --ds-simplycode-gradient: linear-gradient( 180deg, var(--ds-simplycode-light), var(--ds-simplycode-dark) );
-        --ds-simplycode-gradient-bump: linear-gradient( 180deg, var(--ds-simplycode-bump), var(--ds-simplycode-light) 95%, var(--ds-simplycode-dark) 100%);
-      }
-      :root {
-        --ds-primary: var(--ds-simplycode);
-        --ds-primary-dark: var(--ds-simplycode-dark);
-        --ds-primary-contrast: var(--ds-white);
-        --ds-primary-light: var(--ds-simplycode-light);
-        --ds-primary-gradient: var(--ds-simplycode-gradient);
-        --ds-primary-gradient-bump: var(--ds-simplycode-gradient-bump);
-      }
       /* ds-core-reset */
       body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,p,blockquote,th,td {
         margin:0; 
@@ -546,6 +515,31 @@
       	border: 0;
       	padding: 5px;
       }
+      /* simplycode-ds-mapping */
+      /* simplycode-ds-core-colors */
+      :root {
+        --ds-simplycode: #ae47ff;
+        --ds-simplycode-light:#c880ff;
+        --ds-simplycode-dark:#8d00f8;
+        --ds-simplycode-bump:#b65cfc;
+        --ds-simplycode-contrast: var(--ds-white);
+        --ds-simplycode-gradient: linear-gradient( 180deg, var(--ds-simplycode-light), var(--ds-simplycode-dark) );
+        --ds-simplycode-gradient-bump: linear-gradient( 180deg, var(--ds-simplycode-bump), var(--ds-simplycode-light) 95%, var(--ds-simplycode-dark) 100%);
+      
+        --ds-primary: var(--ds-simplycode);
+        --ds-primary-dark: var(--ds-simplycode-dark);
+        --ds-primary-contrast: var(--ds-white);
+        --ds-primary-light: var(--ds-simplycode-light);
+        --ds-primary-gradient: var(--ds-simplycode-gradient);
+        --ds-primary-gradient-bump: var(--ds-simplycode-gradient-bump);
+      
+        --ds-support: #06CC06;
+        --ds-support-dark: #05BB05;
+        --ds-support-light: #07DE07;
+        --ds-support-contrast: #FFF;
+        --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
+      }
+      
       /* style */
       :root {
           --highlight-dark: #f16623;

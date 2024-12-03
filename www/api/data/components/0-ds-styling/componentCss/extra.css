@@ -1,14 +1,1 @@
 @import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,700,700i');
-:root {
-    --ds-primary: var(--ds-simplyedit);
-    --ds-primary-dark: var(--ds-simplyedit-dark);
-    --ds-primary-contrast: var(--ds-white);
-    --ds-primary-light: var(--ds-simplyedit-light);
-    --ds-primary-gradient: var(--ds-simplyedit-gradient);
-    --ds-primary-gradient-bump: var(--ds-simplyedit-gradient-bump);
-    --ds-support: #06CC06;
-    --ds-support-dark: #05BB05;
-    --ds-support-light: #07DE07;
-    --ds-support-contrast: #FFF;
-    --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
-}

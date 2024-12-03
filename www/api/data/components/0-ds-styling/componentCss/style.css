@@ -310,24 +310,6 @@ a.ds-button-support:active, a.ds-button-support:visited,
   --ds-warning-color: #FFFFCC;
   --ds-info-color: rgb(140, 180, 250);
 }
-/* simplycode-ds-core-colors */
-:root {
-  --ds-simplycode: #ae47ff;
-  --ds-simplycode-light:#c880ff;
-  --ds-simplycode-dark:#8d00f8;
-  --ds-simplycode-bump:#b65cfc;
-  --ds-simplycode-contrast: var(--ds-white);
-  --ds-simplycode-gradient: linear-gradient( 180deg, var(--ds-simplycode-light), var(--ds-simplycode-dark) );
-  --ds-simplycode-gradient-bump: linear-gradient( 180deg, var(--ds-simplycode-bump), var(--ds-simplycode-light) 95%, var(--ds-simplycode-dark) 100%);
-}
-:root {
-  --ds-primary: var(--ds-simplycode);
-  --ds-primary-dark: var(--ds-simplycode-dark);
-  --ds-primary-contrast: var(--ds-white);
-  --ds-primary-light: var(--ds-simplycode-light);
-  --ds-primary-gradient: var(--ds-simplycode-gradient);
-  --ds-primary-gradient-bump: var(--ds-simplycode-gradient-bump);
-}
 /* ds-core-reset */
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,p,blockquote,th,td {
   margin:0; 
