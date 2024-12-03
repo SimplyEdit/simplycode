@@ -515,6 +515,59 @@
       	border: 0;
       	padding: 5px;
       }
+      /* simplycode-box */
+      
+      /* simplycode-component-list */
+      :root {
+          --simplycode-component-list-spacing-row: calc(0.5 * var(--ds-spacing));
+          --simplycode-component-list-spacing-column: calc(0.5 * var(--ds-spacing));
+          --simplycode-component-list-min-colwidth: 10rem;
+          --simplycode-component-list-item-font-size: calc(0.9 * var(--ds-font-size));
+          --simplycode-component-list-item-background: var(--ds-grey-90);
+          --simplycode-component-list-item-background-active: var(--ds-grey-80);
+          --simplycode-component-list-item-color: inherit;
+          --simplycode-component-list-item-color-active: inherit;
+          --simplycode-component-list-item-min-height: 4rem;
+      }
+      
+      .simplycode-component-list {
+          display: grid;
+          grid-column-gap: var(--simplycode-component-list-spacing-column);
+          grid-row-gap: var(--simplycode-component-list-spacing-row);
+          grid-template-columns: repeat(auto-fit, minmax(var(--simplycode-component-list-min-colwidth), 1fr));
+      
+          font-size: var(--simplycode-component-list-item-font-size);
+          line-height: 1.6em;
+          margin-bottom: var(--simplycode-component-list-spacing-column);
+      }
+      .simplycode-component-list-item {
+          background-color: var(--simplycode-component-list-item-background);
+          padding: calc(0.5 * var(--simplycode-component-list-spacing-column));
+          display: flex;
+          flex-direction: column;
+          flex: 1 1 0;
+      	min-height: var(--simplycode-component-list-item-min-height);
+      }
+      
+      .simplycode-component-list-item,
+      a.simplycode-component-list-item,
+      a.simplycode-component-list-item * {
+          text-decoration: none;
+          color: var(--simplycode-component-list-item-color);
+      }
+      .simplycode-component-list-item:hover,
+      a.simplycode-component-list-item:hover,
+      a.simplycode-component-list-item:active {
+          background-color: var(--simplycode-component-list-item-background-active);
+          color: var(--simplycode-component-list-item-color-active);
+      }
+      
+      .simplycode-component-list-item > :first-child {
+          margin-top: 0;
+      }
+      .simplycode-component-list-item > :last-child {
+          margin-bottom: 0;
+      }
       /* simplycode-ds-mapping */
       /* simplycode-ds-core-colors */
       :root {
@@ -781,22 +834,6 @@
       }
       .simplycode-editor-code textarea {
           margin-top: -1px;
-      }
-      
-      ul.simplycode-components-list {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 10px;
-          margin-bottom: 1em;
-      }
-      ul.simplycode-components-list li {
-          border: 1px solid #555;
-          background-color: #2a2a2a;
-          padding: 10px;
-          border-radius: 2px;
       }
       
       /* Components: Toast */
@@ -4463,14 +4500,14 @@
     <template data-simply-template="Base components">
       <main>
       <h1>Base components</h1>
-      <ul class="simplycode-components-list" data-simply-list="components">
+      <div class="simplycode-component-list" data-simply-list="components">
         <template>
-          <li data-simply-command="navigate">
-            <a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="baseComponentLink"><span data-simply-field="id"></span></a>
-            <p data-simply-field="description"></p>
-          </li>
+          <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="baseComponentLink">
+            <h3 data-simply-field="id"></h3>
+            <p class="ds-margin-up" data-simply-field="description"></p>
+          </a>
         </template>
-      </ul>
+      </div>
       <h1>Add base component</h1>
       <div class="simplycode-part">
         <div class="simplycode-part-header">
@@ -4509,14 +4546,14 @@
     <template data-simply-template="List components">
       <main>
       <h1>Components</h1>
-      <ul class="simplycode-components-list" data-simply-list="components">
+      <div class="simplycode-component-list" data-simply-list="components">
         <template>
-          <li data-simply-command="navigate">
-            <a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="componentLink"><span data-simply-field="id"></span></a>
-            <p data-simply-field="description"></p>
-          </li>
+          <a class="simplycode-component-list-item data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="componentLink">
+            <h3 data-simply-field="id"></h3>
+            <p class="ds-margin-up" data-simply-field="description"></p>
+          </a>
         </template>
-      </ul>
+      </div>
       <h1>Add component</h1>
       <div class="simplycode-part">
         <div class="simplycode-part-header">
@@ -4565,14 +4602,14 @@
     <template data-simply-template="Pages">
       <main>
       <h1>Pages</h1>
-      <ul class="simplycode-components-list" data-simply-list="components">
+      <div class="simplycode-component-list" data-simply-list="components">
         <template>
-          <li data-simply-command="navigate">
-            <a href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="pageLink"><span data-simply-field="id"></span></a>
-            <p data-simply-field="description"></p>
-          </li>
+          <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="pageLink">
+            <h3 data-simply-field="id"></h3>
+            <p class="ds-margin-up" data-simply-field="description"></p>
+          </a>
         </template>
-      </ul>
+      </div>
       <h1>Add page</h1>
       <div class="simplycode-part">
         <div class="simplycode-part-header">

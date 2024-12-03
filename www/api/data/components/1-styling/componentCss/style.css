@@ -238,22 +238,6 @@ header .simplycode-controls {
     margin-top: -1px;
 }
 
-ul.simplycode-components-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 1em;
-}
-ul.simplycode-components-list li {
-    border: 1px solid #555;
-    background-color: #2a2a2a;
-    padding: 10px;
-    border-radius: 2px;
-}
-
 /* Components: Toast */
 
 :root {

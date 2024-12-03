@@ -1,0 +1,50 @@
+:root {
+    --simplycode-component-list-spacing-row: calc(0.5 * var(--ds-spacing));
+    --simplycode-component-list-spacing-column: calc(0.5 * var(--ds-spacing));
+    --simplycode-component-list-min-colwidth: 10rem;
+    --simplycode-component-list-item-font-size: calc(0.9 * var(--ds-font-size));
+    --simplycode-component-list-item-background: var(--ds-grey-90);
+    --simplycode-component-list-item-background-active: var(--ds-grey-80);
+    --simplycode-component-list-item-color: inherit;
+    --simplycode-component-list-item-color-active: inherit;
+    --simplycode-component-list-item-min-height: 4rem;
+}
+
+.simplycode-component-list {
+    display: grid;
+    grid-column-gap: var(--simplycode-component-list-spacing-column);
+    grid-row-gap: var(--simplycode-component-list-spacing-row);
+    grid-template-columns: repeat(auto-fit, minmax(var(--simplycode-component-list-min-colwidth), 1fr));
+
+    font-size: var(--simplycode-component-list-item-font-size);
+    line-height: 1.6em;
+    margin-bottom: var(--simplycode-component-list-spacing-column);
+}
+.simplycode-component-list-item {
+    background-color: var(--simplycode-component-list-item-background);
+    padding: calc(0.5 * var(--simplycode-component-list-spacing-column));
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+	min-height: var(--simplycode-component-list-item-min-height);
+}
+
+.simplycode-component-list-item,
+a.simplycode-component-list-item,
+a.simplycode-component-list-item * {
+    text-decoration: none;
+    color: var(--simplycode-component-list-item-color);
+}
+.simplycode-component-list-item:hover,
+a.simplycode-component-list-item:hover,
+a.simplycode-component-list-item:active {
+    background-color: var(--simplycode-component-list-item-background-active);
+    color: var(--simplycode-component-list-item-color-active);
+}
+
+.simplycode-component-list-item > :first-child {
+    margin-top: 0;
+}
+.simplycode-component-list-item > :last-child {
+    margin-bottom: 0;
+}
