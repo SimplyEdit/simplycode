@@ -1,12 +1,12 @@
 :root {
   --simply-toobar-height: 60px;
-  
+  --simply-toolbar-primary: var(--highlight-dark);
   --simply-toolbar-button-font: arial, helvetica, sans-serif;
   --simply-toolbar-button-font-size: 11px;
   --simply-toolbar-button-width: 60px;
   --simply-toolbar-button-height: var(--simply-toolbar-height);
   --simply-toolbar-button-color: var(--ds-white);
-  --simply-toolbar-button-primary: var(--ds-primary);
+  --simply-toolbar-button-primary: var(--simply-toolbar-primary);
   --simply-toolbar-title-width: 70px;
   --simply-toolbar-title-height: var(--simply-toolbar-height);
 }

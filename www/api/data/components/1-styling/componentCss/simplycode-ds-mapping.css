@@ -20,4 +20,6 @@
   --ds-support-light: #07DE07;
   --ds-support-contrast: #FFF;
   --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
+
+  --ds-heading-font: var(--font-family);
 }

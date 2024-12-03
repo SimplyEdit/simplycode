@@ -538,6 +538,8 @@
         --ds-support-light: #07DE07;
         --ds-support-contrast: #FFF;
         --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
+      
+        --ds-heading-font: var(--font-family);
       }
       
       /* style */
@@ -1099,13 +1101,13 @@
       /* simply-toolbar */
       :root {
         --simply-toobar-height: 60px;
-        
+        --simply-toolbar-primary: var(--highlight-dark);
         --simply-toolbar-button-font: arial, helvetica, sans-serif;
         --simply-toolbar-button-font-size: 11px;
         --simply-toolbar-button-width: 60px;
         --simply-toolbar-button-height: var(--simply-toolbar-height);
         --simply-toolbar-button-color: var(--ds-white);
-        --simply-toolbar-button-primary: var(--ds-primary);
+        --simply-toolbar-button-primary: var(--simply-toolbar-primary);
         --simply-toolbar-title-width: 70px;
         --simply-toolbar-title-height: var(--simply-toolbar-height);
       }
@@ -1184,12 +1186,6 @@
           background: linear-gradient(var(--ds-grey-90) 0%, var(--ds-grey-90) 95%, black 100%);
           color: var(--ds-white);
       }
-      /* z-ds-corrections */
-      :root {
-        --simply-toolbar-button-primary: var(--highlight-dark);
-        --ds-heading-font: var(--font-family);
-      }
-      
     </style>
     <!-- /Component CSS -->
     <!-- Page CSS -->
