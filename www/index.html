@@ -6,6 +6,543 @@
     <style>
       /* extra */
       @import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,700,700i');
+      :root {
+          --ds-primary: var(--ds-simplyedit);
+          --ds-primary-dark: var(--ds-simplyedit-dark);
+          --ds-primary-contrast: var(--ds-white);
+          --ds-primary-light: var(--ds-simplyedit-light);
+          --ds-primary-gradient: var(--ds-simplyedit-gradient);
+          --ds-primary-gradient-bump: var(--ds-simplyedit-gradient-bump);
+          --ds-support: #06CC06;
+          --ds-support-dark: #05BB05;
+          --ds-support-light: #07DE07;
+          --ds-support-contrast: #FFF;
+          --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
+      }
+      html, body {
+        height: 100%;
+      }
+      body {
+        display: grid;
+        grid-template-columns: 210px 2fr 2fr; 
+        grid-template-rows: 60px 2fr 2fr; 
+        gap: 0px 0px; 
+        grid-template-areas: 
+          "header header header"
+          "nav pane pane"
+          "nav pane pane"
+      }
+      body > header {
+        grid-area: header;
+      }
+      body > nav {
+          grid-area: nav;
+          overflow: auto;
+      }
+      body > div.main {
+          grid-area: pane;
+          overflow: auto;
+      }
+      /* style */
+      /* ds-alert-root */
+      :root {
+        --ds-alert-text-color: var(--ds-black);
+        --ds-alert-error-color: var(--ds-error-color);
+        --ds-alert-warning-color: var(--ds-warning-color);
+        --ds-alert-info-color: var(--ds-info-color);
+      }
+      /* ds-alert */
+      .ds-alert {
+        padding: 0.05px; /* contain child margins */
+        color: var(--ds-alert-text-color);
+      }
+      @supports (display: flow-root) {
+        .ds-alert {
+          display: flow-root;
+          padding: 0;
+        }
+      }
+      .ds-alert-error {
+        background-color: var(--ds-alert-error-color);
+      }
+      .ds-alert-warning {
+        background-color: var(--ds-alert-warning-color);
+      }
+      .ds-alert-info {
+        background-color: var(--ds-alert-info-color);
+      }
+      /* ds-align */
+      .ds-align-center {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .ds-align-center-middle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .ds-align-right {
+        float: right;
+      }
+      .ds-align-left {
+        float: left;
+      }
+      /* ds-background-root */
+      :root {
+        --ds-background-dark-text-color: white;
+        --ds-background-dark-shadow-color: var(--ds-black);
+        --ds-background-dark-shadox-size: 2px;
+        --ds-background-dark-shadow-offset: 0 0;
+      
+        --ds-background-light-text-color: var(--ds-color);
+        --ds-background-light-shadow-color: white;
+        --ds-background-light-shadox-size: 3px;
+        --ds-background-light-shadow-offset: 0 0;
+      }
+      
+      :root {
+        --ds-background-dark-text-shadow: var(--ds-background-dark-shadow-offset) var(--ds-background-dark-shadow-size) var(--ds-background-dark-shadow-color);
+        --ds-background-light-text-shadow: var(--ds-background-light-shadow-offset) var(--ds-background-light-shadow-size) var(--ds-background-light-shadow-color);
+      }
+      
+      /* ds-background */
+      .ds-background-dark {
+        color: var(--ds-background-dark-text-color);
+        text-shadow: var(--ds-background-dark-text-shadow);
+      }
+      .ds-background-light {
+        color: var(--ds-background-light-text-color);
+        text-shadow: var(--ds-background-light-text-shadow);
+      }
+      /* ds-background-image */
+      .ds-background-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+      /* ds-box-root */
+      :root {
+        --ds-box-radius: 3px;
+        --ds-box-shadow: var(--ds-shadow-small);
+      }
+      /* ds-box */
+      .ds-box {
+        border-radius: var(--ds-box-radius);
+        box-shadow: var(--ds-box-shadow);
+        position: relative;
+        break-inside: avoid;
+      }
+      @supports (display: flow-root) {
+        .ds-box {
+          display: flow-root;
+          padding: 0;
+        }
+      }
+      .ds-box-top {
+        border-top-left-radius: var(--ds-box-radius);
+        border-top-right-radius: var(--ds-box-radius);
+      }
+      .ds-box-bottom {
+        border-bottom-left-radius: var(--ds-box-radius);
+        border-bottom-right-radius: var(--ds-box-radius);
+      }
+      
+      /* ds-button-root */
+      :root {
+        --ds-button-spacing: calc(0.5 * var(--ds-input-spacing));
+        --ds-button-bg-color: var(--ds-grey-light);
+        --ds-button-default-bg-color: var(--ds-white);
+        --ds-button-border-color: var(--ds-grey-light);
+        --ds-button-disabled-color: var(--ds-grey-medium);
+        --ds-button-disabled-bg-color: var(--ds-white);
+        --ds-button-primary-bg-color: var(--ds-primary);
+        --ds-button-primary-color: var(--ds-primary-contrast);
+        --ds-button-primary-border-color: var(--ds-primary);
+        --ds-button-line-height: calc(var(--ds-line-height) * 1.5);
+        --ds-button-shadow: var(--ds-shadow-tiny);
+        --ds-button-shadow-hover: var(--ds-shadow-small);
+        --ds-button-radius: 3px;
+      }
+      /* ds-button */
+      :root .ds-button {
+        line-height: var(--ds-button-line-height);
+        min-height: var(--ds-button-line-height);
+      }
+      .ds-button {
+        margin: 0 var(--ds-button-spacing) var(--ds-button-spacing) 0;
+        overflow: visible;
+        font: inherit;
+        color: inherit;
+        display: inline-block;
+        box-sizing: border-box;
+        padding: 0 calc(0.5 * var(--ds-line-height));
+        vertical-align: middle;
+        font-size: calc(0.875 * var(--ds-font-size));
+        text-align: center;
+        text-decoration: none;
+        text-transform: uppercase;
+        background-color: var(--ds-button-bg-color);
+        outline: 1px solid var(--ds-button-border-color);
+        border: 0;
+        white-space: nowrap;
+        box-shadow: var(--ds-button-shadow);
+        border-radius: var(--ds-button-radius);
+      }
+      .ds-button::-moz-focus-inner {
+        border: 0;
+      }
+      .ds-button:hover,
+      .ds-button:focus {
+        cursor: pointer;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: var(--ds-button-shadow-hover);
+      }
+      a.ds-button,
+      a.ds-button:hover,
+      a.ds-button:active,
+      a.ds-button:visited {
+        color: inherit;
+      }
+      .ds-button-default {
+        background-color: var(--ds-button-default-bg-color);
+      }
+      a.ds-button-primary, a.ds-button-primary:hover,
+      a.ds-button-primary:active, a.ds-button-primary:visited,
+      .ds-button-primary, .ds-button-primary:hover {
+        background-color: var(--ds-button-primary-bg-color);
+        color: var(--ds-button-primary-color);
+        border-color: var(--ds-button-primary-border-color);
+      }
+      a.ds-button-support, a.ds-button-support:hover,
+      a.ds-button-support:active, a.ds-button-support:visited,
+      .ds-button-support, .ds-button-support:hover {
+        background-color: var(--ds-button-support-bg-color);
+        color: var(--ds-button-support-color);
+        border-color: var(--ds-button-support-border-color);
+      }
+      .ds-button:disabled {
+        background-color: var(--ds-button-disabled-bg-color);
+        color: var(--ds-button-disabled-color);
+      }
+      .ds-button:disabled:hover {
+        cursor: not-allowed;
+        box-shadow: 0 0 0;
+      }
+      .ds-button-group {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .ds-button-light {
+        background: none;
+        outline: 0;
+        padding: 0;
+      }
+      .ds-button-naked {
+        background: none;
+        outline: 0;
+      }
+      .ds-button-close {
+        position: absolute;
+        right: var(--ds-spacing);
+        margin: 0;
+      }
+      
+      .ds-button-grow {
+        display: block;
+        width: 100%;
+      }
+      /* ds-bg */
+      .ds-bg-primary {
+        background: var(--ds-primary);
+        color: var(--ds-primary-contrast);
+        --ds-contrast: var(--ds-primary-contrast);
+      }
+      .ds-bg-primary-gradient {
+        background: var(--ds-primary-gradient);
+        color: var(--ds-primary-contrast);
+        --ds-contrast: var(--ds-primary-contrast);
+      }
+      .ds-bg-support {
+        background: var(--ds-support);
+        color: var(--ds-support-contrast);
+        --ds-contrast: var(--ds-support-contrast);
+      }
+      .ds-bg-support-gradient {
+        background: var(--ds-support-gradient);
+        color: var(--ds-support-contrast);
+        --ds-contrast: var(--ds-support-contrast);
+      }
+      .ds-bg-grey-dark {
+        background: var(--ds-grey-dark);
+        color: var(--ds-white);
+        --ds-contrast: var(--ds-white);
+      }
+      .ds-bg-grey-medium {
+        background: var(--ds-grey-medium);
+        color: var(--ds-white);
+        --ds-contrast: var(--ds-white);
+      }
+      .ds-bg-grey-light {
+        background: var(--ds-grey-light);
+        color: var(--ds-black);
+        --ds-contrast: var(--ds-black);
+      }
+      /* ds-color */
+      .ds-color {
+        display: flex;
+        text-align: center;
+        font-size: 0.8em;
+        align-items: center;
+        justify-content: center;
+      }
+      .ds-color-primary {
+        color: var(--ds-primary);
+      }
+      .ds-color-support {
+        color: var(--ds-support);
+      }
+      /* ds-contain */
+      .ds-contain {
+        padding: 0.05px; /* IE fallback */
+      }
+      @supports (display: flow-root) {
+        .ds-contain {
+          padding: 0;
+          display: flow-root;
+        }
+      }
+      /* ds-core-colors */
+      :root {
+        --ds-black: #000;
+        --ds-white: #FFF;
+      
+        --ds-primary: #ae47ff;
+        --ds-primary-light: #c880ff;
+        --ds-primary-dark: #8d00f8;
+        --ds-primary-bump: #b65cfc;
+        --ds-primary-contrast: var(--ds-white);
+        --ds-primary-gradient: linear-gradient( 180deg, var(--ds-primary), var(--ds-primary-dark) );
+        --ds-primary-gradient-bump: linear-gradient( 180deg, var(--ds-primary-bump), var(--ds-primary-light) 95%, var(--ds-primary-dark) 100%);
+      
+        --ds-support: #06CC06;
+        --ds-support-dark: #05BB05;
+        --ds-support-light: #07DE07;
+        --ds-support-contrast: #FFF;
+        --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
+        /* http://www.colorbox.io/#steps=11#hue_start=198#hue_end=198#hue_curve=linear#sat_start=15#sat_end=15#sat_curve=linear#sat_rate=130#lum_start=98#lum_end=0#lum_curve=easeOutQuad#lock_hex=eef1f8#minor_steps_map=0 */
+        --ds-grey-0: #eef1f8;
+        --ds-grey-5: #e9edf6;
+        --ds-grey-10: #e4eaf4;
+        --ds-grey-20: #dae2ed;
+        --ds-grey-30: #cdd7e3;
+        --ds-grey-40: #bdc8d4;
+        --ds-grey-50: #a8b4c0;
+        --ds-grey-60: #8f9ba6;
+        --ds-grey-70: #707c84;
+        --ds-grey-80: #4d565c;
+        --ds-grey-90: #262c2f;
+        --ds-grey-100: #000000;
+        --ds-grey-dark: var(--ds-grey-90);
+        --ds-grey-medium: var(--ds-grey-60);
+        --ds-grey-light: var(--ds-grey-0);
+      
+        --ds-error-color: rgb(253, 143, 143);
+        --ds-warning-color: #FFFFCC;
+        --ds-info-color: rgb(140, 180, 250);
+      }
+      /* simplycode-ds-core-colors */
+      :root {
+        --ds-simplycode: #ae47ff;
+        --ds-simplycode-light:#c880ff;
+        --ds-simplycode-dark:#8d00f8;
+        --ds-simplycode-bump:#b65cfc;
+        --ds-simplycode-contrast: var(--ds-white);
+        --ds-simplycode-gradient: linear-gradient( 180deg, var(--ds-simplycode-light), var(--ds-simplycode-dark) );
+        --ds-simplycode-gradient-bump: linear-gradient( 180deg, var(--ds-simplycode-bump), var(--ds-simplycode-light) 95%, var(--ds-simplycode-dark) 100%);
+      }
+      :root {
+        --ds-primary: var(--ds-simplycode);
+        --ds-primary-dark: var(--ds-simplycode-dark);
+        --ds-primary-contrast: var(--ds-white);
+        --ds-primary-light: var(--ds-simplycode-light);
+        --ds-primary-gradient: var(--ds-simplycode-gradient);
+        --ds-primary-gradient-bump: var(--ds-simplycode-gradient-bump);
+      }
+      /* ds-core-reset */
+      body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,p,blockquote,th,td {
+        margin:0; 
+        padding:0; 
+      }
+      img {
+        max-width: 100%;
+        display: block;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      /* ds-core-shadows */
+      :root {
+        --ds-shadow-light: rgba(0,0,0,0.07);
+        --ds-shadow-middle: rgba(0,0,0,0.09);
+        --ds-shadow-dark: rgba(0,0,0,0.11);
+        --ds-shadow-tiny: 
+          0 1px 1px var(--ds-shadow-dark)
+          ;
+        --ds-shadow-small: 
+          0 1px 1px var(--ds-shadow-dark),
+          0 2px 2px var(--ds-shadow-middle),
+          0 4px 4px var(--ds-shadow-light)
+          ;
+        --ds-shadow-medium: 
+          0 1px 1px var(--ds-shadow-middle),
+          0 2px 2px var(--ds-shadow-middle),
+          0 4px 4px var(--ds-shadow-middle),
+          0 6px 8px var(--ds-shadow-middle),
+          0 8px 16px var(--ds-shadow-middle)
+          ;
+        --ds-shadow-large: 
+          0 2px 1px var(--ds-shadow-light),
+          0 4px 2px var(--ds-shadow-light),
+          0 8px 4px var(--ds-shadow-light),
+          0 16px 8px var(--ds-shadow-light),
+          0 32px 16px var(--ds-shadow-light) 
+          ;
+      }
+      /* ds-core-typography */
+      @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;1,300&family=Roboto+Condensed:ital@0;1&display=swap');
+      :root {
+        --ds-body-font: 'Lato', sans-serif;
+        --ds-heading-font: 'Roboto Condensed', Helvetica, sans-serif;
+      }
+      :root {
+        --ds-font-size: 1rem;
+        --ds-font-weight: 300;
+        --ds-line-height: calc(1.6 * var(--ds-font-size));
+        --ds-color: var(--ds-black);
+        --ds-color-transparent: rgba(0,0,0,0);
+        --ds-contrast: var(--ds-grey-dark);
+        --ds-background: var(--ds-white);
+        --ds-background-transparent: rgba(255,255,255,0);
+        --ds-heading-weight: 400;
+        --ds-heading-multiplier: 1.27201965;
+        --ds-spacing: var(--ds-line-height);
+      }
+      /* ds-hidden */
+      .ds-hidden {
+        max-height: 0;
+        overflow: hidden;
+      }
+      /* ds-icon */
+      .ds-icon {
+        display: inline-block;
+        height: var(--ds-line-height);
+        width: 1em;
+        vertical-align: bottom;
+      }
+      
+      .ds-icon-feather {
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: square;
+        stroke-linejoin: square;
+        fill: none;
+      }
+      /* ds-screen-size */
+      :root {
+        --ds-screen-size: tiny;
+      }
+      @media (min-width: 480px)  {
+        :root {
+          --ds-screen-size: small;
+        }
+      }
+      @media (min-width: 640px) {
+        :root {
+          --ds-screen-size: tablet;
+        }
+      }
+      @media (min-width: 992px) {
+        :root {
+          --ds-screen-size: medium;
+        }
+      }
+      @media (min-width: 1200px) {
+        :root {
+          --ds-screen-size: large;
+        }
+      }
+      @media (min-width: 1800px) {
+        :root {
+          --ds-screen-size: extra-large;
+        }
+      }
+      /* ds-shadow */
+      .ds-shadow-tiny {
+        box-shadow: var(--ds-shadow-tiny);
+      }
+      .ds-shadow-small {
+        box-shadow: var(--ds-shadow-small);
+      }
+      .ds-shadow-medium {
+        box-shadow: var(--ds-shadow-medium);
+      }
+      .ds-shadow-large {
+        box-shadow: var(--ds-shadow-large);
+      }
+      /* ds-space */
+      .ds-space-margin-up {
+        margin-top: calc(-1 * var(--ds-spacing));
+      }
+      .ds-space-none {
+        margin: 0;
+      }
+      .ds-space {
+        margin: var(--ds-line-height);
+      }
+      .ds-space-vertical {
+        margin: var(--ds-line-height) 0;
+      }
+      .ds-space-horizontal {
+        margin-left: var(--ds-spacing);
+        margin-right: var(--ds-spacing);
+      }
+      .ds-space-left {
+        margin-left: var(--ds-spacing);
+      }
+      .ds-space-right {
+        margin-right: var(--ds-spacing);
+      }
+      .ds-space-top {
+        margin-top: var(--ds-spacing);
+      }
+      .ds-space-bottom {
+        margin-bottom: var(--ds-spacing);
+      }
+      
+      .ds-space-inside {
+        padding: 0 var(--ds-spacing);
+      }
+      .ds-space-inside::before,
+      .ds-space-inside::after {
+        content: "";
+        display: block;
+        height: 0;
+      }
+      .ds-space-inside::before {
+        margin-bottom: var(--ds-spacing);
+      }
+      .ds-space-inside::after {
+        margin-top: var(--ds-spacing);
+      }
+      
+      /* extra */
+      @import url('https://fonts.googleapis.com/css?family=Alegreya+Sans:400,400i,700,700i');
       
       html, body {
       	margin: 0;
@@ -523,243 +1060,49 @@
         position: absolute;
         background-color: white;
       }
-      /* darkmode */
+      /* simply-logo */
       :root {
-        --simply-toolbar-background: #222;
-        --simply-toolbar-background-secondary: #333;
-        --simply-toolbar-font-color: #ddd;
-        --simply-toolbar-color-primary: #ea5922;
-        --simply-toolbar-color-secondary: #ddd;
-        --simply-toolbar-color-support: #444;
-        --simply-toolbar-focus-color: orange;
+        --simply-logo-color-primary: var(--highlight-dark);
+        --simply-logo-color-secondary: white;
       }
-      /* logo */
-      :root {
-        --simply-logo-color-primary: var(--simply-toolbar-color-primary);
-        --simply-logo-color-secondary: var(--simply-toolbar-color-secondary);
-      }
-      
-      /* simply-toolbar */
-      :root {
-        --simply-toolbar-font-size: 11px;
-        --simply-toolbar-font-family: arial;
-        
-        --simply-toolbar-box-shadow: 0px 0px 4px var(--simply-toolbar-background-secondary);  
-        --simply-toolbar-gradient-background: linear-gradient(to bottom, var(--simply-toolbar-background) 0%, var(--simply-toolbar-background) 95%, var(--simply-toolbar-background-secondary) 100%);
-        
-        --simply-toolbar-base-height: 60px;
-        --simply-toolbar-marker-size: 12px;
-      }
-      .simply-toolbar {
-        font-family: var(--simply-toolbar-font-family);
-        font-size: var(--simply-toolbar-font-size);
-        color: var(--simply-toolbar-font-color);
-        background: var(--simply-toolbar-background);
-      
-        -webkit-border-radius: 0px 0px 3px 3px;
-        -moz-border-radius: 0px 0px 3px 3px;
-        border-radius: 0px 0px 3px 3px;
-        line-height: 0px;
-        position: relative;
-        border: 1px solid var(--simply-toolbar-color-support);
-        border-top: 5px solid var(--simply-toolbar-color-primary);
-        box-shadow:  var(--simply-toolbar-box-shadow);
-        z-index: 1000;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ie-user-select: none;
-        user-select: none;
-      }
-      .simply-toolbar::after, .simply-toolbar > ul::after, .simply-toolbar-section > ul::after {
-        content: "";
-        clear: both;
-        display: block;
-      }
-      .simply-toolbar .marker {
-        content: "";
-        display: block;
-        position: absolute;
-        margin-top: calc(-1 * var(--simply-toolbar-marker-size));
-        left: 50%;
-        margin-left: calc(-1 * var(--simply-toolbar-marker-size));
-        width: 0;
-        border-bottom: var(--simply-toolbar-marker-size) solid var(--simply-toolbar-color-primary);
-        border-top: 0px;
-        border-left: var(--simply-toolbar-marker-size) solid transparent;
-        border-right: var(--simply-toolbar-marker-size) solid transparent;
-      }
-      .simply-toolbar > ul {
-        background: var(--simply-toolbar-submenu-background);
-        min-width: 100%;
-        line-height: 0px;
-      }
-      .simply-toolbar > ul,
-      .simply-toolbar > ul > li,
-      .simply-toolbar-section > ul,
-      .simply-toolbar-section > ul > li {
-        margin: 0px;
-        padding: 0px;
-        border: 0px;
-        list-style: none;
-        white-space: nowrap;
-      }
-      
-      .simply-toolbar-section > ul > li.simply-text-format {
-        margin-right: 4px;
-      }
-      .simply-toolbar li {
-        position: relative;
-        float: left;
-      }
-      .simply-main-toolbar .simply-toolbar {
-        min-height: var(--simply-toolbar-base-height);
-        transform: translate3d(0,0,0);
-        box-sizing: content-box;
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 0;
-      }
-      .simply-main-toolbar .simply-buttons {
-        white-space: nowrap !important;
-        position: absolute;
-      }
-      .simply-main-toolbar .simply-toolbar li {
-        float: none;
-        display: inline-block;
-      }
-      
-      .simply-toolbar button {
-        border: 0px;
-        margin: 0px;
-        padding: 0px 2px;
-        background: transparent;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        position: relative;
-        min-width: 50px;
-        text-align: center;
-        height: var(--simply-toolbar-base-height);
-        font-size: var(--simply-toolbar-font-size);
-        color: var(--simply-toolbar-font-color) !important;
-        box-sizing: border-box;
-        font-weight: inherit;
+      /* simply-toobar-button */
+      .simply-toolbar-button {
+        height: var(--simply-toolbar-button-height);
+        border-top: 1px solid transparent;
+        border-bottom: 2px solid transparent;
+        transition: background 0.2s ease;
+        font-size: var(--simply-toolbar-button-font-size);
         letter-spacing: 0;
-        line-height: inherit;
-        text-transform: inherit;
-        font-family: inherit;
-        box-shadow: inherit;
-        border-radius: 0;
-        transition: inherit;
-        font-variant-caps: normal;
-      }
-      @media (max-width: 480px) {
-        .simply-toolbar button {
-          min-width: 48px;
-        }
-      }
-      @media (max-width: 320px) {
-        .simply-toolbar button {
-          min-width: 40px;
-        }
-      }
-      .simply-main-toolbar button {
+        font-family: var(--simply-toolbar-button-font);
+        white-space: nowrap;
+        user-select: none;
         vertical-align: top;
+        min-width: var(--simply-toolbar-button-width);
+        text-align: center;
+        cursor: pointer;
+        padding: 0 4px;
+        text-transform: none;
+        background: transparent;
+        outline: none;
+        box-shadow: none;
+        border-radius: 0;
+        color: var(--simply-toolbar-button-color);
+        margin: 0;
       }
-      .simply-toolbar button[disabled] {
-        opacity: 0.3;
+      .simply-toolbar-button:hover {
+        border-bottom: 2px solid var(--simply-toolbar-button-primary);
+        box-shadow: none;
       }
-      .simply-toolbar button > i,
-      .simply-toolbar button > span.fa-stack {
-        line-height: 50px;
-        font-size: 19px;
-        display: inline-block;
-        padding: 0px 4px;
-        line-height: 38px;
+      .simply-toolbar-button .ds-icon {
+        height: 26px;
+        font-size: 26px;
+        padding: 0 4px;
         display: block;
-        margin: -13px auto 0px;
+        margin: 6px auto -14px;
         position: relative;
       }
-      .simply-toolbar button.simply-selected {
-        background-color: #EEE;
-        position: relative;
-        border-left: 1px solid #DDD;
-        border-right: 1px solid white;
-      }
-      .simply-toolbar button.simply-disabled {
-        opacity: 0.3;
-      }
-      
-      .simply-toolbar button:focus {
-        border-bottom: 2px solid var(--simply-toolbar-focus-color) !important;
-      }
-      .simply-toolbar label button:focus {
-        border-bottom: 0px !important;
-      }
-      button.simply-selected::first-child {
-        border-left: 0px;
-      }
-      button.simply-selected::last-child {
-        border-right: 0px;
-      }
-      
-      .simply-toolbar-section {
-        background-color: #EEE;
-        display: none;
-        clear: both;
-      }
-      section.simply-section.active {
-        opacity: 1;
-        z-index: 99999;
-      }
-      section.simply-section {
-        position: absolute;
-        opacity: 0;
-        -webkit-transition: opacity 0.2s ease-in-out;
-        -moz-transition: opacity 0.2s ease-in-out;
-        -ms-transition: opacity 0.2s ease-in-out;
-        -o-transition: opacity 0.2s ease-in-out;
-        transition: opacity 0.2s ease-in-out;
-        left: -10000px; /* position off screen initially */
-        height: inherit;
-      }
-      .simply-toolbar-section ul {
-        background: linear-gradient(to bottom, #EEE 0%, #DDD 100%);
-        padding: 4px 2px;
-      }
-      .simply-toolbar-section.simply-selected {
-        display: block;
-        white-space: nowrap; 
-      }
-      .simply-toolbar-section button {
-        height: 40px;
-        min-width: 23px;
-        border: 1px solid transparent;
-        line-height: 6px;
-      }
-      .simply-toolbar-section button > i,
-      .simply-toolbar-section button > span.fa-stack {
-        font-size: 14px;
-        line-height: 16px;
-        width: 23px;
-        margin: 0px auto 4px;
-      }
-      .simply-toolbar-section button.simply-selected {
-        background-color: #D7D7D7;
-        border: 1px solid #EEE;
-        border-left: 1px solid #888;
-        border-top: 1px solid #888;
-        border-radius: 2px;
-      }
-      section.simply-section {
-        margin-bottom: 150px;
-      }
-      section.simply-section h1 {
-        font-size: 16px;
-        font-weight: bold;
-        display: none;
-      }
-      button.simply-expands::after {
+      .simply-toolbar-button-expands:not(:focus)::after,
+      .simply-toolbar-button-expands:not(.ds-selected)::after {
         content: "";
         display: block;
         position: absolute;
@@ -768,162 +1111,113 @@
         margin-left: -3px;
         width: 0;
         border-top: 3px solid #888;
-        border-bottom: 0px;
+        border-bottom: 0;
         border-left: 3px solid transparent;
         border-right: 3px solid transparent;
-        opacity: 1;
-        transform: inherit;
-        -webkit-transform: inherit;
-        top: inherit;
-        height: 0;
       }
-      button.simply-selected.simply-expands::after {
-        display: none;
+      .simply-toolbar-button:focus,
+      .simply-toolbar-button.ds-selected {
+        background-color: var(--ds-grey-80);
+        border-left-color: var(--ds-black);
+        border-top-color: var(--ds-black);
+        border-right-color: var(--ds-grey-60);
       }
-      .simply-toolbar-section > div {
-        padding-left: 80px;
+      .simply-toolbar-button[disabled] {
+        background-color: transparent;
+        color: var(--ds-grey-60);
       }
-      
-      .simply-toolbar-section label {
-        width: 60px;
-        font-size: 12px;
-        display: inline-block;
-        font-weight: normal;
-        padding-left: 10px;
-        margin: inherit;
-        margin-left: -80px;
-        color: inherit;
+      /* simply-toolbar */
+      :root {
+        --simply-toobar-height: 60px;
+        
+        --simply-toolbar-button-font: arial, helvetica, sans-serif;
+        --simply-toolbar-button-font-size: 11px;
+        --simply-toolbar-button-width: 60px;
+        --simply-toolbar-button-height: var(--simply-toolbar-height);
+        --simply-toolbar-button-color: var(--ds-white);
+        --simply-toolbar-button-primary: var(--ds-primary);
+        --simply-toolbar-title-width: 70px;
+        --simply-toolbar-title-height: var(--simply-toolbar-height);
       }
-      .simply-toolbar-section input,
-      .simply-toolbar-section select {
-        background-color: white;
-        color: black;
-        margin-top: 3px;
-        margin-bottom: 3px;
-        border: 1px solid #888;
-        border-bottom-color: #EEE;
-        border-right-color: #EEE;
-        border-radius: 2px;
-        line-height: 22px;
-        min-height: 22px;
-        width: 100%;
-        font-family: inherit;
-        font-size: inherit;
-        display: inline-block;
-        box-sizing: border-box !important;
-        padding: 2px 0 !important;
-        margin: 3px 0 !important;
+      .simply-toolbar {
+          position: absolute;
+          top: 0;
+          left: 0;
+          border-top: 1px solid var(--simply-toolbar-button-primary);
+          background: linear-gradient(180deg, var(--ds-white) 0, var(--ds-white) 95%, var(--ds-grey-40) 100%);
+          white-space: nowrap;
+          min-width: 100%;
+          min-height: var(--simply-toolbar-height);
+          display: flex;
       }
-      .simply-toolbar-section select {
-        padding: 4px 0px !important;
+      .simply-toolbar-title {
+          padding: 0 10px;
+          font-size: 16px;
+          width: var(--simply-toolbar-title-width);
+          font-family: sans-serif;
+          text-transform: none;
+          border: 0;
+          height: var(--simply-toolbar-button-height);
+          cursor: default;
+          border-radius: 0;
+          box-shadow: 0;
+          outline: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
       }
-      .simply-toolbar button:focus {
-        outline: none;
+      .simply-toolbar-highlight {
+          background: var(--ds-primary-gradient-bump);
+          color: var(--ds-primary-contrast);
       }
-      .simply-float-right {
-        float: right;
+      .simply-toolbar .simply-toolbar-title {
+          margin-top: 0;
       }
-      .simply-toolbar button.simply-small > i,
-      .simply-toolbar button.simply-small > span.fa-stack {
-        line-height: 24px;
-        font-size: 14px;
-        margin: 0px;
+      .simply-toolbar-spacer {
+          border-left: 1px solid #ccc;
+          height: var(--simply-toolbar-height);
+          position: absolute;
+          display: inline-block;
       }
-      .simply-toolbar button.simply-small {
-        height: auto;
-        width: auto;
-        min-width: 20px;
+      .simply-toolbar-button-expands:not(.ds-selected)::after {
+          content: "";
+          display: block;
+          position: absolute;
+          bottom: 6px;
+          left: 50%;
+          margin-left: -3px;
+          width: 0;
+          border-top: 3px solid #888;
+          border-bottom: 0;
+          border-left: 3px solid transparent;
+          border-right: 3px solid transparent;
       }
-      /* end */
-      
-      li.simply-text-format {
-        line-height: 32px;
-        vertical-align: top;
-        width: 100%;
+      .simply-toolbar .simply-toolbar-push-right {
+          margin-left: auto;
       }
-      
-      li.simply-seperator label:before {
-        display: block;
-        position: absolute;
-        border-left: 1px solid #DDD;
-        border-right: 1px solid white;
-        height: 40px;
-        content: "";
-        margin-top: -14px;
-        margin-left: -4px;
+      .simply-toolbar-title img {
+          height: 30px;
       }
-      
-      label.simply-subsection {
-        text-align: center;
-        vertical-align: top;
-        line-height: 14px;
+      .simply-toolbar input[type="text"] {
+          margin-right:0;
+          margin-bottom: 0;
+          margin-top: 10px;
+          font-size: small;
+          line-height: 1.2em;
+          height: 35px;
       }
-      .simply-disabled {
-        color: #BBB;
-      }
-      
-      .simply-main-toolbar {
-        left: 0px !important;
-        opacity: 1 !important;
-        position: fixed;
-        margin-bottom: auto;
-        top: 0px;
-        right: 0px;
-        z-index: 100000;
-      }
-      .simply-main-toolbar .simply-toolbar {
-        position: static;
-      }
-      .simply-main-toolbar .simply-toolbar:before {
-        display: none;
+      .simply-toolbar.simply-main-toolbar {
+          border-top-width: 5px;
       }
       
-      .simply-main-toolbar .simply-selected {
-        border: 0px;
+      .simply-toolbar {
+          background: linear-gradient(var(--ds-grey-90) 0%, var(--ds-grey-90) 95%, black 100%);
+          color: var(--ds-white);
       }
-      
-      .simply-main-toolbar .simply-buttons {
-        white-space: normal;
-      }
-      .simply-main-toolbar > .simply-toolbar > ul.simply-buttons > li.simply-seperator {
-        border-right: 1px solid #ddd;
-        height: 58px;
-        vertical-align: top;
-      }
-      .simply-main-toolbar i.simply-logo {
-        margin-bottom: 10px;
-        position: relative;
-        top: 4px;
-        width: 24px;
-        box-sizing: border-box;
-      }
-      .simply-hidden {
-        display: none !important;
-      }
-      
-      .simply-main-toolbar.simply-collapse .simply-toolbar .marker {
-        margin-top: -5px;
-        margin-left: 0px;
-        left: 0;
-        width: 0;
-        border-bottom: 0;
-        border-top: 25px solid var(--simply-toolbar-color-primary);
-        border-left: 0;
-        border-right: 25px solid transparent;
-      }
-      .simply-main-toolbar.simply-collapse .simply-toolbar {
-        border-top-color: transparent;
-      }
-      
-      .simply-main-toolbar.simply-collapse {
-        right: auto;
-      }
-      .simply-main-toolbar.simply-collapse li:nth-child(n+2) {
-        display: none;
-      }
-      .simply-toolbar button.simply-toolbar-logo {
-        padding: 0px 5px;
-        box-sizing: content-box;
+      /* z-ds-corrections */
+      :root {
+        --simply-toolbar-button-primary: var(--highlight-dark);
+        --ds-heading-font: var(--font-family);
       }
       
     </style>
@@ -2573,17 +2867,8 @@
                 document.location.href = el.querySelector("[href]").getAttribute("href");
               }
             },
-            "publish" : function(el) {
+            "preview" : function(el) {
               document.location.hash="publish";
-            },
-            "simply-preview" : function(el) {
-              document.location.hash="publish";
-            },
-            "simply-save" : function(el) {
-              simplyApp.commands.savePageFrame();
-              simplyApp.commands.saveComponent();
-              simplyApp.commands.saveBaseComponent();
-              simplyApp.commands.savePage();
             },
             "deleteBaseComponent" : function() {
               if (!confirm("Delete base component?")) {
@@ -3908,7 +4193,7 @@
     </details>
     </template>
     <template id="header">
-      <simply-render rel="simply-main-toolbar"></simply-render>
+      <simply-render rel="simply-toolbar"></simply-render>
     </template>
     <template id="componentHtmlValidator">
       <div data-simply-field="code" data-simply-transformer="validateHtml"></div>
@@ -3970,10 +4255,10 @@
     <template id="logo">
       <svg viewbox="0 0 520 300" xmlns="http://www.w3.org/2000/svg">
       <style type="text/css">
-        .st0{
+        .st0 {
           fill: var(--simply-logo-color-secondary);
         }	
-        .st1{
+        .st1 {
           fill: var(--simply-logo-color-primary);
         }
         text {
@@ -3997,136 +4282,195 @@
       </text>
     </svg>
     </template>
-    <template id="simply-main-toolbar">
-      <section class="simply-section simply-main-toolbar">
-      <div class="simply-toolbar" data-simply-field="page" data-simply-section="simply-code-management" data-simply-content="template" data-simply-default-template="default" data-simply-default-value="default">
-        <template data-simply-template="default">
-          <ul class="simply-buttons">
-            <li>
-              <button data-simply-command="simply-about" class="simply-toolbar-logo">
-                <simply-render rel="logo"></simply-render>
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="simply-preview">
-                <i class="fa fa-eye"></i>Preview
-              </button>
-            </li>
-          </ul>
-        </template>
-        <template data-simply-template="Edit page">
-          <ul class="simply-buttons">
-            <li>
-              <button data-simply-command="simply-about" class="simply-toolbar-logo">
-                <simply-render rel="logo"></simply-render>
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="simply-preview">
-                <i class="fa fa-eye"></i>Preview
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="savePage">
-                <i class="fa fa-save"></i>Save
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="deletePage">
-                <i class="fa fa-save"></i>Delete
-              </button>
-            </li>
-          </ul>
-        </template>
-        <template data-simply-template="Edit component">
-          <ul class="simply-buttons">
-            <li>
-              <button data-simply-command="simply-about" class="simply-toolbar-logo">
-                <simply-render rel="logo"></simply-render>
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="simply-preview">
-                <i class="fa fa-eye"></i>Preview
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="saveComponent">
-                <i class="fa fa-save"></i>Save
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="deleteComponent">
-                <i class="fa fa-save"></i>Delete
-              </button>
-            </li>
-          </ul>
-        </template>
-        <template data-simply-template="Edit base component">
-          <ul class="simply-buttons">
-            <li>
-              <button data-simply-command="simply-about" class="simply-toolbar-logo">
-                <simply-render rel="logo"></simply-render>
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="simply-preview">
-                <i class="fa fa-eye"></i>Preview
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="saveBaseComponent">
-                <i class="fa fa-save"></i>Save
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="deleteBaseComponent">
-                <i class="fa fa-save"></i>Delete
-              </button>
-            </li>
-          </ul>
-        </template>
-        <template data-simply-template="Edit page frame">
-          <ul class="simply-buttons">
-            <li>
-              <button data-simply-command="simply-about" class="simply-toolbar-logo">
-                <simply-render rel="logo"></simply-render>
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="simply-preview">
-                <i class="fa fa-eye"></i>Preview
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="savePageFrame">
-                <i class="fa fa-save"></i>Save
-              </button>
-            </li>
-          </ul>
-        </template>
-        <template data-simply-template="Publish App">
-          <ul class="simply-buttons">
-            <li>
-              <button data-simply-command="simply-about" class="simply-toolbar-logo">
-                <simply-render rel="logo"></simply-render>
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="simply-preview">
-                <i class="fa fa-eye"></i>Preview
-              </button>
-            </li>
-            <li>
-              <button data-simply-command="saveAppHtml">
-                <i class="fa fa-check"></i>Publish
-              </button>
-            </li>
-          </ul>
-        </template>
-        
-      </div>
-    </section>
+    <template id="simply-toolbar-base-component">
+      <div class="simply-toolbar-title">
+      <simply-render rel="logo"></simply-render>
+    </div>
+    <button class="ds-button simply-toolbar-button" data-simply-command="saveBaseComponent">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#save">
+        </use></svg>
+      Save
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="deleteBaseComponent">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#trash">
+        </use></svg>
+      Delete
+    </button>
+    <span class="simply-toolbar-push-right"></span>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#check">
+        </use></svg>
+      Publish
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="preview">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#eye">
+        </use></svg>
+      Preview
+    </button>
+    </template>
+    <template id="simply-toolbar-component">
+      <div class="simply-toolbar-title">
+      <simply-render rel="logo"></simply-render>
+    </div>
+    <button class="ds-button simply-toolbar-button" data-simply-command="saveComponent">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#save">
+        </use></svg>
+      Save
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="deleteComponent">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#trash">
+        </use></svg>
+      Delete
+    </button>
+    <span class="simply-toolbar-push-right"></span>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#check">
+        </use></svg>
+      Publish
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="preview">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#eye">
+        </use></svg>
+      Preview
+    </button>
+    </template>
+    <template id="simply-toolbar-default">
+      <div class="simply-toolbar-title">
+      <simply-render rel="logo"></simply-render>
+    </div>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#save">
+        </use></svg>
+      Save
+    </button>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#trash">
+        </use></svg>
+      Delete
+    </button>
+    <span class="simply-toolbar-push-right"></span>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#check">
+        </use></svg>
+      Publish
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="preview">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#eye">
+        </use></svg>
+      Preview
+    </button>
+    </template>
+    <template id="simply-toolbar-page-frame">
+      <div class="simply-toolbar-title">
+      <simply-render rel="logo"></simply-render>
+    </div>
+    <button class="ds-button simply-toolbar-button" data-simply-command="savePageFrame">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#save">
+        </use></svg>
+      Save
+    </button>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#trash">
+        </use></svg>
+      Delete
+    </button>
+    <span class="simply-toolbar-push-right"></span>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#check">
+        </use></svg>
+      Publish
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="preview">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#eye">
+        </use></svg>
+      Preview
+    </button>
+    </template>
+    <template id="simply-toolbar-page">
+      <div class="simply-toolbar-title">
+      <simply-render rel="logo"></simply-render>
+    </div>
+    <button class="ds-button simply-toolbar-button" data-simply-command="savePage">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#save">
+        </use></svg>
+      Save
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="deletePage">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#trash">
+        </use></svg>
+      Delete
+    </button>
+    <span class="simply-toolbar-push-right"></span>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#check">
+        </use></svg>
+      Publish
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="preview">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#eye">
+        </use></svg>
+      Preview
+    </button>
+    </template>
+    <template id="simply-toolbar-publish">
+      <div class="simply-toolbar-title">
+      <simply-render rel="logo"></simply-render>
+    </div>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#save">
+        </use></svg>
+      Save
+    </button>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#trash">
+        </use></svg>
+      Delete
+    </button>
+    <span class="simply-toolbar-push-right"></span>
+    <button class="ds-button simply-toolbar-button" data-simply-command="saveAppHtml">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#check">
+        </use></svg>
+      Publish
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="preview">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#eye">
+        </use></svg>
+      Preview
+    </button>
+    </template>
+    <template id="simply-toolbar">
+      <nav class="simply-toolbar simply-main-toolbar" data-simply-field="page" data-simply-section="simply-code-management" data-simply-content="template" data-simply-default-template="default" data-simply-default-value="default">
+      <template data-simply-template="default" rel="simply-toolbar-default"></template>
+      <template data-simply-template="Edit page" rel="simply-toolbar-page"></template>
+      <template data-simply-template="Edit component" rel="simply-toolbar-component"></template>
+      <template data-simply-template="Edit base component" rel="simply-toolbar-base-component"></template>
+      <template data-simply-template="Edit page frame" rel="simply-toolbar-page-frame"></template>
+      <template data-simply-template="Publish App" rel="simply-toolbar-publish"></template>
+    </nav>
     </template>
     <!-- /Component HTML templates -->
     <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
