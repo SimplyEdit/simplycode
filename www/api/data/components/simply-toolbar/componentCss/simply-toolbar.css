@@ -1,0 +1,87 @@
+:root {
+  --simply-toobar-height: 60px;
+  
+  --simply-toolbar-button-font: arial, helvetica, sans-serif;
+  --simply-toolbar-button-font-size: 11px;
+  --simply-toolbar-button-width: 60px;
+  --simply-toolbar-button-height: var(--simply-toolbar-height);
+  --simply-toolbar-button-color: var(--ds-white);
+  --simply-toolbar-button-primary: var(--ds-primary);
+  --simply-toolbar-title-width: 70px;
+  --simply-toolbar-title-height: var(--simply-toolbar-height);
+}
+.simply-toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-top: 1px solid var(--simply-toolbar-button-primary);
+    background: linear-gradient(180deg, var(--ds-white) 0, var(--ds-white) 95%, var(--ds-grey-40) 100%);
+    white-space: nowrap;
+    min-width: 100%;
+    min-height: var(--simply-toolbar-height);
+    display: flex;
+}
+.simply-toolbar-title {
+    padding: 0 10px;
+    font-size: 16px;
+    width: var(--simply-toolbar-title-width);
+    font-family: sans-serif;
+    text-transform: none;
+    border: 0;
+    height: var(--simply-toolbar-button-height);
+    cursor: default;
+    border-radius: 0;
+    box-shadow: 0;
+    outline: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.simply-toolbar-highlight {
+    background: var(--ds-primary-gradient-bump);
+    color: var(--ds-primary-contrast);
+}
+.simply-toolbar .simply-toolbar-title {
+    margin-top: 0;
+}
+.simply-toolbar-spacer {
+    border-left: 1px solid #ccc;
+    height: var(--simply-toolbar-height);
+    position: absolute;
+    display: inline-block;
+}
+.simply-toolbar-button-expands:not(.ds-selected)::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    margin-left: -3px;
+    width: 0;
+    border-top: 3px solid #888;
+    border-bottom: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+}
+.simply-toolbar .simply-toolbar-push-right {
+    margin-left: auto;
+}
+.simply-toolbar-title img {
+    height: 30px;
+}
+.simply-toolbar input[type="text"] {
+    margin-right:0;
+    margin-bottom: 0;
+    margin-top: 10px;
+    font-size: small;
+    line-height: 1.2em;
+    height: 35px;
+}
+.simply-toolbar.simply-main-toolbar {
+    border-top-width: 5px;
+}
+
+.simply-toolbar {
+    background: linear-gradient(var(--ds-grey-90) 0%, var(--ds-grey-90) 95%, black 100%);
+    color: var(--ds-white);
+}
