@@ -4,6 +4,7 @@ function(component) {
     switch(componentPart.id) {
       case "meta.json":
         componentPart.id = "meta";
+        component.description = componentPart.description;
         break;
       case "routes":
         if (typeof componentPart.contents === "object") {
