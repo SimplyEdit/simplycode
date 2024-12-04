@@ -63,7 +63,7 @@
   border-left: 3px solid transparent;
   border-right: 3px solid transparent;
 }
-.simply-toolbar .simply-toolbar-push-right {
+.simply-toolbar-push-right {
   margin-left: auto;
 }
 .simply-toolbar-title img {
@@ -77,7 +77,7 @@
   line-height: 1.2em;
   height: 35px;
 }
-.simply-toolbar.simply-main-toolbar {
+.simply-toolbar.simply-toolbar-main {
   border-top-width: 5px;
 }
 
