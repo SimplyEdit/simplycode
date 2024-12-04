@@ -42,10 +42,5 @@ function(params) {
     editor.pageData.parts = parts;
     editor.pageData.count = count;
     editor.pageData.page = "Edit component";
-  })
-    .then(function() {
-    setTimeout(function() { // FIXME: Wait for the CSS to be available;
-      simplyApp.commands.autoRunPreviews();
-    }, 1000);
   });
 }

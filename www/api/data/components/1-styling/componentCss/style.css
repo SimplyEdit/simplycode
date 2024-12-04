@@ -1,107 +1,107 @@
 :root {
-    --simplycode-highlight-dark: #f16623;
-    --simplycode-highlight-light: #ff8003;
-    --simplycode-highlight-color: #fff;
-    --simplycode-highlight-background: linear-gradient( to left, var(--simplycode-highlight-light), var(--simplycode-highlight-dark) );
+  --simplycode-highlight-dark: #f16623;
+  --simplycode-highlight-light: #ff8003;
+  --simplycode-highlight-color: #fff;
+  --simplycode-highlight-background: linear-gradient( to left, var(--simplycode-highlight-light), var(--simplycode-highlight-dark) );
 
-    --simplycode-support-dark: #444;
-    --simplycode-support-light: #484848;
-    --simplycode-support-color: #eee;
-    --simplycode-support-background: linear-gradient( to left, var(--simplycode-support-light), var(--simplycode-support-dark) );
+  --simplycode-support-dark: #444;
+  --simplycode-support-light: #484848;
+  --simplycode-support-color: #eee;
+  --simplycode-support-background: linear-gradient( to left, var(--simplycode-support-light), var(--simplycode-support-dark) );
 
-    --simplycode-grey-dark: #38393c;
-    --simplycode-grey-medium: #7f8185;
-    --simplycode-grey-light: #e9ebec;
-    --simplycode-grey-dark: #38393c;
-    --simplycode-black: #000;
-    --simplycode-white: #fff;
-    --simplycode-grey-background: var(--simplycode-grey-dark);
+  --simplycode-grey-dark: #38393c;
+  --simplycode-grey-medium: #7f8185;
+  --simplycode-grey-light: #e9ebec;
+  --simplycode-grey-dark: #38393c;
+  --simplycode-black: #000;
+  --simplycode-white: #fff;
+  --simplycode-grey-background: var(--simplycode-grey-dark);
 
-    --simplycode-font-family: 'Alegreya Sans', sans-serif;
-    --simplycode-font-size: 14px;
-    --simplycode-line-height: 1.5em;
-    --simplycode-color: #7f8185;
-    --simplycode-background: #333;
+  --simplycode-font-family: 'Alegreya Sans', sans-serif;
+  --simplycode-font-size: 14px;
+  --simplycode-line-height: 1.5em;
+  --simplycode-color: #7f8185;
+  --simplycode-background: #333;
 }
 
 /* general styling on default elements */
 
 html, body {
-    margin: 0;
-    padding: 0;
-    font-family: var(--simplycode-font-family);
-    font-size: var(--simplycode-font-size);
-    line-height: var(--simplycode-line-height);
-    color: var(--simplycode-color); 
-    background-color: var(--simplycode-background);
+  margin: 0;
+  padding: 0;
+  font-family: var(--simplycode-font-family);
+  font-size: var(--simplycode-font-size);
+  line-height: var(--simplycode-line-height);
+  color: var(--simplycode-color); 
+  background-color: var(--simplycode-background);
 }
 body {
-    overflow-y: scroll;
+  overflow-y: scroll;
 }
 body:last-child {
-    margin-bottom: 1.5em;
+  margin-bottom: 1.5em;
 }
 h1 {
-    font-size: 2em;
-    font-weight: 300;
-    line-height: 1.1em;
-    margin: 0;
-    margin-bottom: 0.5em;
+  font-size: 2em;
+  font-weight: 300;
+  line-height: 1.1em;
+  margin: 0;
+  margin-bottom: 0.5em;
 }
 
 h2 {
-    font-size: 1.6em;
-    font-weight: 400;
-    line-height: 1.1em;
-    margin: 0;
-    margin-bottom: 0.5em;
+  font-size: 1.6em;
+  font-weight: 400;
+  line-height: 1.1em;
+  margin: 0;
+  margin-bottom: 0.5em;
 }
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 img {
-    display: block;
-    max-width: 100%;
+  display: block;
+  max-width: 100%;
 }
 
 a {
-    color: var(--simplycode-highlight-dark);
+  color: var(--simplycode-highlight-dark);
 }
 a:visited {
-    color: var(--simplycode-highlight-dark);
+  color: var(--simplycode-highlight-dark);
 }
 
 /* custom styling for custom elements */
 
 .simplycode-button,
 a.simplycode-button {
-    background: var(--simplycode-support-background);
-    color: var(--simplycode-support-color);
-    padding: 0.3em 0.5em;
-    margin: 0 0.3em;
-    border: 1px solid #ccc;
-    text-decoration: none;
+  background: var(--simplycode-support-background);
+  color: var(--simplycode-support-color);
+  padding: 0.3em 0.5em;
+  margin: 0 0.3em;
+  border: 1px solid #ccc;
+  text-decoration: none;
 }
 
 .simplycode-button:first-child {
-    margin-left: 0;
+  margin-left: 0;
 }
 .simplycode-button:last-child {
-    margin-right: 0;
+  margin-right: 0;
 }
 .simplycode-button.highlight {
-    background: var(--simplycode-highlight-background);
-    color: var(--simplycode-highlight-color);
+  background: var(--simplycode-highlight-background);
+  color: var(--simplycode-highlight-color);
 }
 
 .text-content {
-    padding: 2.2375em;
-    max-width: 50em;
+  padding: 2.2375em;
+  max-width: 50em;
 }
 .text-content *:first-child {
-    margin-top: 0;
+  margin-top: 0;
 }
 
 body {
@@ -115,265 +115,249 @@ body {
     "nav pane pane"
 }
 body > header {
-    grid-area: header;
+  grid-area: header;
 }
 body > nav {
-    grid-area: nav;
+  grid-area: nav;
 }
 body > div.main {
-    grid-area: pane;
+  grid-area: pane;
 }
 nav ul ul .simplycode-expand {
-    display: none;
-    padding: 0 1.7em;
+  display: none;
+  padding: 0 1.7em;
 }
 nav ul {
-    list-style: none;
-    margin: 0 0.5em;
-    padding: 0;
+  list-style: none;
+  margin: 0 0.5em;
+  padding: 0;
 }
 nav ul ul {
-    padding: 0 1.7em;
+  padding: 0 1.7em;
 }
 
 nav > ul > li[data-simply-command=expandMenu][open]::before {
-    content: "[-] ";
-    font-family: monospace;
+  content: "[-] ";
+  font-family: monospace;
 }
 nav > ul > li[data-simply-command=expandMenu]::before {
-    content: "[+] ";
-    font-family: monospace;
+  content: "[+] ";
+  font-family: monospace;
 }
 .simplycode-part {
-    margin-top: 1em;
+  margin-top: 1em;
 }
 
 .simplycode-part-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 .simplycode-part-header .simplycode-options {
-    text-align: right;
+  text-align: right;
 }
 .simplycode-part .simplycode-tab {
-    padding: 10px 5px;
-    margin: 0;
-    background-color: #151515;
-    color: #ddd;
-    border: 0;
-    text-align: center;
-    margin-right: 5px;
+  padding: 10px 5px;
+  margin: 0;
+  background-color: #151515;
+  color: #ddd;
+  border: 0;
+  text-align: center;
+  margin-right: 5px;
 }
 .simplycode-part .simplycode-tab input[type=radio] {
-    display: none;
+  display: none;
 }
 .simplycode-part .simplycode-tab input[type=radio]:checked ~ span {
-    font-weight: bold;
-    border-bottom: 2px solid var(--simplycode-support-background);
+  font-weight: bold;
+  border-bottom: 2px solid var(--simplycode-support-background);
 }
 .simplycode-part .simplycode-editor-code {
-    display: grid;
-    grid-template-columns: 1fr;
+  display: grid;
+  grid-template-columns: 1fr;
 }
 .simplycode-part .simplycode-dual {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 .simplycode-part .simplycode-dual-preview {
-    display: grid;
-    grid-template-columns: auto 480px;
+  display: grid;
+  grid-template-columns: auto 480px;
 }
 .simplycode-test-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 .simplycode-test-header .simplycode-options {
-    text-align: right;
+  text-align: right;
 }
 .simplycode-component summary {
-    font-size: 1.2em;
+  font-size: 1.2em;
 }
 .simplycode-component {
-    margin: 10px 0px;
+  margin: 10px 0px;
 }
 .simplycode-header {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    vertical-align: middle;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  vertical-align: middle;
 }
 .simplycode-header .simplycode-controls {
-    text-align: right;
+  text-align: right;
 }
 .simplycode-header h1 span {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 .simplycode-component summary .simplycode-controls {
-    display: none;
-    margin-left: 1em;
+  display: none;
+  margin-left: 1em;
 }
 .simplycode-component[open] summary .simplycode-controls {
-    display: inline-block;
+  display: inline-block;
 }
 header {
-    position: fixed;
-    padding: 8px 10px 6px 10px;
-    left: 0;
-    right: 0;
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    background-color: #404040;
-    border-bottom: 2px solid #2222;
-    vertical-align: middle;
-    z-index: 200;
+  position: fixed;
+  padding: 8px 10px 6px 10px;
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  background-color: #404040;
+  border-bottom: 2px solid #2222;
+  vertical-align: middle;
+  z-index: 200;
 }
 header h1 {
-    margin: 0;
+  margin: 0;
 }
 header .simplycode-controls {
-    padding-top: 5px;
-    padding-right: 5px;
-    text-align: right;
+  padding-top: 5px;
+  padding-right: 5px;
+  text-align: right;
 }
 .simplycode-editor-code textarea {
-    margin-top: -1px;
-}
-
-ul.simplycode-components-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 1em;
-}
-ul.simplycode-components-list li {
-    border: 1px solid #555;
-    background-color: #2a2a2a;
-    padding: 10px;
-    border-radius: 2px;
+  margin-top: -1px;
 }
 
 /* Components: Toast */
 
 :root {
-    --simply-toast-height: 60px;
-    --simply-toast-hide-delay: 3s;
-    --simply-toast-show-duration: 0.3s;
-    --simply-toast-hide-duration: 0.5s;
-    --simply-toast-margin: 20px;
-    --simply-toast-error-color: rgb(253, 143, 143);
-    --simply-toats-warning-color: #FFFFCC;
-    --simply-toast-info-color: rgb(140, 180, 250);
-    --simply-toast-white: #FFF;
-    --simply-toast-grey-50: #a8b4c0;
-    --simply-toast-grey-80: #4d565c;
-    --simply-toast-font-size: calc(1.1 * 1rem);
-    --simply-toast-font-weight: 300;
-    --simply-toast-line-height: calc(1.5 * var(--simply-toast-font-size));
-    --simply-toast-color: var(--simplycode-grey-medium);
-    --simply-toast-contrast: var(--simplycode-grey-medium);
-    --simply-toast-background:var(--simplycode-white);
-    --simply-toast-heading-weight: 900;
-    --simply-toast-heading-multiplier: 1.1;
+  --simply-toast-height: 60px;
+  --simply-toast-hide-delay: 3s;
+  --simply-toast-show-duration: 0.3s;
+  --simply-toast-hide-duration: 0.5s;
+  --simply-toast-margin: 20px;
+  --simply-toast-error-color: rgb(253, 143, 143);
+  --simply-toats-warning-color: #FFFFCC;
+  --simply-toast-info-color: rgb(140, 180, 250);
+  --simply-toast-white: #FFF;
+  --simply-toast-grey-50: #a8b4c0;
+  --simply-toast-grey-80: #4d565c;
+  --simply-toast-font-size: calc(1.1 * 1rem);
+  --simply-toast-font-weight: 300;
+  --simply-toast-line-height: calc(1.5 * var(--simply-toast-font-size));
+  --simply-toast-color: var(--simplycode-grey-medium);
+  --simply-toast-contrast: var(--simplycode-grey-medium);
+  --simply-toast-background:var(--simplycode-white);
+  --simply-toast-heading-weight: 900;
+  --simply-toast-heading-multiplier: 1.1;
 }
 
 ul.simply-toasts,
 ol.simply-toasts,
 .simply-toasts {
-    position: fixed;
-    right: 0;
-    top: 0;
-    z-index: 101;
-    display: block;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    max-width: 50%;
-    min-width: 300px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 101;
+  display: block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 50%;
+  min-width: 300px;
 }
 .simply-toast,
 li.simply-toast {
-    min-width: 300px;
-    float: right;
-    clear: both;
-    margin-right: 0;
-    margin-top: 60px;
-    background-color: var(--simply-toast-grey-80);
-    color: var(--simply-toast-white);
-    display: block;
-    border-left: 10px solid var(--simply-toast-grey-50);
-    padding: 20px;
-    border-radius: 2px;
+  min-width: 300px;
+  float: right;
+  clear: both;
+  margin-right: 0;
+  margin-top: 60px;
+  background-color: var(--simply-toast-grey-80);
+  color: var(--simply-toast-white);
+  display: block;
+  border-left: 10px solid var(--simply-toast-grey-50);
+  padding: 20px;
+  border-radius: 2px;
 }
 .simply-toast-error,
 li.simply-toast-error {
-    border-color: var(--simply-toast-error-color);
+  border-color: var(--simply-toast-error-color);
 }
 .simply-toast-info,
 li.simply-toast-info {
-    border-color: var(--simply-toast-info-color);
+  border-color: var(--simply-toast-info-color);
 }
 .simply-toast-warning,
 li.simply-toast-warning {
-    border-color: var(--simply-toast-warning-color);
+  border-color: var(--simply-toast-warning-color);
 }
 
 @keyframes simply-toast-show {
-    0% {
-        transform: scaleX(0);
-        transform-origin: right;
-        opacity: 0;
-    }
-    50% {
-        transform: scaleX(0);
-        transform-origin: right;
-        opacity: 0;
-    }
-    75% {
-        opacity: 1;
-    }
-    100% {
-        transform: scaleX(1);
-        transform-origin: right;
-        opacity: 1;
-    }
+  0% {
+    transform: scaleX(0);
+    transform-origin: right;
+    opacity: 0;
+  }
+  50% {
+    transform: scaleX(0);
+    transform-origin: right;
+    opacity: 0;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    transform-origin: right;
+    opacity: 1;
+  }
 }
 @keyframes simply-toast-hide {
-    0% {
-        transform: scaleX(1);
-        transform-origin: right;
-        opacity: 1;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        transform: scaleX(0);
-        transform-origin: right;
-        opacity: 0;
-    }
+  0% {
+    transform: scaleX(1);
+    transform-origin: right;
+    opacity: 1;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0);
+    transform-origin: right;
+    opacity: 0;
+  }
 }
 @keyframes simply-toast-move {
-    0% {
-        transform: translateY(-80px); /* toast-height + toast-margin */
-    }
-    100% {
-        transform: translateY(0px);
-    }
+  0% {
+    transform: translateY(-80px); /* toast-height + toast-margin */
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }
 .simply-toast[data-state="new"] {
-    animation: simply-toast-show var(--simply-toast-show-duration) forwards;
+  animation: simply-toast-show var(--simply-toast-show-duration) forwards;
 }
 .simply-toast-autohide[data-state="new"] {
-    animation: simply-toast-show var(--simply-toast-show-duration);
-    animation-delay: 0s;
+  animation: simply-toast-show var(--simply-toast-show-duration);
+  animation-delay: 0s;
 }
 .simply-toast-autohide.simply-toast-animated[data-state="shown"] {
-    animation: simply-toast-hide var(--simply-toast-hide-duration) forwards;
-    animation-delay: calc(var(--simply-toast-hide-delay) - var(--simply-toast-show-duration));
+  animation: simply-toast-hide var(--simply-toast-hide-duration) forwards;
+  animation-delay: calc(var(--simply-toast-hide-delay) - var(--simply-toast-show-duration));
 }
 .simply-toast-autohide:not(.simply-toast-animated)[data-state="shown"] {
-    animation: simply-toast-move var(--simply-toast-show-duration), simply-toast-hide var(--simply-toast-hide-duration) forwards;
-    animation-delay: 0s, var(--simply-toast-hide-delay);
+  animation: simply-toast-move var(--simply-toast-show-duration), simply-toast-hide var(--simply-toast-hide-duration) forwards;
+  animation-delay: 0s, var(--simply-toast-hide-delay);
 }

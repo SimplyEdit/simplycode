@@ -6,4 +6,5 @@ function(el) {
   }
   simplyApp.commands.codeMirrorInit();
   simplyApp.commands.autoRunTests();
+  simplyApp.commands.autoRunPreviews();
 }
