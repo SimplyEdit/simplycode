@@ -539,34 +539,34 @@
         --ds-support-contrast: #FFF;
         --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
       
-        --ds-heading-font: var(--font-family);
+        --ds-heading-font: var(--simplycode-font-family);
       }
       
       /* style */
       :root {
-          --highlight-dark: #f16623;
-          --highlight-light: #ff8003;
-          --highlight-color: #fff;
-          --highlight-background: linear-gradient( to left, var(--highlight-light), var(--highlight-dark) );
+          --simplycode-highlight-dark: #f16623;
+          --simplycode-highlight-light: #ff8003;
+          --simplycode-highlight-color: #fff;
+          --simplycode-highlight-background: linear-gradient( to left, var(--simplycode-highlight-light), var(--simplycode-highlight-dark) );
       
-          --support-dark: #444;
-          --support-light: #484848;
-          --support-color: #eee;
-          --support-background: linear-gradient( to left, var(--support-light), var(--support-dark) );
+          --simplycode-support-dark: #444;
+          --simplycode-support-light: #484848;
+          --simplycode-support-color: #eee;
+          --simplycode-support-background: linear-gradient( to left, var(--simplycode-support-light), var(--simplycode-support-dark) );
       
-          --grey-dark: #38393c;
-          --grey-medium: #7f8185;
-          --grey-light: #e9ebec;
-          --grey-dark: #38393c;
-          --black: #000;
-          --white: #fff;
-          --grey-background: var(--grey-dark);
+          --simplycode-grey-dark: #38393c;
+          --simplycode-grey-medium: #7f8185;
+          --simplycode-grey-light: #e9ebec;
+          --simplycode-grey-dark: #38393c;
+          --simplycode-black: #000;
+          --simplycode-white: #fff;
+          --simplycode-grey-background: var(--simplycode-grey-dark);
       
-          --font-family: 'Alegreya Sans', sans-serif;
-          --font-size: 14px;
-          --line-height: 1.5em;
-          --color: #7f8185;
-          --background: #333;
+          --simplycode-font-family: 'Alegreya Sans', sans-serif;
+          --simplycode-font-size: 14px;
+          --simplycode-line-height: 1.5em;
+          --simplycode-color: #7f8185;
+          --simplycode-background: #333;
       }
       
       /* general styling on default elements */
@@ -574,11 +574,11 @@
       html, body {
           margin: 0;
           padding: 0;
-          font-family: var(--font-family);
-          font-size: var(--font-size);
-          line-height: var(--line-height);
-          color: var(--color); 
-          background-color: var(--background);
+          font-family: var(--simplycode-font-family);
+          font-size: var(--simplycode-font-size);
+          line-height: var(--simplycode-line-height);
+          color: var(--simplycode-color); 
+          background-color: var(--simplycode-background);
       }
       body {
           overflow-y: scroll;
@@ -612,18 +612,18 @@
       }
       
       a {
-          color: var(--highlight-dark);
+          color: var(--simplycode-highlight-dark);
       }
       a:visited {
-          color: var(--highlight-dark);
+          color: var(--simplycode-highlight-dark);
       }
       
       /* custom styling for custom elements */
       
       .simplycode-button,
       a.simplycode-button {
-          background: var(--support-background);
-          color: var(--support-color);
+          background: var(--simplycode-support-background);
+          color: var(--simplycode-support-color);
           padding: 0.3em 0.5em;
           margin: 0 0.3em;
           border: 1px solid #ccc;
@@ -637,8 +637,8 @@
           margin-right: 0;
       }
       .simplycode-button.highlight {
-          background: var(--highlight-background);
-          color: var(--highlight-color);
+          background: var(--simplycode-highlight-background);
+          color: var(--simplycode-highlight-color);
       }
       
       .text-content {
@@ -714,7 +714,7 @@
       }
       .simplycode-part .simplycode-tab input[type=radio]:checked ~ span {
           font-weight: bold;
-          border-bottom: 2px solid var(--support-background);
+          border-bottom: 2px solid var(--simplycode-support-background);
       }
       .simplycode-part .simplycode-editor-code {
           display: grid;
@@ -807,20 +807,20 @@
           --simply-toast-show-duration: 0.3s;
           --simply-toast-hide-duration: 0.5s;
           --simply-toast-margin: 20px;
-          --simply-error-color: rgb(253, 143, 143);
-          --simply-warning-color: #FFFFCC;
-          --simply-info-color: rgb(140, 180, 250);
-          --simply-white: #FFF;
-          --simply-grey-50: #a8b4c0;
-          --simply-grey-80: #4d565c;
-          --simply-font-size: calc(1.1 * 1rem);
-          --simply-font-weight: 300;
-          --simply-line-height: calc(1.5 * var(--simply-font-size));
-          --simply-color: var(--grey-medium);
-          --simply-contrast: var(--grey-medium);
-          --simply-background:var(--white);
-          --simply-heading-weight: 900;
-          --simply-heading-multiplier: 1.1;
+          --simply-toast-error-color: rgb(253, 143, 143);
+          --simply-toats-warning-color: #FFFFCC;
+          --simply-toast-info-color: rgb(140, 180, 250);
+          --simply-toast-white: #FFF;
+          --simply-toast-grey-50: #a8b4c0;
+          --simply-toast-grey-80: #4d565c;
+          --simply-toast-font-size: calc(1.1 * 1rem);
+          --simply-toast-font-weight: 300;
+          --simply-toast-line-height: calc(1.5 * var(--simply-toast-font-size));
+          --simply-toast-color: var(--simplycode-grey-medium);
+          --simply-toast-contrast: var(--simplycode-grey-medium);
+          --simply-toast-background:var(--simplycode-white);
+          --simply-toast-heading-weight: 900;
+          --simply-toast-heading-multiplier: 1.1;
       }
       
       ul.simply-toasts,
@@ -844,24 +844,24 @@
           clear: both;
           margin-right: 0;
           margin-top: 60px;
-          background-color: var(--simply-grey-80);
-          color: var(--simply-white);
+          background-color: var(--simply-toast-grey-80);
+          color: var(--simply-toast-white);
           display: block;
-          border-left: 10px solid var(--simply-grey-50);
+          border-left: 10px solid var(--simply-toast-grey-50);
           padding: 20px;
           border-radius: 2px;
       }
       .simply-toast-error,
       li.simply-toast-error {
-          border-color: var(--simply-error-color);
+          border-color: var(--simply-toast-error-color);
       }
       .simply-toast-info,
       li.simply-toast-info {
-          border-color: var(--simply-info-color);
+          border-color: var(--simply-toast-info-color);
       }
       .simply-toast-warning,
       li.simply-toast-warning {
-          border-color: var(--simply-warning-color);
+          border-color: var(--simply-toast-warning-color);
       }
       
       @keyframes simply-toast-show {
@@ -1034,7 +1034,7 @@
       }
       /* simply-logo */
       :root {
-        --simply-logo-color-primary: var(--highlight-dark);
+        --simply-logo-color-primary: var(--simplycode-highlight-dark);
         --simply-logo-color-secondary: white;
       }
       /* simply-toobar-button */
@@ -1101,7 +1101,7 @@
       /* simply-toolbar */
       :root {
         --simply-toobar-height: 60px;
-        --simply-toolbar-primary: var(--highlight-dark);
+        --simply-toolbar-primary: var(--simplycode-highlight-dark);
         --simply-toolbar-button-font: arial, helvetica, sans-serif;
         --simply-toolbar-button-font-size: 11px;
         --simply-toolbar-button-width: 60px;
