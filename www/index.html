@@ -569,20 +569,13 @@
       /* simplycode-ds-mapping */
       /* simplycode-ds-core-colors */
       :root {
-        --ds-simplycode: #ae47ff;
-        --ds-simplycode-light:#c880ff;
-        --ds-simplycode-dark:#8d00f8;
-        --ds-simplycode-bump:#b65cfc;
-        --ds-simplycode-contrast: var(--ds-white);
-        --ds-simplycode-gradient: linear-gradient( 180deg, var(--ds-simplycode-light), var(--ds-simplycode-dark) );
-        --ds-simplycode-gradient-bump: linear-gradient( 180deg, var(--ds-simplycode-bump), var(--ds-simplycode-light) 95%, var(--ds-simplycode-dark) 100%);
-      
-        --ds-primary: var(--ds-simplycode);
-        --ds-primary-dark: var(--ds-simplycode-dark);
-        --ds-primary-contrast: var(--ds-white);
-        --ds-primary-light: var(--ds-simplycode-light);
-        --ds-primary-gradient: var(--ds-simplycode-gradient);
-        --ds-primary-gradient-bump: var(--ds-simplycode-gradient-bump);
+        --ds-primary: var(--simplycode-highlight-light);
+        --ds-primary-dark: var(--simplycode-highlight-dark);
+        --ds-primary-contrast: var(--simplycode-highlight-color);
+        --ds-primary-light: var(--simplycode-highlight-light);
+        --ds-primary-gradient: var(--simplycode-highlight-gradient);
+        --ds-primary-bump: #b65cfc;
+        --ds-primary-gradient-bump: linear-gradient( 180deg, var(--ds-primary-bump), var(--simplycode-highlight-light) 95%, var(--simplycode-highlight-dark) 100%);
       
         --ds-support: #06CC06;
         --ds-support-dark: #05BB05;
@@ -2703,10 +2696,6 @@
             },
             "resetPreview" : function(el) {
               return new Promise(function(resolve, reject) {
-                if (el.contentDocument.childNodes[0].innerText == "") {
-                  resolve(el);
-                  return;
-                }
                 var newRunner = el.cloneNode(false);
                 newRunner.addEventListener("load", function() {
                   resolve(newRunner);
@@ -4494,21 +4483,6 @@
       <simply-render rel="componentRawApi"></simply-render>
     </main>
     </template>
-    <template data-simply-template="Edit%20base%20component">
-      <main>
-      <div class="simplycode-header">
-        <h1>Edit base component: <span data-simply-field="component.id"></span></h1>
-      </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentHeadHtml"></simply-render>
-      <simply-render rel="componentBodyHtml"></simply-render>
-      <simply-render rel="componentFootHtml"></simply-render>
-      <simply-render rel="componentCommands"></simply-render>
-      <simply-render rel="componentActions"></simply-render>
-      <simply-render rel="componentRoutes"></simply-render>
-      <simply-render rel="componentRawApi"></simply-render>
-    </main>
-    </template>
     <template data-simply-template="Base components">
       <main>
       <h1>Base components</h1>
@@ -4539,23 +4513,6 @@
     </main>
     </template>
     <template data-simply-template="Edit component">
-      <main>
-      <div class="simplycode-header">
-        <h1>Edit component: <span data-simply-field="component.id"></span></h1>
-      </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentComponentTemplate"></simply-render>
-      <simply-render rel="componentComponentCss"></simply-render>
-      <simply-render rel="componentCommands"></simply-render>
-      <simply-render rel="componentActions"></simply-render>
-      <simply-render rel="componentDataApi"></simply-render>
-      <simply-render rel="componentRoutes"></simply-render>
-      <simply-render rel="componentTransformers"></simply-render>
-      <simply-render rel="componentDataSources"></simply-render>
-      <simply-render rel="componentSorters"></simply-render>
-    </main>
-    </template>
-    <template data-simply-template="Edit%20component">
       <main>
       <div class="simplycode-header">
         <h1>Edit component: <span data-simply-field="component.id"></span></h1>
@@ -4603,23 +4560,6 @@
     
     </template>
     <template data-simply-template="Edit page">
-      <main>
-      <div class="simplycode-header">
-        <h1>Edit page: <span data-simply-field="component.id"></span></h1>
-      </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentPageTemplate"></simply-render>
-      <simply-render rel="componentPageCss"></simply-render>
-      <simply-render rel="componentCommands"></simply-render>
-      <simply-render rel="componentActions"></simply-render>
-      <simply-render rel="componentDataApi"></simply-render>
-      <simply-render rel="componentRoutes"></simply-render>
-      <simply-render rel="componentTransformers"></simply-render>
-      <simply-render rel="componentDataSources"></simply-render>
-      <simply-render rel="componentSorters"></simply-render>
-    </main>
-    </template>
-    <template data-simply-template="Edit%20page">
       <main>
       <div class="simplycode-header">
         <h1>Edit page: <span data-simply-field="component.id"></span></h1>
@@ -5172,63 +5112,6 @@
     </script>
     <!-- Foot HTML -->
     <!-- Auto run preview -->
-    <script>
-      document.addEventListener("simply-data-changed", function(event) {
-        if (
-          (event.data.dataBinding.parentKey == "/component/parts/") ||
-          (event.data.dataBinding.parentKey.indexOf("/component/parts/") == 0)
-        ) {
-          // Handle changes of the part name
-          var component = event.data.dataBinding.parentKey.split("/")[3];
-          var componentNameField = simplyApp.actions.getComponentNameField(component);
-          
-          if (event.data.arguments[0] == componentNameField) {
-            var newname = event.data.arguments[1];
-            var oldname = event.data.arguments[2];
-    
-            editor.pageData.app[component].forEach(function(appPart) {
-              if (appPart[componentNameField] == oldname) {
-                appPart[componentNameField] = newname;
-              }
-            });
-          }
-    
-          if (typeof autoRunPreviewTimeout !== "undefined") {
-            window.clearTimeout(autoRunPreviewTimeout);
-          }
-          autoRunPreviewTimeout = window.setTimeout(function() {
-            // Update the app data for the preview
-            for (component in editor.pageData.component.parts) {
-              if (!editor.pageData.app[component]) {
-                editor.pageData.app[component] = [];
-              }
-              var componentNameField = simplyApp.actions.getComponentNameField(component);
-              editor.pageData.component.parts[component].forEach(function(part) {
-                var found = false;
-                editor.pageData.app[component].forEach(function(appPart, appIndex) {
-                  if (part[componentNameField] && (appPart[componentNameField] == part[componentNameField])) {
-                    for (i in part) {
-                      editor.pageData.app[component][appIndex][i] = part[i];
-                    }
-                    found = true;
-                  }
-                });
-                if (!found) {
-                  editor.pageData.app[component].push(JSON.parse(JSON.stringify(part)));
-                }
-              });
-            }
-    
-            document.querySelectorAll("[data-simply-transformer=simplyPreviewComponent]").forEach(function(element) {
-              element.innerHTML = editor.transformers.simplyPreviewComponent.render.call(element, element.dataBinding.get());
-            });
-    
-            simplyApp.commands.autoRunPreviews()
-          }, 500);
-        }
-      });
-    </script>
-    <!-- Auto%20run%20preview -->
     <script>
       document.addEventListener("simply-data-changed", function(event) {
         if (
