@@ -2,9 +2,6 @@
 
 This project allows coding in a structured environment to create apps following the Simply App Architecture.
 
-## Installation
-The codebase runs on Apache+PHP
-
 # Sample application
 As a sample application, we've built SimplyCode in SimplyCode. The code for is bundled with this project. You can browse the code in the /www/api/data/ directory of this project, or from SimplyCode once you have the environment setup. SimplyCode can of course be used to build other applications as well.
 
