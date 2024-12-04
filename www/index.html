@@ -1392,6 +1392,7 @@
               switch(componentPart.id) {
                 case "meta.json":
                   componentPart.id = "meta";
+                  component.description = componentPart.description;
                   break;
                 case "routes":
                   if (typeof componentPart.contents === "object") {
@@ -2133,6 +2134,7 @@
               .then(function(components) {
               components.forEach(function(component) {
                 simplyDataApi.mergeComponent(component.contents);
+                component.description = component.contents.description;
               });
               return components;
             });
@@ -2194,6 +2196,7 @@
               .then(function(components) {
               components.forEach(function(component) {
                 simplyDataApi.mergeComponent(component.contents);
+                component.description = component.contents.description;
               });
               return components;
             });
@@ -2316,6 +2319,7 @@
               .then(function(components) {
               components.forEach(function(component) {
                 simplyDataApi.mergeComponent(component.contents);
+                component.description = component.contents.description;
               });
               return components;
             });
