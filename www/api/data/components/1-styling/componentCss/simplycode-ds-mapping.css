@@ -1,0 +1,25 @@
+/* simplycode-ds-core-colors */
+:root {
+  --ds-simplycode: #ae47ff;
+  --ds-simplycode-light:#c880ff;
+  --ds-simplycode-dark:#8d00f8;
+  --ds-simplycode-bump:#b65cfc;
+  --ds-simplycode-contrast: var(--ds-white);
+  --ds-simplycode-gradient: linear-gradient( 180deg, var(--ds-simplycode-light), var(--ds-simplycode-dark) );
+  --ds-simplycode-gradient-bump: linear-gradient( 180deg, var(--ds-simplycode-bump), var(--ds-simplycode-light) 95%, var(--ds-simplycode-dark) 100%);
+
+  --ds-primary: var(--ds-simplycode);
+  --ds-primary-dark: var(--ds-simplycode-dark);
+  --ds-primary-contrast: var(--ds-white);
+  --ds-primary-light: var(--ds-simplycode-light);
+  --ds-primary-gradient: var(--ds-simplycode-gradient);
+  --ds-primary-gradient-bump: var(--ds-simplycode-gradient-bump);
+
+  --ds-support: #06CC06;
+  --ds-support-dark: #05BB05;
+  --ds-support-light: #07DE07;
+  --ds-support-contrast: #FFF;
+  --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
+
+  --ds-heading-font: var(--simplycode-font-family);
+}
