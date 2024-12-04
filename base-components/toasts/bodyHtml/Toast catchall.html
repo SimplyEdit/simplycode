@@ -1,0 +1,9 @@
+<script>
+  window.onerror = function(errorMessage, url, line) {
+    editor.pageData.alerts.unshift({
+      "data-simply-template" : "error",
+      "message" : errorMessage, 
+      "state" : "new"
+    });
+  }
+</script>
