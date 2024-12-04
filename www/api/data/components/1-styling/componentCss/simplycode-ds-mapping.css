@@ -21,5 +21,5 @@
   --ds-support-contrast: #FFF;
   --ds-support-gradient: linear-gradient( to left, var(--ds-support-light), var(--ds-support-dark) );
 
-  --ds-heading-font: var(--font-family);
+  --ds-heading-font: var(--simplycode-font-family);
 }
