@@ -1,0 +1,125 @@
+<script>
+  simply.dragdrop = {
+    getDataBinding : function(el) {
+      if (el.dataBinding) {
+        return el.dataBinding;
+      } else {
+        return el.querySelector("[data-simply-field]").dataBinding; // FIXME: nested fields will go wrong this way;
+      }
+    },
+    getData : function(el) {
+      var dataBinding = simply.dragdrop.getDataBinding(el);
+      return dataBinding.config.data;
+    },
+    getListParent : function(el) {
+      while (el && !el.hasAttribute("data-simply-list")) {
+        if (el.parentNode && (el.parentNode.nodeType == document.ELEMENT_NODE)) {
+          el = el.parentNode;
+        } else {
+          el = false;
+        }
+      }
+      return el;
+    },
+    getListItemParent : function(el) {
+      while (el && !el.hasAttribute("data-simply-list-item")) {
+        if (el.parentNode && (el.parentNode.nodeType == document.ELEMENT_NODE)) {
+          el = el.parentNode;
+        } else {
+          el = false;
+        }
+      }
+      return el;
+    },
+    dragStart : function(event) {
+      var target = simply.dragdrop.getListItemParent(event.target);
+      var dataBinding = simply.dragdrop.getDataBinding(target);
+      localStorage.currentDragItem = dataBinding.config.parentKey;
+      localStorage.dragdrop = "dragStart";
+      document.currentDragItem = target;
+      // event.dataTransfer.effectAllowed = 'move';
+
+      event.dataTransfer.setData("application/json", JSON.stringify(simply.dragdrop.getData(target), true));
+      var simplyType = "simply/" + target.parentNode.dataBinding.config.key.toLowerCase();
+      event.dataTransfer.setData(simplyType, "1");
+      event.dataTransfer.setDragImage(event.target, 0, 0);
+
+      return true;
+    },
+    dragEnter : function(event) {
+      var listParent = simply.dragdrop.getListParent(event.target);
+      if (listParent) {
+        listParent.classList.add("simply-dragdrop-receiving");
+        event.preventDefault();
+        return true;
+      }
+    },
+    dragLeave : function(event) {
+      var listParent = simply.dragdrop.getListParent(event.target);
+      if (listParent) {
+        listParent.classList.remove("simply-dragdrop-receiving");
+      }
+      event.preventDefault();
+      return true;
+    },
+    dragOver : function(event) {
+      var listParent = simply.dragdrop.getListParent(event.target);
+      if (listParent) {
+        const isJson = event.dataTransfer.types.includes("application/json");
+        const expectedType = "simply/" + listParent.dataBinding.config.key.toLowerCase();
+        const isTypeAccepted = event.dataTransfer.types.includes(expectedType);
+        if (isJson && isTypeAccepted) {
+          event.preventDefault();
+        }
+      }
+    },
+    drop : function(event) {
+      var listParent = simply.dragdrop.getListParent(event.target);
+      var data = JSON.parse(event.dataTransfer.getData("application/json"));
+
+      listParent.classList.remove("simply-dragdrop-receiving");
+
+      const expectedType = "simply/" + listParent.dataBinding.config.key.toLowerCase();
+      const isTypeAccepted = event.dataTransfer.types.includes(expectedType);
+
+      if (listParent && isTypeAccepted) {
+        var data = JSON.parse(event.dataTransfer.getData("application/json"));
+        event.preventDefault();
+        let dropEffect = event.dataTransfer.dropEffect;
+
+        switch (dropEffect) {
+          case "move":
+            localStorage.dragdrop = "move";
+            let sourceElement = document.currentDragItem;
+            if (sourceElement) {
+              sourceElement.remove();
+            }
+            break;
+          case "copy":
+          default:
+            // do nothing, leave the original item;
+            break;
+        }
+        listParent.dataBinding.get().push(data);
+        window.setTimeout(function() {
+          localStorage.currentDragItem = '';
+        }, 250);
+      }
+    }
+  };
+  window.addEventListener("storage", function(event) {
+    if((event.key == "dragdrop") && (event.newValue == "move")) {
+      var currentDragItem = localStorage.currentDragItem;
+      var dataBinding = simply.dragdrop.getDataBinding(document.currentDragItem);
+      if (dataBinding && dataBinding.config.parentKey == localStorage.currentDragItem) {
+        document.currentDragItem.remove();
+      }
+      document.currentDragItem = false;
+    }
+  });
+  document.addEventListener("dragstart", simply.dragdrop.dragStart);
+  document.addEventListener("dragenter", simply.dragdrop.dragEnter);
+  document.addEventListener("dragleave", simply.dragdrop.dragLeave);
+  document.addEventListener("dragover", simply.dragdrop.dragOver);
+  document.addEventListener("drop", simply.dragdrop.drop);
+</script>
