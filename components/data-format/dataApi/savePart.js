@@ -13,6 +13,7 @@ function(basePath, part, contents) {
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.name + ".json"));
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.name + ".js"));
+          componentPart.deleted = "sent";
         } else { 
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.name + ".json", {},
@@ -33,6 +34,7 @@ function(basePath, part, contents) {
         }
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.name + ".css"));
+          componentPart.deleted = "sent";
         } else { 
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.name + ".css", {},
@@ -51,6 +53,7 @@ function(basePath, part, contents) {
           if (componentPart.sampledata) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.component + ".json"));
           }
+          componentPart.deleted = "sent";
         } else { 
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.component + ".html", {},
@@ -75,6 +78,7 @@ function(basePath, part, contents) {
           if (componentPart.sampledata) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.page + ".json"));
           }
+          componentPart.deleted = "sent";
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.page + ".html", {},
@@ -97,6 +101,7 @@ function(basePath, part, contents) {
         }
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.method + ".js"));
+          componentPart.deleted = "sent";
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.method + ".js", {},
@@ -115,6 +120,7 @@ function(basePath, part, contents) {
           if (componentPart.tests && componentPart.tests.length) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.action + "/"));
           }
+          componentPart.deleted = "sent";
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.action + ".js", {},
@@ -148,6 +154,7 @@ function(basePath, part, contents) {
           if (componentPart.tests && componentPart.tests.length) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.command + "/"));
           }
+          componentPart.deleted = "sent";
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.command + ".js", {},
@@ -184,6 +191,7 @@ function(basePath, part, contents) {
           if (componentPart.tests && componentPart.tests.length) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.dataSource + "/"));
           }
+          componentPart.deleted = "sent";
         } else {
           if (componentPart['get-code']) {
             results.push(simplyRawApi.putRaw(
@@ -238,6 +246,7 @@ function(basePath, part, contents) {
           if (componentPart.tests && componentPart.tests.length) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.transformer + "/"));
           }
+          componentPart.deleted = "sent";
         } else {
           if (componentPart['render-code']) {
             results.push(simplyRawApi.putRaw(
@@ -276,6 +285,7 @@ function(basePath, part, contents) {
         }
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.sorter + ".js"));
+          componentPart.deleted = "sent";
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.sorter + ".js", {},
@@ -293,6 +303,7 @@ function(basePath, part, contents) {
         }
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.name + ".html"));
+          componentPart.deleted = "sent";
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.name + ".html", {},
