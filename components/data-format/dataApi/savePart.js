@@ -6,14 +6,14 @@ function(basePath, part, contents) {
       return simplyRawApi.putRaw(basePath + "/meta.json", {}, JSON.stringify(contents));
       break;
     case "routes":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.name) {
           throw new Error("Required part name is empty");
         }
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.name + ".json"));
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.name + ".js"));
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else { 
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.name + ".json", {},
@@ -28,13 +28,13 @@ function(basePath, part, contents) {
       break;
     case "componentCss":
     case "pageCss":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.name) {
           throw new Error("Required part name is empty");
         }
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.name + ".css"));
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else { 
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.name + ".css", {},
@@ -44,7 +44,7 @@ function(basePath, part, contents) {
       });
       break;
     case "componentTemplates":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.component) {
           throw new Error("Required part name is empty");
         }
@@ -53,7 +53,7 @@ function(basePath, part, contents) {
           if (componentPart.sampledata) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.component + ".json"));
           }
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else { 
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.component + ".html", {},
@@ -69,7 +69,7 @@ function(basePath, part, contents) {
       });
       break;
     case "pageTemplates":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.page) {
           throw new Error("Required part name is empty");
         }
@@ -78,7 +78,7 @@ function(basePath, part, contents) {
           if (componentPart.sampledata) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.page + ".json"));
           }
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.page + ".html", {},
@@ -95,13 +95,13 @@ function(basePath, part, contents) {
       break;
     case "rawApi":
     case "dataApi":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.method) {
           throw new Error("Required part name is empty");
         }
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.method + ".js"));
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.method + ".js", {},
@@ -111,7 +111,7 @@ function(basePath, part, contents) {
       });
       break;
     case "actions":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.action) {
           throw new Error("Required part name is empty");
         }
@@ -120,19 +120,20 @@ function(basePath, part, contents) {
           if (componentPart.tests && componentPart.tests.length) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.action + "/"));
           }
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.action + ".js", {},
             componentPart.code
           ));
           if (componentPart.tests) {
-            componentPart.tests.forEach(function(test) {
+            componentPart.tests.forEach(function(test, testIndex) {
               if (!test.name) {
                 throw new Error("Required test name is empty");
               }
               if (test.deleted == "true") {
                 results.push(simplyRawApi.delete(basePath + "/" + part + "/tests/" + componentPart.action + "/" + test.name + ".js"));
+                componentPart.tests.splice(testIndex, 1);
               } else {
                 results.push(simplyRawApi.putRaw(
                   basePath + "/" + part + "/tests/" + componentPart.action + "/" + test.name + ".js", {},
@@ -145,7 +146,7 @@ function(basePath, part, contents) {
       });
       break;
     case "commands":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.command) {
           throw new Error("Required part name is empty");
         }
@@ -154,19 +155,20 @@ function(basePath, part, contents) {
           if (componentPart.tests && componentPart.tests.length) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.command + "/"));
           }
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.command + ".js", {},
             componentPart.code
           ));
           if (componentPart.tests) {
-            componentPart.tests.forEach(function(test) {
+            componentPart.tests.forEach(function(test, testIndex) {
               if (!test.name) {
                 throw new Error("Required test name is empty");
               }
               if (test.deleted == "true") {
                 results.push(simplyRawApi.delete(basePath + "/" + part + "/tests/" + componentPart.command + "/" + test.name + ".js"));
+                componentPart.tests.splice(testIndex, 1);
               } else {
                 results.push(simplyRawApi.putRaw(
                   basePath + "/" + part + "/tests/" + componentPart.command + "/" + test.name + ".js", {},
@@ -179,7 +181,7 @@ function(basePath, part, contents) {
       });
       break;
     case "dataSources":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.dataSource) {
           throw new Error("Required part name is empty");
         }
@@ -191,7 +193,7 @@ function(basePath, part, contents) {
           if (componentPart.tests && componentPart.tests.length) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.dataSource + "/"));
           }
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else {
           if (componentPart['get-code']) {
             results.push(simplyRawApi.putRaw(
@@ -218,12 +220,13 @@ function(basePath, part, contents) {
             ));
           }
           if (componentPart.tests) {
-            componentPart.tests.forEach(function(test) {
+            componentPart.tests.forEach(function(test, testIndex) {
               if (!test.name) {
                 throw new Error("Required test name is empty");
               }
               if (test.deleted == "true") {
                 results.push(simplyRawApi.delete(basePath + "/" + part + "/tests/" + componentPart.dataSource + "/" + test.name + ".js"));
+                componentPart.tests.splice(testIndex, 1);
               } else {
                 results.push(simplyRawApi.putRaw(
                   basePath + "/" + part + "/tests/" + componentPart.dataSource + "/" + test.name + ".js", {},
@@ -236,7 +239,7 @@ function(basePath, part, contents) {
       });
       break;
     case "transformers":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.transformer) {
           throw new Error("Required part name is empty");
         }
@@ -246,7 +249,7 @@ function(basePath, part, contents) {
           if (componentPart.tests && componentPart.tests.length) {
             results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.transformer + "/"));
           }
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else {
           if (componentPart['render-code']) {
             results.push(simplyRawApi.putRaw(
@@ -261,12 +264,13 @@ function(basePath, part, contents) {
             ));
           }
           if (componentPart.tests) {
-            componentPart.tests.forEach(function(test) {
+            componentPart.tests.forEach(function(test, testIndex) {
               if (!test.name) {
                 throw new Error("Required test name is empty");
               }
               if (test.deleted == "true") {
                 results.push(simplyRawApi.delete(basePath + "/" + part + "/tests/" + componentPart.transformer + "/" + test.name + ".js"));
+                componentPart.tests.splice(testIndex, 1);
               } else {
                 results.push(simplyRawApi.putRaw(
                   basePath + "/" + part + "/tests/" + componentPart.transformer + "/" + test.name + ".js", {},
@@ -279,13 +283,13 @@ function(basePath, part, contents) {
       });
       break;
     case "sorters":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.sorter) {
           throw new Error("Required part name is empty");
         }
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.sorter + ".js"));
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.sorter + ".js", {},
@@ -297,13 +301,13 @@ function(basePath, part, contents) {
     case "headHtml":
     case "bodyHtml":
     case "footHtml":
-      contents.forEach(function(componentPart) {
+      contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.name) {
           throw new Error("Required part name is empty");
         }
         if (componentPart.deleted == "true") {
           results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.name + ".html"));
-          componentPart.deleted = "sent";
+          contents.splice(componentIndex, 1);
         } else {
           results.push(simplyRawApi.putRaw(
             basePath + "/" + part + "/" + componentPart.name + ".html", {},
