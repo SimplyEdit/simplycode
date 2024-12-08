@@ -102,6 +102,22 @@ function(component) {
           componentPart.contents = JSON.stringify(Object.values(contents));
         }
         break;
+      case "builderTemplates":
+        if (typeof componentPart.contents === "object") {
+          var contents = {};
+          componentPart.contents.forEach(function(partFile) {
+            partId = partFile.id;
+            if (typeof contents[partId] === "undefined") {
+              contents[partId] = {
+                base : componentPart.id,
+                builder : partId
+              }
+            }
+            contents[partId]['code'] = partFile.contents;
+          });
+          componentPart.contents = JSON.stringify(Object.values(contents));
+        }
+        break;
       case "rawApi":
       case "dataApi":
         if (typeof componentPart.contents === "object") {
