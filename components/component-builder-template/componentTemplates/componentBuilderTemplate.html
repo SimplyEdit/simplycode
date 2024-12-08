@@ -1,0 +1,37 @@
+<details class="simplycode-component">
+  <summary data-simply-command="initEditors" title="These templates are used as a boilerplate to build your project.">
+    <span data-simply-field="count.builderTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
+      Builder HTML template
+    </span>
+    <span class="simplycode-controls">
+      <button class="simplycode-button" data-simply-command="addBuilderTemplate">Add builder HTML template</button>
+    </span>
+  </summary>
+  <div class="simplycode-code-method" data-simply-list="component.parts.builderTemplates">
+    <template>
+      <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
+        <div class="simplycode-part-header">
+          <div class="simplycode-tabs">
+            <input class="simplycode-tab" data-simply-field="builder" placeholder="Builder name">
+            <label class="simplycode-tab">
+              <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
+              <span>Code</span>
+            </label>
+          </div>
+          <div class="simplycode-options">
+            <button class="simplycode-button" draggable="true">Drag to move</button>
+            <button class="simplycode-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-simply-command="deleteEntry">Delete HTML</button>
+          </div>
+        </div>
+        <div class="simplycode-editors">
+          <div class="simplycode-editor-code" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+            <template data-simply-template="code">
+              <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Builder contents</div></main>"></textarea>
+            </template>
+          </div>
+        </div>
+        <simply-render rel="componentHtmlValidator"></simply-render>
+      </div>
+    </template>
+  </div>
+</details>
