@@ -25,7 +25,7 @@
       autoRunPreviewTimeout = window.setTimeout(function() {
         // Update the app data for the preview
         for (component in editor.pageData.component.parts) {
-          if (!editor.pageData.app[component]) {
+          if (typeof editor.pageData.app[component] === "undefined") {
             editor.pageData.app[component] = [];
           }
           var componentNameField = simplyApp.actions.getComponentNameField(component);
