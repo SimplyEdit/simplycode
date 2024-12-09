@@ -19,9 +19,13 @@ function(builderTemplate, data) {
   };
 
   Object.keys(replacements).forEach(function(replacement) {
-    matches = build.match("(\\s+){{" + replacement + "}}");
+    matches = build.match("(\\s*){{" + replacement + "}}");
     if (matches) {
-      build = build.replace("{{" + replacement + "}}", replacements[replacement].replace(/\n/g, matches[1]));
+      let indentedNewline = matches[1];
+      if (indentedNewline == '') {
+        indentedNewline = "\n";
+      }
+      build = build.replace("{{" + replacement + "}}", replacements[replacement].replace(/\n/g, indentedNewline));
     }
   });
 
