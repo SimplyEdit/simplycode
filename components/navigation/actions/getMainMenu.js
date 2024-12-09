@@ -18,6 +18,13 @@ function() {
         },
         {
           item : {
+            innerHTML : "Pages",
+            href : "#pages",
+            "data-path" : "pages"
+          }
+        },
+        {
+          item : {
             innerHTML : "Page frame",
             href : "#page-frame",
             "data-path" : "page-frame"
@@ -25,9 +32,9 @@ function() {
         },
         {
           item : {
-            innerHTML : "Pages",
-            href : "#pages",
-            "data-path" : "pages"
+            innerHTML : "Builders",
+            href : "#builders",
+            "data-path" : "builders"
           }
         }
       ]
