@@ -1482,6 +1482,22 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                   break;
+                case "builderTemplates":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      partId = partFile.id;
+                      if (typeof contents[partId] === "undefined") {
+                        contents[partId] = {
+                          base : componentPart.id,
+                          builder : partId
+                        }
+                      }
+                      contents[partId]['code'] = partFile.contents;
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
                 case "rawApi":
                 case "dataApi":
                   if (typeof componentPart.contents === "object") {
@@ -1832,6 +1848,22 @@
                   }
                 });
                 break;
+              case "builderTemplates":
+                contents.forEach(function(componentPart, componentIndex) {
+                  if (!componentPart.builder) {
+                    throw new Error("Required part name is empty");
+                  }
+                  if (componentPart.deleted == "true") {
+                    results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.builder + ".html"));
+                    contents.splice(componentIndex, 1);
+                  } else {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.builder, {},
+                      componentPart.code
+                    ));
+                  }
+                });
+                break;
               case "rawApi":
               case "dataApi":
                 contents.forEach(function(componentPart, componentIndex) {
@@ -2146,6 +2178,68 @@
               return components;
             });
           },
+          "deleteBuilder" : function(component) {
+            return simplyRawApi.delete("builders/" + component)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteBuilder failed", response.status);
+            });
+          },
+          "deleteBuilderPart" : function(component, part) {
+            return simplyRawApi.delete("builders/" + component + "/" + part)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteBuilderPart failed", response.status);
+            });
+          },
+          "getBuilder" : function(component) {
+            return simplyRawApi.get("builders/" + component)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("getBuilder failed", response.status);
+            })
+              .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
+            });
+          },
+          "saveBuilderPart" : function(component, part, contents) {
+            return simplyDataApi.savePart("builders/" + component, part, contents)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              // retry the call once
+              return simplyDataApi.savePart("builders/" + component, part, contents)
+                .then(function(response) {
+                if (response.status === 200) {
+                  return response.json();
+                }
+                throw new Error("saveBuilderPart failed", response.status);
+              });
+            });
+          },
+          "listBuilders" : function() {
+            return simplyRawApi.get("builders")
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("listBuilders failed", response.status);
+            })
+              .then(function(components) {
+              components.forEach(function(component) {
+                simplyDataApi.mergeComponent(component.contents);
+                component.description = component.contents.description;
+              });
+              return components;
+            });
+          },
           "deleteComponent" : function(component) {
               return simplyRawApi.delete("components/" + component)
               .then(function(response) {
@@ -2339,6 +2433,15 @@
               }
               throw new Error("saveAppHtml failed", response.status);
             });
+          },
+          "saveBuild" : function(target, contents) {
+            return simplyRawApi.putRaw(target, {}, contents)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("saveBuild failed", response.status);
+            });
           }
         };
         /* End of Data API */
@@ -2381,6 +2484,39 @@
                   return 'name';
               }
             },
+            "build" : function(builderTemplate, data) {
+              var build = builderTemplate;
+              let replacements = {
+                "actions" : editor.transformers.simplyPreviewActions.render(data.actions ?? []),
+                "commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
+                "dataApi" : editor.transformers.simplyPreviewDataApi.render(data.dataApi ?? []),
+                "rawApi" : editor.transformers.simplyPreviewRawApi.render(data.rawApi ?? []),
+                "routes" : editor.transformers.simplyPreviewRoutes.render(data.routes ?? []),
+                "dataSources" : editor.transformers.simplyPreviewDataSources.render(data.dataSources ?? []),
+                "transformers" : editor.transformers.simplyPreviewTransformers.render(data.transformers ?? []),
+                "sorters" : editor.transformers.simplyPreviewSorters.render(data.sorters ?? []),
+                "pageTemplates" :editor.transformers.simplyPreviewPageTemplates.render(data.pageTemplates ?? []),
+                "pageCss" : editor.transformers.simplyPreviewPageCss.render(data.pageCss ?? []),
+                "componentCss" : editor.transformers.simplyPreviewComponentCss.render(data.componentCss ?? []),
+                "componentTemplates" : editor.transformers.simplyPreviewComponentTemplates.render(data.componentTemplates ?? []),
+                "headHtml": editor.transformers.simplyPreviewHeadHtml.render(data.headHtml ?? []),
+                "footHtml": editor.transformers.simplyPreviewFootHtml.render(data.footHtml ?? []),
+                "bodyHtml" : editor.transformers.simplyPreviewBodyHtml.render(data.bodyHtml ?? [])
+              };
+            
+              Object.keys(replacements).forEach(function(replacement) {
+                matches = build.match("(\\s*){{" + replacement + "}}");
+                if (matches) {
+                  let indentedNewline = matches[1];
+                  if (indentedNewline == '') {
+                    indentedNewline = "\n";
+                  }
+                  build = build.replace("{{" + replacement + "}}", replacements[replacement].replace(/\n/g, indentedNewline));
+                }
+              });
+            
+              return build;
+            },
             "browse" : function(path) {
               return simplyDataApi.browse(path)
                 .catch(function(error) {
@@ -2407,6 +2543,13 @@
                     },
                     {
                       item : {
+                        innerHTML : "Pages",
+                        href : "#pages",
+                        "data-path" : "pages"
+                      }
+                    },
+                    {
+                      item : {
                         innerHTML : "Page frame",
                         href : "#page-frame",
                         "data-path" : "page-frame"
@@ -2414,9 +2557,9 @@
                     },
                     {
                       item : {
-                        innerHTML : "Pages",
-                        href : "#pages",
-                        "data-path" : "pages"
+                        innerHTML : "Builders",
+                        href : "#builders",
+                        "data-path" : "builders"
                       }
                     }
                   ]
@@ -2454,6 +2597,41 @@
             },
             "listBaseComponents" : function() {
               return simplyDataApi.listBaseComponents()
+                .catch(function(error) {
+                return [];
+              });
+            },
+            "deleteBuilder" : function(component) {
+              return simplyDataApi.deleteBuilder(component);
+            },
+            "getBuilder" : function(component) {
+              return simplyDataApi.getBuilder(component);
+            },
+            "saveBuilder" : function(component) {
+              var promises = [];
+              for (var name in component.parts) {
+                if (component.parts[name].length) { 
+                  promises.push(simplyDataApi.saveBuilderPart(component.id, name, component.parts[name]));
+                } else {
+                  editor.pageData.parts.forEach(function(part) {
+                    if (part.id == name) {
+                      promises.push(simplyDataApi.deleteBuilderPart(component.id, name));
+                    }
+                  });
+                }
+              };
+            
+              var meta = clone(component);
+              delete meta.parts;
+              promises.push(simplyDataApi.saveBuilderPart(meta.id, "meta", meta));
+            
+              return Promise.all(promises)
+                .then(function() {
+                return true;
+              });
+            },
+            "listBuilders" : function() {
+              return simplyDataApi.listBuilders()
                 .catch(function(error) {
                 return [];
               });
@@ -2566,6 +2744,27 @@
                 appData.pageFrame = frame;
               })
               .then(function() {
+                return simplyApp.actions.listBuilders()
+                .then(function(builders) {
+                  builders.forEach(function(builder) {
+                    builder.contents.forEach(function(part) {
+                      if (part.id == "meta") {
+                        return;
+                      };
+            
+                      if (typeof appData[part.id] === "undefined") {
+                        appData[part.id] = [];
+                      }
+                      parts = JSON.parse(part.contents);
+                      parts.forEach(function(entry) {
+                        entry.base = builder.id;
+                        appData[part.id].push(entry);
+                      });
+                    });
+                  });
+                });
+              })
+              .then(function() {
                 var promises = [
                   simplyApp.actions.listBaseComponents(),
                   simplyApp.actions.listComponents(),
@@ -2671,6 +2870,9 @@
             },
             "saveAppHtml" : function(appHtml) {
               return simplyDataApi.saveAppHtml(appHtml);
+            },
+            "saveBuild" : function(target, contents) {
+              return simplyDataApi.saveBuild(target, contents);
             }
           },
           /* /Actions */
@@ -2782,6 +2984,9 @@
             },
             "addBodyHtml" : function(el) {
               editor.pageData.component.parts.bodyHtml.push({});
+            },
+            "addBuilderTemplate" : function(el) {
+              editor.pageData.component.parts.builderTemplates.push({});
             },
             "addCommand" : function(el) {
               editor.pageData.component.parts.commands.push({});
@@ -2919,6 +3124,44 @@
                 document.location.hash="base/" + newComponent.id;
               });
             },
+            "deleteBuilder" : function() {
+              if (!confirm("Delete builder?")) {
+                return;
+              }
+              simplyApp.actions.deleteBuilder(
+                editor.pageData.component.id
+              )
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Builder deleted.",
+                  "state" : "new"
+                });
+                document.location.hash="builders/";
+              });
+            },
+            "saveBuilder" : function() {
+              simplyApp.actions.saveBuilder(editor.pageData.component)
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Builder saved.",
+                  "state" : "new"
+                });
+              });
+            },
+            "createBuilder" : function() {
+              var newComponent = editor.pageData.newComponent;
+              simplyApp.actions.saveBuilder(newComponent)
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Builder created.",
+                  "state" : "new"
+                });
+                document.location.hash="builders/" + newComponent.id;
+              });
+            },
             "deleteComponent" : function() {
               if (!confirm("Delete component?")) {
                 return;
@@ -3005,17 +3248,34 @@
                 document.location.hash="pages/" + newComponent.id;
               });
             },
+            "runBuilders" : async function() {
+              var appData = await simplyApp.actions.getAppData();
+              appData.builderTemplates.forEach(function(builderTemplate) {
+                let buildContents = simplyApp.actions.build(builderTemplate.code, appData);
+                simplyApp.actions.saveBuild("dist/" + builderTemplate.base + "/" + builderTemplate.builder, buildContents)
+                .then(function() {
+                  editor.pageData.alerts.unshift({
+                    "data-simply-template" : "info",
+                    "message" : builderTemplate.base + "/" + builderTemplate.builder + " published!",
+                    "state" : "new"
+                  });
+                });
+              });
+            }   ,
             "saveAppHtml" : function() {
               var appHtml = document.querySelector(".simplycode-preview-code").innerText;
               appHtml = appHtml.replaceAll(/^(\n)+/g, '');
               appHtml = appHtml.replaceAll(/(\n)+/g, '\n');
               simplyApp.actions.saveAppHtml(appHtml)
-                .then(function() {
+              .then(function() {
                 editor.pageData.alerts.unshift({
                   "data-simply-template" : "info",
                   "message" : "App published!",
                   "state" : "new"
                 });
+              })
+              .then(function() {
+                simplyApp.commands.runBuilders();
               });
             }
           },
@@ -3131,6 +3391,44 @@
                 editor.pageData.page = "Edit base component";
               });
             },
+            "#builders/:component" : function(params) {
+              editor.pageData.app = {};
+              simplyApp.actions.getAppData()
+                .then(function(appData) {
+                editor.pageData.app = appData;
+              })
+                .then(function() {
+                return simplyApp.actions.getBuilder(params.component);
+              })
+                .then(function(parts) {
+                var component = {
+                  id : params.component
+                };
+            
+                parts = parts.filter(function(part) {
+                  if (part.id == "meta") {
+                    component = JSON.parse(part.contents);
+                    component.id = params.component;
+                    return false;
+                  }
+                  return true;
+                });
+                if (typeof component.parts === "undefined") {
+                  component.parts = {
+                    builderTemplates : []
+                  };
+                }
+                var count = {};
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                  count[part.id] = component.parts[part.id].length;
+                });
+                editor.pageData.component = component;
+                editor.pageData.parts = parts;
+                editor.pageData.count = count;
+                editor.pageData.page = "Edit builder";
+              });
+            },
             "#components/:component" : function(params) {
               editor.pageData.app = {};
               simplyApp.actions.getAppData()
@@ -3228,6 +3526,13 @@
                 .then(function(components) {
                 editor.pageData.components = components;
                 editor.pageData.page = "Base components";
+              });
+            },
+            "#builders" : function() {
+              simplyApp.actions.listBuilders()
+                .then(function(components) {
+                editor.pageData.components = components;
+                editor.pageData.page = "Builders";
               });
             },
             "#components" : function() {
@@ -3441,6 +3746,44 @@
               <div class="simplycode-editor-code">
                 <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
                 <simply-render rel="componentHtmlValidator"></simply-render>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </details>
+    </template>
+    <template id="componentBuilderTemplate">
+      <details class="simplycode-component">
+      <summary data-simply-command="initEditors" title="These templates are used as a boilerplate to build your project.">
+        <span data-simply-field="count.builderTemplates" data-simply-content="attributes" data-simply-attributes="data-count">
+          Builder HTML template
+        </span>
+        <span class="simplycode-controls">
+          <button class="simplycode-button" data-simply-command="addBuilderTemplate">Add builder HTML template</button>
+        </span>
+      </summary>
+      <div class="simplycode-code-method" data-simply-list="component.parts.builderTemplates">
+        <template>
+          <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
+            <div class="simplycode-part-header">
+              <div class="simplycode-tabs">
+                <input class="simplycode-tab" data-simply-field="builder" placeholder="Builder name">
+                <label class="simplycode-tab">
+                  <input type="radio" name="builderEditor" checked value="code" data-simply-field="editor">
+                  <span>Code</span>
+                </label>
+              </div>
+              <div class="simplycode-options">
+                <button class="simplycode-button" draggable="true">Drag to move</button>
+                <button class="simplycode-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-simply-command="deleteEntry">Delete HTML</button>
+              </div>
+            </div>
+            <div class="simplycode-editors">
+              <div class="simplycode-editor-code" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+                <template data-simply-template="code">
+                  <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<main><div>Builder contents</div></main>"></textarea>
+                </template>
               </div>
             </div>
           </div>
@@ -4323,6 +4666,36 @@
       Publish
     </button>
     </template>
+    <template id="simply-toolbar-builder">
+      <div class="simply-toolbar-title">
+      <simply-render rel="logo"></simply-render>
+    </div>
+    <button class="ds-button simply-toolbar-button" data-simply-command="saveBuilder">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#save">
+        </use></svg>
+      Save
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="deleteBuilder">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#trash">
+        </use></svg>
+      Delete
+    </button>
+    <span class="simply-toolbar-push-right"></span>
+    <button class="ds-button simply-toolbar-button" data-simply-command="preview">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#eye">
+        </use></svg>
+      Preview
+    </button>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#check">
+        </use></svg>
+      Publish
+    </button>
+    </template>
     <template id="simply-toolbar-component">
       <div class="simply-toolbar-title">
       <simply-render rel="logo"></simply-render>
@@ -4476,6 +4849,7 @@
     <template id="simply-toolbar">
       <nav class="simply-toolbar simply-toolbar-main" data-simply-field="page" data-simply-section="simply-code-management" data-simply-content="template" data-simply-default-template="default" data-simply-default-value="default">
       <template data-simply-template="default" rel="simply-toolbar-default"></template>
+      <template data-simply-template="Edit builder" rel="simply-toolbar-builder"></template>
       <template data-simply-template="Edit page" rel="simply-toolbar-page"></template>
       <template data-simply-template="Edit component" rel="simply-toolbar-component"></template>
       <template data-simply-template="Edit base component" rel="simply-toolbar-base-component"></template>
@@ -4535,6 +4909,45 @@
         </div>
       </div>
     </main>
+    </template>
+    <template data-simply-template="Edit builder">
+      <main>
+      <div class="simplycode-header">
+        <h1>Edit builder: <span data-simply-field="component.id"></span></h1>
+      </div>
+      <simply-render rel="componentDescription"></simply-render>
+      <simply-render rel="componentBuilderTemplate"></simply-render>
+    </main>
+    </template>
+    <template data-simply-template="Builders">
+      <main>
+      <h1>Builders</h1>
+      <div class="simplycode-component-list" data-simply-list="components">
+        <template>
+          <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="builderLink">
+            <h3 data-simply-field="id"></h3>
+            <p class="ds-margin-up" data-simply-field="description"></p>
+          </a>
+        </template>
+      </div>
+      <h1>Add builder</h1>
+      <div class="simplycode-part">
+        <div class="simplycode-part-header">
+          <div class="simplycode-tabs">
+            <input data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+          </div>
+          <div class="simplycode-options">
+            <button class="simplycode-button" data-simply-command="createBuilder">Create</button>
+          </div>
+        </div>
+        <div class="simplycode-editors">
+          <div class="simplycode-editor-code">
+            <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+          </div>
+        </div>
+      </div>
+    </main>
+    
     </template>
     <template data-simply-template="Edit component">
       <main>
@@ -5055,6 +5468,18 @@
             this.simplyData = data;
             return {
               href : "#base/" + data,
+              innerHTML: data
+            };
+          },
+          extract : function(data) {
+            return this.simplyData;
+          }
+        },
+        "builderLink" : {
+          render : function(data) {
+            this.simplyData = data;
+            return {
+              href : "#builders/" + data,
               innerHTML: data
             };
           },

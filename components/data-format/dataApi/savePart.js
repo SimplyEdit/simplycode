@@ -93,6 +93,22 @@ function(basePath, part, contents) {
         }
       });
       break;
+    case "builderTemplates":
+      contents.forEach(function(componentPart, componentIndex) {
+        if (!componentPart.builder) {
+          throw new Error("Required part name is empty");
+        }
+        if (componentPart.deleted == "true") {
+          results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.builder + ".html"));
+          contents.splice(componentIndex, 1);
+        } else {
+          results.push(simplyRawApi.putRaw(
+            basePath + "/" + part + "/" + componentPart.builder, {},
+            componentPart.code
+          ));
+        }
+      });
+      break;
     case "rawApi":
     case "dataApi":
       contents.forEach(function(componentPart, componentIndex) {

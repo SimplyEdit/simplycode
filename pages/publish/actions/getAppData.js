@@ -13,6 +13,27 @@ function() {
     appData.pageFrame = frame;
   })
   .then(function() {
+    return simplyApp.actions.listBuilders()
+    .then(function(builders) {
+      builders.forEach(function(builder) {
+        builder.contents.forEach(function(part) {
+          if (part.id == "meta") {
+            return;
+          };
+
+          if (typeof appData[part.id] === "undefined") {
+            appData[part.id] = [];
+          }
+          parts = JSON.parse(part.contents);
+          parts.forEach(function(entry) {
+            entry.base = builder.id;
+            appData[part.id].push(entry);
+          });
+        });
+      });
+    });
+  })
+  .then(function() {
     var promises = [
       simplyApp.actions.listBaseComponents(),
       simplyApp.actions.listComponents(),
