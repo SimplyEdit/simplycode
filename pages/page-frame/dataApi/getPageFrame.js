@@ -25,13 +25,15 @@ function() {
     });
     return Promise.all(partPromises);
   })
-  .then(function(partContents) {
+/*
+.then(function(partContents) {
     return {
       "id" : componentType.replace(subject, '').replace(/\/$/, ''),
       "contents" : partContents
     }
   })
-  .then(function(component) {
+*/
+    .then(function(component) {
     return simplyDataApi.mergePageFrame(component);
   })
   .catch(function() {

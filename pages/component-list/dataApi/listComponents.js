@@ -14,6 +14,7 @@ function() {
           return simplyDataApi.listContents(componentPath)
           .then(function(contents) {
             result.contents = contents;
+            simplyDataApi.mergeComponent(result.contents);
             return result;
           });
         })

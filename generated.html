@@ -1532,10 +1532,14 @@
             }
           },
           "putRaw" : function(endpoint, params={}, body) {
+            let headers = this.headers;
+            if (endpoint.match(/\.html$/)) {
+              headers['Content-Type'] = "text/html";
+            }
             if (solidClientAuthentication.default.getDefaultSession().info.isLoggedIn) {
               return solidClientAuthentication.default.fetch(simplyRawApi.url + endpoint, {
                 mode: 'cors',
-                headers: this.headers,
+                headers: headers,
                 method: "PUT",
                 redirect: "manual",
                 body: body
@@ -2343,9 +2347,17 @@
           	  promises.push(
                   simplyRawApi.get(componentPath + "meta.json")
                   .then(function(response) {
-                    if (response.status === 200) {
+                    if (response.ok) {
                       return response.json();
                     }
+                  })
+                  .then(function(result) {
+                    return simplyDataApi.listContents(componentPath)
+                    .then(function(contents) {
+                      result.contents = contents;
+                      simplyDataApi.mergeComponent(result.contents);
+                      return result;
+                    });
                   })
                 );
               });    
@@ -2401,9 +2413,17 @@
           	  promises.push(
                   simplyRawApi.get(componentPath + "meta.json")
                   .then(function(response) {
-                    if (response.status === 200) {
+                    if (response.ok) {
                       return response.json();
                     }
+                  })
+                  .then(function(result) {
+                    return simplyDataApi.listContents(componentPath)
+                    .then(function(contents) {
+                      result.contents = contents;
+                      simplyDataApi.mergeComponent(result.contents);
+                      return result;
+                    });
                   })
                 );
               });    
@@ -2467,6 +2487,7 @@
                     return simplyDataApi.listContents(componentPath)
                     .then(function(contents) {
                       result.contents = contents;
+                      simplyDataApi.mergeComponent(result.contents);
                       return result;
                     });
                   })
@@ -2674,13 +2695,15 @@
               });
               return Promise.all(partPromises);
             })
-            .then(function(partContents) {
+          /*
+          .then(function(partContents) {
               return {
                 "id" : componentType.replace(subject, '').replace(/\/$/, ''),
                 "contents" : partContents
               }
             })
-            .then(function(component) {
+          */
+              .then(function(component) {
               return simplyDataApi.mergePageFrame(component);
             })
             .catch(function() {
@@ -2731,9 +2754,17 @@
           	  promises.push(
                   simplyRawApi.get(componentPath + "meta.json")
                   .then(function(response) {
-                    if (response.status === 200) {
+                    if (response.ok) {
                       return response.json();
                     }
+                  })
+                  .then(function(result) {
+                    return simplyDataApi.listContents(componentPath)
+                    .then(function(contents) {
+                      result.contents = contents;
+                      simplyDataApi.mergeComponent(result.contents);
+                      return result;
+                    });
                   })
                 );
               });    
@@ -2741,19 +2772,20 @@
             });
           },
           "saveAppHtml" : function(appHtml) {
-            return simplyRawApi.putRaw("generated.html", {}, appHtml)
+            let result = simplyRawApi.putRaw(simplyRawApi.projectUrl + "generated.html", {}, appHtml)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               throw new Error("saveAppHtml failed", response.status);
             });
+            return result;
           },
           "saveBuild" : function(target, contents) {
             return simplyRawApi.putRaw(target, {}, contents)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               throw new Error("saveBuild failed", response.status);
             });
@@ -3634,7 +3666,7 @@
               var appData = await simplyApp.actions.getAppData();
               appData.builderTemplates.forEach(function(builderTemplate) {
                 let buildContents = simplyApp.actions.build(builderTemplate.code, appData);
-                simplyApp.actions.saveBuild("dist/" + builderTemplate.base + "/" + builderTemplate.builder, buildContents)
+                simplyApp.actions.saveBuild(simplyRawApi.projectUrl + "dist/" + builderTemplate.base + "/" + builderTemplate.builder, buildContents)
                 .then(function() {
                   editor.pageData.alerts.unshift({
                     "data-simply-template" : "info",
@@ -4985,7 +5017,7 @@
         <path fill="black" id="y" d="m483,55l-11.399994,0c-2.100006,15.800003 -8.300018,37.099998 -14.399994,49.5l-2.5,5.099998l-2.200012,-5.199997c-4.5,-10.300003 -10.299988,-26.599998 -13.100006,-39.700005c-1.399994,-6.399994 -7.899994,-9.699997 -13.600006,-9.699997l-11.799988,0c4,21.400002 17.799988,56.099998 29.600006,73.600006l0.799988,1.199997l-0.600006,1.300003c-3.5,8 -8.099976,11.299988 -16.199982,12l-10,0.699997l0,4.5c0,8.599991 7.699982,11.699997 14.299988,11.699997c16.100006,0 21.300018,-3.800003 44.200012,-47.800003c9.300018,-17.799995 16.800018,-41.5 16.800018,-49.299995c-0.300049,-3.300003 -1.300049,-7.900002 -9.900024,-7.900002z" class="st0"/>
       </g>
       <text x="50%" y="276">
-        login
+        code
       </text>
     </svg>
     </template>

@@ -6,9 +6,17 @@ function() {
 	  promises.push(
         simplyRawApi.get(componentPath + "meta.json")
         .then(function(response) {
-          if (response.status === 200) {
+          if (response.ok) {
             return response.json();
           }
+        })
+        .then(function(result) {
+          return simplyDataApi.listContents(componentPath)
+          .then(function(contents) {
+            result.contents = contents;
+            simplyDataApi.mergeComponent(result.contents);
+            return result;
+          });
         })
       );
     });    
