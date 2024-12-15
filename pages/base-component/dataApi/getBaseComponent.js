@@ -1,12 +1,7 @@
 function(component) {
-  return simplyRawApi.get("base-components/" + component)
-    .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
-    }
-    throw new Error("getBaseComponent failed", response.status);
-  })
-    .then(function(component) {
+  var subject = simplyRawApi.projectUrl + "base-components/" + component + "/";
+  return simplyDataApi.listContents(subject)
+  .then(function(component) {
     return simplyDataApi.mergeComponent(component);
   });
 }

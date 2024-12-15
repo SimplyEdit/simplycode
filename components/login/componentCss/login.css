@@ -1,0 +1,60 @@
+.login-form {
+  padding: var(--login-spacing);
+  max-width: 300px;
+}
+.login-form input {
+  font-size: var(--login-input-font-size);
+}
+.login-text {
+  color: var(--login-text-color);
+  margin: 0 auto;
+  padding: var(--login-spacing);
+  text-align: center;
+}
+
+.login-webid {
+  background: transparent;
+  border: 0 solid;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  color: var(--login-text-color);
+  display: block;
+  margin: calc(2 * var(--login-spacing)) 0;
+  padding: var(--login-spacing);
+  transition: 250ms background ease-in;
+  width: 100%;
+}
+.login-webid:focus {
+  background: var(--login-text-contrast-focus);
+  transition: 250ms background ease-in;
+}
+
+.login-no-webid {
+  color: var(--login-text-color);
+  cursor: pointer;
+  display: block;
+  font-size: var(--login-font-size);
+  opacity: 0.6;
+  padding: var(--login-spacing);
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+.login-no-webid:hover {
+  opacity: 1;
+}
+
+.login-submit {
+  border: 1px solid var(--login-text-color);
+  background: transparent;
+  color: var(--login-text-color);
+  display: block;
+  margin: calc(4 * var(--login-spacing)) auto;
+  min-width: 1px;
+  padding: var(--login-spacing);
+  transition: 250ms background ease-in;
+}
+.login-submit:hover,
+.login-submit:focus {
+  background: var(--login-text-contrast-focus);
+  transition: 250ms background ease-in;
+}

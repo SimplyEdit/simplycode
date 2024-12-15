@@ -1,0 +1,21 @@
+.login input ::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+.login input ::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+.login input :-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+.login input:focus {
+  outline: 0 transparent solid;
+}
+.login input:focus ::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.7);
+}
+.login input:focus ::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.7);
+}
+.login input:focus :-ms-input-placeholder {
+  color: rgba(0, 0, 0, 0.7);
+}

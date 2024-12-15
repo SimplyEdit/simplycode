@@ -24,7 +24,10 @@ function() {
           if (typeof appData[part.id] === "undefined") {
             appData[part.id] = [];
           }
-          parts = JSON.parse(part.contents);
+          parts = part.contents;
+          if (typeof parts === "string") {
+            parts = JSON.parse(parts);
+          }
           parts.forEach(function(entry) {
             entry.base = builder.id;
             appData[part.id].push(entry);
@@ -52,7 +55,10 @@ function() {
           if (typeof appData[part.id] === "undefined") {
             appData[part.id] = [];
           }
-          parts = JSON.parse(part.contents);
+          parts = part.contents;
+          if (typeof parts === "string") {
+            parts = JSON.parse(parts);
+          }
           parts.forEach(function(entry) {
             appData[part.id].push(entry);
           });

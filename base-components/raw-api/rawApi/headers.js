@@ -1,4 +1,3 @@
 {
-	'Accept': 'application/json',
-	'Content-Type': 'application/json'
+  "Accept" : "text/turtle,text/plain"
 }

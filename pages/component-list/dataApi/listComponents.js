@@ -1,16 +1,24 @@
 function() {
-  return simplyRawApi.get("components")
-    .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
-    }
-    throw new Error("listComponents failed", response.status);
-  })
-    .then(function(components) {
-    components.forEach(function(component) {
-      simplyDataApi.mergeComponent(component.contents);
-      component.description = component.contents.description;
-    });
-    return components;
+  return simplyDataApi.listDirectories(simplyRawApi.projectUrl + "components/")
+  .then(function(components) {
+    let promises = [];
+    components.forEach(function(componentPath) {
+	  promises.push(
+        simplyRawApi.get(componentPath + "meta.json")
+        .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          }
+        })
+        .then(function(result) {
+          return simplyDataApi.listContents(componentPath)
+          .then(function(contents) {
+            result.contents = contents;
+            return result;
+          });
+        })
+      );
+    });    
+    return Promise.all(promises);
   });
 }

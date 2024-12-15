@@ -1,10 +1,9 @@
 function(part) {
-  return simplyRawApi.delete("page-frame/" + part)
+ return simplyRawApi.delete(simplyRawApi.projectUrl + "page-frame/" + part)
     .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
+    if (response.ok) {
+      return true;
     }
-    // throw new Error("deletePageFramePart failed", response.status);
-    // allowed while data upgrade is needed
+    throw new Error("deletePageFramePart failed", response.status);
   });
 }

@@ -1,9 +1,9 @@
 function(component) {
-  return simplyRawApi.delete("base-components/" + component)
-    .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
+  return simplyRawApi.delete(simplyRawApi.projectUrl + "base-components/" + component + "/")
+  .then(function(response) {
+    if (response.ok) {
+      return true;
     }
-    throw new Error("deleteComponent failed", response.status);
+    throw new Error("deleteBaseComponent failed", response.status);
   });
 }

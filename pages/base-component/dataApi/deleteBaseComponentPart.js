@@ -1,10 +1,9 @@
 function(component, part) {
-  return simplyRawApi.delete("base-components/" + component + "/" + part)
+ return simplyRawApi.delete(simplyRawApi.projectUrl + "base-components/" + component + "/" + part)
     .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
+    if (response.ok) {
+      return true;
     }
-    // throw new Error("deleteBaseComponentPart failed", response.status);
-    // allowed while data upgrade is needed
+    throw new Error("deleteBaseComponentPart failed", response.status);
   });
 }

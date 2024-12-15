@@ -1026,6 +1026,110 @@
       .simplycode-html-message [data-simply-field=firstLine]:not(:empty):after {
         content: " - ";
       }
+      /* 1.fonts */
+      @import url(https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,700);
+      @import url(https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
+      /* layout */
+      
+      /* login-placeholder */
+      .login input ::-webkit-input-placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .login input ::-moz-placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .login input :-ms-input-placeholder {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .login input:focus {
+        outline: 0 transparent solid;
+      }
+      .login input:focus ::-webkit-input-placeholder {
+        color: rgba(0, 0, 0, 0.7);
+      }
+      .login input:focus ::-moz-placeholder {
+        color: rgba(0, 0, 0, 0.7);
+      }
+      .login input:focus :-ms-input-placeholder {
+        color: rgba(0, 0, 0, 0.7);
+      }
+      
+      /* login-root */
+      :root {
+        --login-spacing: 0.5rem;
+        --login-font-size: 1.5rem;
+        --login-text-color: white;
+        --login-text-contrast: black;
+        --login-text-contrast-focus: #222;
+        --login-input-font-size: var(--login-font-size);
+      }
+      
+      /* login */
+      .login-form {
+        padding: var(--login-spacing);
+        max-width: 300px;
+      }
+      .login-form input {
+        font-size: var(--login-input-font-size);
+      }
+      .login-text {
+        color: var(--login-text-color);
+        margin: 0 auto;
+        padding: var(--login-spacing);
+        text-align: center;
+      }
+      
+      .login-webid {
+        background: transparent;
+        border: 0 solid;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        color: var(--login-text-color);
+        display: block;
+        margin: calc(2 * var(--login-spacing)) 0;
+        padding: var(--login-spacing);
+        transition: 250ms background ease-in;
+        width: 100%;
+      }
+      .login-webid:focus {
+        background: var(--login-text-contrast-focus);
+        transition: 250ms background ease-in;
+      }
+      
+      .login-no-webid {
+        color: var(--login-text-color);
+        cursor: pointer;
+        display: block;
+        font-size: var(--login-font-size);
+        opacity: 0.6;
+        padding: var(--login-spacing);
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .login-no-webid:hover {
+        opacity: 1;
+      }
+      
+      .login-submit {
+        border: 1px solid var(--login-text-color);
+        background: transparent;
+        color: var(--login-text-color);
+        display: block;
+        margin: calc(4 * var(--login-spacing)) auto;
+        min-width: 1px;
+        padding: var(--login-spacing);
+        transition: 250ms background ease-in;
+      }
+      .login-submit:hover,
+      .login-submit:focus {
+        background: var(--login-text-contrast-focus);
+        transition: 250ms background ease-in;
+      }
+      /* logo */
+      :root {
+        --simply-logo-color-primary: #ea5922;
+        --simply-logo-color-secondary: white;
+      }
       /* App full preview */
       .simplycode-preview-code {
         display: none;
@@ -1213,10 +1317,67 @@
         background: linear-gradient(var(--ds-grey-90) 0%, var(--ds-grey-90) 95%, black 100%);
         color: var(--ds-white);
       }
+      /* underlay */
+      .underlay-photo,
+      .underlay-black {
+        left: 0;
+        min-height: 100%;
+        min-width: 100%;
+        position: fixed;
+        top: 0;
+      }
+      
+      .underlay-photo {
+        -webkit-animation: hue-rotate 6s infinite;
+                animation: hue-rotate 6s infinite;
+        background: url("/assets/background.jpg");
+        background-size: cover;
+        -webkit-filter: grayscale(30%);
+        z-index: -1;
+      }
+      
+      .underlay-black {
+        background: rgba(0, 0, 0, 0.7);
+        z-index: -1;
+      }
+      
+      @-webkit-keyframes hue-rotate {
+        from {
+          -webkit-filter: grayscale(30%) hue-rotate(0deg);
+        }
+        to {
+          -webkit-filter: grayscale(30%) hue-rotate(360deg);
+        }
+      }
+      
+      @keyframes hue-rotate {
+        from {
+          -webkit-filter: grayscale(30%) hue-rotate(0deg);
+        }
+        to {
+          -webkit-filter: grayscale(30%) hue-rotate(360deg);
+        }
+      }
     </style>
     <!-- /Component CSS -->
     <!-- Page CSS -->
     <style>
+      /* login */
+      html:has(.login-form) {
+        background: none;
+        height: 100%;
+      }
+      body:has(.login-form) {
+        font-family: "Open Sans";
+        font-weight: 100;
+        overflow: hidden;
+        font-size: 1.2em;
+        background-color: #222;
+      }
+      div.main:has(.login-form) {
+        display: flex;
+        justify-content: center;
+      }
       /* simplycode-fullscreen-preview */
       main.simplycode-fullscreen-preview iframe {
         position: fixed;
@@ -1244,6 +1405,16 @@
         src: local('Cocon'), url('/assets/fonts/CoconRegularFont.woff') format('woff');
       }
     </style>
+    <!-- rdflib -->
+    <script src="/assets/js/rdflib.min.js"></script>
+    <!-- solid-client-auth -->
+    <script src="/assets/js/solid-client-authn.bundle.js"></script>
+    <script>
+       // monkeypatch it so 1.12.1 mimics the syntax used in 1.13.2
+      if (typeof solidClientAuthentication.default === "undefined") {
+        solidClientAuthentication.default = solidClientAuthentication;
+      }
+    </script>
     <!-- /Head HTML -->
     <script>
       var simplyDataApi = {};
@@ -1253,117 +1424,125 @@
         /* Raw API */
         var simplyRawApi = {
           "delete" : function(endpoint, params={}) {
-            if (!params.token && editor.pageData.token) {
-              params.token = editor.pageData.token;
+            if (solidClientAuthentication.default.getDefaultSession().info.isLoggedIn) {
+              return solidClientAuthentication.default.fetch(simplyRawApi.url + endpoint + simplyRawApi.encodeGetParams(params), {
+                mode : 'cors',
+                headers: this.headers,
+                redirect: "manual",
+                method: "DELETE"
+              });
             }
-            if (params.token) {
-              this.headers['Authorization'] = "Bearer " + params.token;
-              delete params.token;
-            } else {
-              delete this.headers.Authentication;
-            }
-            return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
-              mode : 'cors',
-              headers: this.headers,
-              method: "DELETE"
-            });
+          },
+          "encodeBodyParams" : function(params) {
+            return new URLSearchParams(params);
           },
           "encodeGetParams" : function(params) {
             if (!params) {
               return "";
             }
-            return Object.entries(params).map(function(keyvalue) {
-              return "?" + keyvalue.map(encodeURIComponent).join("=")
-            }).join("&");
+            return "?" + new URLSearchParams(params);
           },
-          "get" : function(endpoint, params={}) {
-            if (!params.token && editor.pageData.token) {
-              params.token = editor.pageData.token;
+          "get" : function(endpoint, params) {
+            if (solidClientAuthentication.default.getDefaultSession().info.isLoggedIn) {
+              return solidClientAuthentication.default.fetch(simplyRawApi.url + endpoint + simplyRawApi.encodeGetParams(params), {
+                mode : 'cors',
+                headers: this.headers
+              });
             }
-            if (params.token) {
-              this.headers['Authorization'] = "Bearer " + params.token;
-              delete params.token;
-            } else {
-              delete this.headers.Authentication;
-            }
-            return fetch(simplyRawApi.url + endpoint + "/" + simplyRawApi.encodeGetParams(params), {
-              mode : 'cors',
-              headers: this.headers
-            });
           },
           "headers" : {
-          	'Accept': 'application/json',
-          	'Content-Type': 'application/json'
+            "Accept" : "text/turtle,text/plain"
+          },
+          "patch" : function(endpoint, changes) {
+            var parts = []; 
+            var counter = 1;
+            var promises = [];
+          
+            if (solidClientAuthentication.default.getDefaultSession().info.isLoggedIn) {
+              changes.forEach(function(change) {
+                switch (change.type) {
+                  case "insert":
+                    parts.push(
+                      "_:" + counter + " a <http://www.w3.org/ns/solid/terms#InsertDeletePatch>;" +
+                      "<http://www.w3.org/ns/solid/terms#inserts> { " +
+                      "<" + change.subject + "> <" + change.predicate + "> \"" + change.value + "\"." +
+                      "}."
+                    );
+                    counter++;
+                    break;
+                  case "delete":
+                    parts.push(
+                      "_:" + counter + " a <http://www.w3.org/ns/solid/terms#InsertDeletePatch>;" +
+                      "<http://www.w3.org/ns/solid/terms#deletes> { " +
+                      "<" + change.subject + "> <" + change.predicate + "> \"" + change.value + "\"." +
+                      "}."
+                    );
+                    counter++;
+                    break;
+                }
+              });
+          
+              parts.forEach(function(body) {
+                promises.push(
+                  solidClientAuthentication.default.fetch(endpoint, {
+                    method: 'PATCH',
+                    headers: {
+                      "Content-Type": "text/n3"
+                    },
+                    body: body
+                  })
+                );
+              });
+          
+              return Promise.all(promises);
+            }
           },
           "post" : function(endpoint, params={}) {
-            if (!params.token && editor.pageData.token) {
-              params.token = editor.pageData.token;
+            if (solidClientAuthentication.default.getDefaultSession().info.isLoggedIn) {
+              return solidClientAuthentication.default.fetch(simplyRawApi.url + endpoint, {
+                //    mode : 'cors',
+                headers: this.headers,
+                method: "POST",
+                redirect: "manual",
+                body: simplyRawApi.encodeBodyParams(params)
+              });
             }
-            if (params.token) {
-              this.headers['Authorization'] = "Bearer " + params.token;
-              delete params.token;
-            } else {
-              delete this.headers.Authentication;
-            }
-            return fetch(simplyRawApi.url + endpoint + "/", {
-              mode : 'cors',
-              headers: this.headers,
-              method: "POST",
-              body: JSON.stringify(params, null, "\t")
-            });
           },
           "postRaw" : function(endpoint, params={}, body) {
-            if (!params.token && editor.pageData.token) {
-              params.token = editor.pageData.token;
+            if (solidClientAuthentication.default.getDefaultSession().info.isLoggedIn) {
+              return solidClientAuthentication.default.fetch(simplyRawApi.url + endpoint, {
+                mode : 'cors',
+                headers: this.headers,
+                method: "POST",
+                redirect: "manual",
+                body: body
+              });
             }
-            if (params.token) {
-              this.headers['Authorization'] = "Bearer " + params.token;
-              delete params.token;
-            } else {
-              delete this.headers.Authentication;
-            }
-            return fetch(simplyRawApi.url + endpoint + "/", {
-              mode : 'cors',
-              headers: this.headers,
-              method: "POST",
-              body: body
-            });
           },
+          "projectUrl" : "https://ylebre.solidcommunity.net/simplycode/",
           "put" : function(endpoint, params={}) {
-            if (!params.token && editor.pageData.token) {
-              params.token = editor.pageData.token;
+            if (solidClientAuthentication.default.getDefaultSession().info.isLoggedIn) {
+              return solidClientAuthentication.default.fetch(simplyRawApi.url + endpoint, {
+                mode: 'cors',
+                headers: this.headers,
+                method: "PUT",
+                redirect: "manual",
+                body: simplyRawApi.encodeBodyParams(params)
+              });
             }
-            if (params.token) {
-              this.headers['Authorization'] = "Bearer " + params.token;
-              delete params.token;
-            } else {
-              delete this.headers.Authentication;
-            }
-            return fetch(simplyRawApi.url + endpoint + "/", {
-              mode: 'cors',
-              headers: this.headers,
-              method: "PUT",
-              body: JSON.stringify(params, null, "\t")
-            });
           },
           "putRaw" : function(endpoint, params={}, body) {
-            if (!params.token && editor.pageData.token) {
-              params.token = editor.pageData.token;
+            if (solidClientAuthentication.default.getDefaultSession().info.isLoggedIn) {
+              return solidClientAuthentication.default.fetch(simplyRawApi.url + endpoint, {
+                mode: 'cors',
+                headers: this.headers,
+                method: "PUT",
+                redirect: "manual",
+                body: body
+              });
             }
-            if (params.token) {
-              this.headers['Authorization'] = "Bearer " + params.token;
-              delete params.token;
-            } else {
-              delete this.headers.Authentication;
-            }
-            return fetch(simplyRawApi.url + endpoint + "/", {
-              mode: 'cors',
-              headers: this.headers,
-              method: "PUT",
-              body: body
-            });
           },
-          "url" : "/api/"
+          "url" : ""
         };
         /* End of Raw API */
         /* Data API */
@@ -2116,260 +2295,395 @@
             });
           },
           "deleteBaseComponent" : function(component) {
-            return simplyRawApi.delete("base-components/" + component)
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+            return simplyRawApi.delete(simplyRawApi.projectUrl + "base-components/" + component + "/")
+            .then(function(response) {
+              if (response.ok) {
+                return true;
               }
-              throw new Error("deleteComponent failed", response.status);
+              throw new Error("deleteBaseComponent failed", response.status);
             });
           },
           "deleteBaseComponentPart" : function(component, part) {
-            return simplyRawApi.delete("base-components/" + component + "/" + part)
+           return simplyRawApi.delete(simplyRawApi.projectUrl + "base-components/" + component + "/" + part)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
-              // throw new Error("deleteBaseComponentPart failed", response.status);
-              // allowed while data upgrade is needed
+              throw new Error("deleteBaseComponentPart failed", response.status);
             });
           },
           "getBaseComponent" : function(component) {
-            return simplyRawApi.get("base-components/" + component)
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("getBaseComponent failed", response.status);
-            })
-              .then(function(component) {
+            var subject = simplyRawApi.projectUrl + "base-components/" + component + "/";
+            return simplyDataApi.listContents(subject)
+            .then(function(component) {
               return simplyDataApi.mergeComponent(component);
             });
           },
           "saveBaseComponentPart" : function(component, part, contents) {
-            return simplyDataApi.savePart("base-components/" + component, part, contents)
+            return simplyDataApi.savePart(simplyRawApi.projectUrl + "base-components/" + component, part, contents)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               // retry the call once
-              return simplyDataApi.savePart("base-components/" + component, part, contents)
+              return simplyDataApi.savePart(simplyRawApi.projectUrl + "base-components/" + component, part, contents)
                 .then(function(response) {
-                if (response.status === 200) {
-                  return response.json();
+                if (response.ok) {
+                  return true;
                 }
                 throw new Error("saveBaseComponentPart failed", response.status);
               });
             });
           },
           "listBaseComponents" : function() {
-            return simplyRawApi.get("base-components")
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("listBaseComponents failed", response.status);
-            })
-              .then(function(components) {
-              components.forEach(function(component) {
-                simplyDataApi.mergeComponent(component.contents);
-                component.description = component.contents.description;
-              });
-              return components;
+            return simplyDataApi.listDirectories(simplyRawApi.projectUrl + "base-components/")
+            .then(function(components) {
+              let promises = [];
+              components.forEach(function(componentPath) {
+          	  promises.push(
+                  simplyRawApi.get(componentPath + "meta.json")
+                  .then(function(response) {
+                    if (response.status === 200) {
+                      return response.json();
+                    }
+                  })
+                );
+              });    
+              return Promise.all(promises);
             });
           },
           "deleteBuilder" : function(component) {
-            return simplyRawApi.delete("builders/" + component)
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+            return simplyRawApi.delete(simplyRawApi.projectUrl + "builders/" + component + "/")
+            .then(function(response) {
+              if (response.ok) {
+                return true;
               }
               throw new Error("deleteBuilder failed", response.status);
             });
           },
           "deleteBuilderPart" : function(component, part) {
-            return simplyRawApi.delete("builders/" + component + "/" + part)
+           return simplyRawApi.delete(simplyRawApi.projectUrl + "builders/" + component + "/" + part)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               throw new Error("deleteBuilderPart failed", response.status);
             });
           },
           "getBuilder" : function(component) {
-            return simplyRawApi.get("builders/" + component)
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("getBuilder failed", response.status);
-            })
-              .then(function(component) {
+            var subject = simplyRawApi.projectUrl + "builders/" + component + "/";
+            return simplyDataApi.listContents(subject)
+            .then(function(component) {
               return simplyDataApi.mergeComponent(component);
             });
           },
           "saveBuilderPart" : function(component, part, contents) {
-            return simplyDataApi.savePart("builders/" + component, part, contents)
+            return simplyDataApi.savePart(simplyRawApi.projectUrl + "builders/" + component, part, contents)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               // retry the call once
-              return simplyDataApi.savePart("builders/" + component, part, contents)
+              return simplyDataApi.savePart(simplyRawApi.projectUrl + "builders/" + component, part, contents)
                 .then(function(response) {
-                if (response.status === 200) {
-                  return response.json();
+                if (response.ok) {
+                  return true;
                 }
                 throw new Error("saveBuilderPart failed", response.status);
               });
             });
           },
           "listBuilders" : function() {
-            return simplyRawApi.get("builders")
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("listBuilders failed", response.status);
-            })
-              .then(function(components) {
-              components.forEach(function(component) {
-                simplyDataApi.mergeComponent(component.contents);
-                component.description = component.contents.description;
-              });
-              return components;
+            return simplyDataApi.listDirectories(simplyRawApi.projectUrl + "builders/")
+            .then(function(components) {
+              let promises = [];
+              components.forEach(function(componentPath) {
+          	  promises.push(
+                  simplyRawApi.get(componentPath + "meta.json")
+                  .then(function(response) {
+                    if (response.status === 200) {
+                      return response.json();
+                    }
+                  })
+                );
+              });    
+              return Promise.all(promises);
             });
           },
           "deleteComponent" : function(component) {
-              return simplyRawApi.delete("components/" + component)
+              return simplyRawApi.delete(simplyRawApi.projectUrl + "components/" + component + "/")
               .then(function(response) {
-                  if (response.status === 200) {
-                      return response.json();
+                  if (response.ok) {
+                      return true;
                   }
                   throw new Error("deleteComponent failed", response.status);
               });
           },
           "deleteComponentPart" : function(component, part) {
-           return simplyRawApi.delete("components/" + component + "/" + part)
+           return simplyRawApi.delete(simplyRawApi.projectUrl + "components/" + component + "/" + part)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               throw new Error("deleteComponentPart failed", response.status);
             });
           },
           "getComponent" : function(component) {
-            return simplyRawApi.get("components/" + component)
-            .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("getComponent failed", response.status);
-            })
+            var subject = simplyRawApi.projectUrl + "components/" + component + "/";
+            return simplyDataApi.listContents(subject)
             .then(function(component) {
               return simplyDataApi.mergeComponent(component);
             });
           },
           "saveComponentPart" : function(component, part, contents) {
-            return simplyDataApi.savePart("components/" + component, part, contents)
+            return simplyDataApi.savePart(simplyRawApi.projectUrl + "components/" + component, part, contents)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               // retry the call once
-              return simplyDataApi.savePart("components/" + component, part, contents)
+              return simplyDataApi.savePart(simplyRawApi.projectUrl + "components/" + component, part, contents)
                 .then(function(response) {
-                if (response.status === 200) {
-                  return response.json();
+                if (response.ok) {
+                  return true;
                 }
                 throw new Error("saveComponentPart failed", response.status);
               });
             });
           },
           "listComponents" : function() {
-            return simplyRawApi.get("components")
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("listComponents failed", response.status);
-            })
-              .then(function(components) {
-              components.forEach(function(component) {
-                simplyDataApi.mergeComponent(component.contents);
-                component.description = component.contents.description;
-              });
-              return components;
+            return simplyDataApi.listDirectories(simplyRawApi.projectUrl + "components/")
+            .then(function(components) {
+              let promises = [];
+              components.forEach(function(componentPath) {
+          	  promises.push(
+                  simplyRawApi.get(componentPath + "meta.json")
+                  .then(function(response) {
+                    if (response.ok) {
+                      return response.json();
+                    }
+                  })
+                  .then(function(result) {
+                    return simplyDataApi.listContents(componentPath)
+                    .then(function(contents) {
+                      result.contents = contents;
+                      return result;
+                    });
+                  })
+                );
+              });    
+              return Promise.all(promises);
             });
           },
-          "deletePage" : function(component) {
-            return simplyRawApi.delete("pages/" + component)
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+          "listContents" : function(subject) {
+            return simplyDataApi.listDirectories(subject)
+              .then(function(componentTypes) {
+              if (componentTypes.length === 0) {
+                return [];
               }
-              throw new Error("deleteComponent failed", response.status);
+              let promises = [];
+              componentTypes.forEach(function(componentType) {
+                promises.push(
+                  simplyDataApi.listFiles(componentType)
+                  .then(function(componentParts) {
+                    if (componentParts.length === 0) {
+                      return [];
+                    }
+                    let partPromises = [];
+                    componentParts.forEach(function(componentPart) { // 
+                      partPromises.push(
+                        simplyRawApi.get(componentPart)
+                        .then(function(response) {
+                          if (response.status === 200) {
+                            return response.text()
+                          }
+                        })
+                        .then(function(contents) {
+                          return {
+                            "id" : componentPart.replace(componentType, ''),
+                            "contents" : contents
+                          }                
+                        })
+                      );
+                    });
+                    return Promise.all(partPromises);
+                  })
+                  .then(function(partContents) {
+                    return {
+                      "id" : componentType.replace(subject, '').replace(/\/$/, ''),
+                      "contents" : partContents
+                    }
+                  })
+                );
+              });
+              return Promise.all(promises);
+            })
+          },
+          "listDirectories" : function(subject) {
+            return simplyRawApi.get(subject)
+              .then(async function(response) {
+              if (response.ok) {
+                turtleResponse = await response.text();
+                let rdfStore = new $rdf.graph();
+                $rdf.parse(
+                  turtleResponse,
+                  rdfStore,
+                  subject,
+                  "text/turtle"
+                );
+          
+                contains = rdfStore.match(
+                  rdfStore.sym(subject), // subject
+                  rdfStore.sym("http://www.w3.org/ns/ldp#contains"), // find things that have a type 'Storage'
+                  null,
+                  null
+                );
+          
+                return contains.map(function(entry) {
+                  if (rdfStore.match(
+                    rdfStore.sym(entry.object.value),
+                    null,
+                    rdfStore.sym("http://www.w3.org/ns/ldp#BasicContainer"),
+                    null
+                  ).length) {          
+                    return entry.object.value;
+                  } else {
+                    return;
+                  }
+                })
+                .filter(function(entry) {
+                  return entry;
+                });
+              }
+              throw new Error("listDirectories failed", response.status);
+            })
+          },
+          "listFiles" : function(subject) {
+            return simplyRawApi.get(subject)
+              .then(async function(response) {
+              if (response.ok) {
+                turtleResponse = await response.text();
+                let rdfStore = new $rdf.graph();
+                $rdf.parse(
+                  turtleResponse,
+                  rdfStore,
+                  subject,
+                  "text/turtle"
+                );
+          
+                contains = rdfStore.match(
+                  rdfStore.sym(subject), // subject
+                  rdfStore.sym("http://www.w3.org/ns/ldp#contains"), // find things that have a type 'Storage'
+                  null,
+                  null
+                );
+          
+                return contains.map(function(entry) {
+                  if (rdfStore.match(
+                    rdfStore.sym(entry.object.value),
+                    null,
+                    rdfStore.sym("http://www.w3.org/ns/ldp#BasicContainer"),
+                    null
+                  ).length) {          
+                    return;
+                  } else {
+                    return entry.object.value;;
+                  }
+                })
+                .filter(function(entry) {
+                  return entry;
+                });
+              }
+              throw new Error("listFiles failed", response.status);
+            })
+          },
+          "deletePage" : function(component) {
+            return simplyRawApi.delete(simplyRawApi.projectUrl + "pages/" + component + "/")
+            .then(function(response) {
+              if (response.ok) {
+                return true;
+              }
+              throw new Error("deletePage failed", response.status);
             });
           },
           "deletePagePart" : function(component, part) {
-            return simplyRawApi.delete("pages/" + component + "/" + part)
+           return simplyRawApi.delete(simplyRawApi.projectUrl + "pages/" + component + "/" + part)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               throw new Error("deletePagePart failed", response.status);
             });
           },
           "getPage" : function(component) {
-            return simplyRawApi.get("pages/" + component)
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("getPage failed", response.status);
-            })
-              .then(function(component) {
+            var subject = simplyRawApi.projectUrl + "pages/" + component + "/";
+            return simplyDataApi.listContents(subject)
+            .then(function(component) {
               return simplyDataApi.mergeComponent(component);
             });
           },
           "savePagePart" : function(component, part, contents) {
-            return simplyDataApi.savePart("pages/" + component, part, contents)
+            return simplyDataApi.savePart(simplyRawApi.projectUrl + "pages/" + component, part, contents)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               // retry the call once
-              return simplyDataApi.savePart("pages/" + component, part, contents)
+              return simplyDataApi.savePart(simplyRawApi.projectUrl + "pages/" + component, part, contents)
                 .then(function(response) {
-                if (response.status === 200) {
-                  return response.json();
+                if (response.ok) {
+                  return true;
                 }
                 throw new Error("savePagePart failed", response.status);
               });
             });
           },
           "deletePageFramePart" : function(part) {
-            return simplyRawApi.delete("page-frame/" + part)
+           return simplyRawApi.delete(simplyRawApi.projectUrl + "page-frame/" + part)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
-              // throw new Error("deletePageFramePart failed", response.status);
-              // allowed while data upgrade is needed
+              throw new Error("deletePageFramePart failed", response.status);
             });
           },
           "getPageFrame" : function() {
-            return simplyRawApi.get("page-frame")
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+            var subject = simplyRawApi.projectUrl + "page-frame/";
+          
+            return simplyDataApi.listFiles(subject)
+            .then(function(componentParts) {
+              if (componentParts.length === 0) {
+                return [];
               }
-              throw new Error("getPageFrame failed", response.status);
+              let partPromises = [];
+              componentParts.forEach(function(componentPart) { // 
+                partPromises.push(
+                  simplyRawApi.get(componentPart)
+                  .then(function(response) {
+                    if (response.status === 200) {
+                      return response.text()
+                    }
+                  })
+                  .then(function(contents) {
+                    return {
+                      "id" : componentPart.replace(subject, ''),
+                      "contents" : contents
+                    }                
+                  })
+                );
+              });
+              return Promise.all(partPromises);
             })
-              .then(function(component) {
+            .then(function(partContents) {
+              return {
+                "id" : componentType.replace(subject, '').replace(/\/$/, ''),
+                "contents" : partContents
+              }
+            })
+            .then(function(component) {
               return simplyDataApi.mergePageFrame(component);
             })
-              .catch(function() {
+            .catch(function() {
               let defaults = {
                 "componentPreview.html" : "&lt;!DOCTYPE HTML&gt;\n&lt;html lang=\"en\"&gt;\n  &lt;head&gt;\n    &lt;meta charset=\"utf-8\"&gt;\n    &lt;!-- Component CSS --&gt;\n    &lt;style&gt;\n      &#123;&#123;componentCss&#125;&#125;\n    &lt;/style&gt;\n    &lt;!-- /Component CSS --&gt;\n    &lt;!-- Page CSS --&gt;\n    &lt;style&gt;\n      &#123;&#123;pageCss&#125;&#125;\n    &lt;/style&gt;\n    &lt;!-- /Page CSS --&gt;\n    &lt;!-- Head HTML --&gt;\n    &#123;&#123;headHtml&#125;&#125;\n    &lt;!-- /Head HTML --&gt;\n    &lt;script&gt;\n      function clone(ob) &#123;\n        return JSON.parse(JSON.stringify(ob));\n      &#125;\n      function updateDataSource(name) &#123;\n        document.querySelectorAll('[data-simply-data=\"'+name+'\"]').forEach(function(list) &#123;\n          editor.list.applyDataSource(list, name);\n          list.dataBindingPaused = 0;\n        &#125;);\n      &#125;\n    &lt;/script&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;!-- Component HTML templates --&gt;\n    &#123;&#123;componentTemplates&#125;&#125;\n    &lt;!-- /Component HTML templates --&gt;\n    &lt;div class=\"main\"&gt;\n      &#123;&#123;componentPreview&#125;&#125;\n    &lt;/div&gt;\n    &lt;script src=\"js/simply.everything.js\"&gt;&lt;/script&gt;\n    &lt;script src=\"js/simply-edit.js\" data-simply-storage=\"none\" data-api-key=\"muze\"&gt;&lt;/script&gt;\n    &lt;script&gt;\n      /* Transformers */\n      editor.transformers = &#123;\n        &#123;&#123;transformers&#125;&#125;\n      &#125;;\n      /* /Transformers */\n    &lt;/script&gt;\n    &lt;script&gt;\n      /* Sorters */\n      editor.sorters = &#123;\n        &#123;&#123;sorters&#125;&#125;\n      &#125;;\n      /* /Sorters */\n    &lt;/script&gt;\n    &lt;script&gt;\n      window.addEventListener(\"simply-content-loaded\", function() &#123;\n        /* Data sources */\n        &#123;&#123;dataSources&#125;&#125;\n        /* /Data sources */\n      &#125;);\n    &lt;/script&gt;\n    &lt;!-- Foot HTML --&gt;\n    &#123;&#123;footHtml&#125;&#125;\n    &lt;!-- /Foot HTML --&gt;\n  &lt;/body&gt;\n&lt;/html&gt;",
                 "fullApp.html" : "&lt;!DOCTYPE HTML&gt;\n&lt;html lang=\"en\"&gt;\n  &lt;head&gt;\n    &lt;meta charset=\"utf-8\"&gt;\n    &lt;!-- Component CSS --&gt;\n    &lt;style&gt;\n      &#123;&#123;componentCss&#125;&#125;\n    &lt;/style&gt;\n    &lt;!-- /Component CSS --&gt;\n    &lt;!-- Page CSS --&gt;\n    &lt;style&gt;\n      &#123;&#123;pageCss&#125;&#125;\n    &lt;/style&gt;\n    &lt;!-- /Page CSS --&gt;\n    &lt;!-- Head HTML --&gt;\n    &#123;&#123;headHtml&#125;&#125;\n    &lt;!-- /Head HTML --&gt;\n    &lt;script&gt;\n      var simplyDataApi = &#123;&#125;;\n      var simplyApp = &#123;&#125;;\n      window.addEventListener(\"simply-content-loaded\", function() &#123;\n        simply.bind = false;\n        /* Raw API */\n        var simplyRawApi = &#123;\n          &#123;&#123;rawApi&#125;&#125;\n        &#125;;\n        /* End of Raw API */\n        /* Data API */\n        simplyDataApi = &#123;\n          &#123;&#123;dataApi&#125;&#125;\n        &#125;;\n        /* End of Data API */\n        simplyApp = simply.app(&#123;\n          /* Actions */\n          actions: &#123;\n            &#123;&#123;actions&#125;&#125;\n          &#125;,\n          /* /Actions */\n          /* Commands */\n          commands: &#123;\n            &#123;&#123;commands&#125;&#125;\n          &#125;,\n          /* /Commands */\n          /* Routes */\n          routes: &#123;\n            &#123;&#123;routes&#125;&#125;\n          &#125;\n          /* /Routes */\n        &#125;);\n      &#125;);\n      function clone(ob) &#123;\n        return JSON.parse(JSON.stringify(ob));\n      &#125;\n      function updateDataSource(name) &#123;\n        document.querySelectorAll('[data-simply-data=\"'+name+'\"]').forEach(function(list) &#123;\n          editor.list.applyDataSource(list, name);\n          list.dataBindingPaused = 0;\n        &#125;);\n      &#125;\n    &lt;/script&gt;\n  &lt;/head&gt;\n  &lt;body&gt;\n    &lt;!-- Body HTML --&gt;\n    &#123;&#123;bodyHtml&#125;&#125;\n    &lt;!-- /Body HTML --&gt;\n    &lt;!-- Component HTML templates --&gt;\n    &#123;&#123;componentTemplates&#125;&#125;\n    &lt;!-- /Component HTML templates --&gt;\n    &lt;div class=\"main\" data-simply-field=\"page\" data-simply-content=\"template\"&gt;\n    &lt;!-- Page HTML templates --&gt;\n    &#123;&#123;pageTemplates&#125;&#125;\n    &lt;!-- /Page HTML templates --&gt;\n    &lt;/div&gt;\n    &lt;script src=\"js/simply.everything.js\"&gt;&lt;/script&gt;\n    &lt;script src=\"js/simply-edit.js\" data-simply-storage=\"none\" data-api-key=\"muze\"&gt;&lt;/script&gt;\n    &lt;script&gt;\n      /* Transformers */\n      editor.transformers = &#123;\n        &#123;&#123;transformers&#125;&#125;\n      &#125;;\n      /* /Transformers */\n    &lt;/script&gt;\n    &lt;script&gt;\n      /* Sorters */\n      editor.sorters = &#123;\n        &#123;&#123;sorters&#125;&#125;\n      &#125;;\n      /* /Sorters */\n    &lt;/script&gt;\n    &lt;script&gt;\n      window.addEventListener(\"simply-content-loaded\", function() &#123;\n        /* Data sources */\n        &#123;&#123;dataSources&#125;&#125;\n        /* /Data sources */\n      &#125;);\n    &lt;/script&gt;\n    &lt;!-- Foot HTML --&gt;\n    &#123;&#123;footHtml&#125;&#125;\n    &lt;!-- /Foot HTML --&gt;\n  &lt;/body&gt;\n&lt;/html&gt;",
@@ -2394,35 +2708,36 @@
             if (part == "meta") {
               return '"ok"';
             }
-            return simplyDataApi.savePart("page-frame", part, contents)
+            return simplyDataApi.savePart(simplyRawApi.projectUrl + "page-frame", part, contents)
               .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
+              if (response.ok) {
+                return true;
               }
               // retry the call once
-              return simplyDataApi.savePart("page-frame", part, contents)
+              return simplyDataApi.savePart(simplyRawApi.projectUrl + "page-frame", part, contents)
                 .then(function(response) {
-                if (response.status === 200) {
-                  return response.json();
+                if (response.ok) {
+                  return true;
                 }
                 throw new Error("savePageFramePart failed", response.status);
               });
             });
           },
           "listPages" : function() {
-            return simplyRawApi.get("pages")
-              .then(function(response) {
-              if (response.status === 200) {
-                return response.json();
-              }
-              throw new Error("listPages failed", response.status);
-            })
-              .then(function(components) {
-              components.forEach(function(component) {
-                simplyDataApi.mergeComponent(component.contents);
-                component.description = component.contents.description;
-              });
-              return components;
+            return simplyDataApi.listDirectories(simplyRawApi.projectUrl + "pages/")
+            .then(function(components) {
+              let promises = [];
+              components.forEach(function(componentPath) {
+          	  promises.push(
+                  simplyRawApi.get(componentPath + "meta.json")
+                  .then(function(response) {
+                    if (response.status === 200) {
+                      return response.json();
+                    }
+                  })
+                );
+              });    
+              return Promise.all(promises);
             });
           },
           "saveAppHtml" : function(appHtml) {
@@ -2484,6 +2799,35 @@
                   return 'name';
               }
             },
+            "solidLogin" : function(webIdProvider, returnPage) {
+              if (!solidClientAuthentication.default.getDefaultSession().info.isLoggedIn) {
+                solidClientAuthentication.default.login({
+                  // Specify the URL of the user's Solid Identity Provider;
+                  // e.g., "https://login.inrupt.com".
+                  oidcIssuer: webIdProvider,
+                  // Specify the URL the Solid Identity Provider should redirect the user once logged in,
+                  // e.g., the current page for a single-page app.
+                  redirectUrl: document.location.href.split("#")[0], // returnPage,
+                  // Provide a name for the application when sending to the Solid Identity Provider
+                  clientName: "Pod provisioner"
+                })
+                .then(function() {
+                  editor.pageData.webId = solidClientAuthentication.default.getDefaultSession().info.webId;
+                });
+              } else {
+                editor.pageData.webId = solidClientAuthentication.default.getDefaultSession().info.webId;
+                document.location.href = returnPage;
+              }
+            },
+            "solidRestore" : function(el) {
+              if (localStorage.webIdProvider) {
+                editor.pageData.webIdProvider = localStorage.webIdProvider;
+                simplyApp.actions.solidLogin(
+                  editor.pageData.webIdProvider,
+                  document.location.href + "#view"
+                );
+              }
+            },
             "build" : function(builderTemplate, data) {
               var build = builderTemplate;
               let replacements = {
@@ -2516,6 +2860,35 @@
               });
             
               return build;
+            },
+            "login" : async function(webId) {
+              let response = await fetch(webId, {
+                headers : {
+                  "Content-Type" : "text/turtle"
+                }
+              });
+            
+              if (!(response.status > 199 && response.status < 300)) {
+                throw new Exception("Failed to load profile");
+              }
+            
+              profile = await response.text();
+              let rdfStore = new $rdf.graph();
+              $rdf.parse(
+                profile,
+                rdfStore,
+                webId,
+                "text/turtle"
+              );
+            
+              issuer = rdfStore.match(
+                null,
+                rdfStore.sym("http://www.w3.org/ns/solid/terms#oidcIssuer"), // find things that have a type 'Storage'
+                null,
+                null
+              );
+            
+              return await simplyApp.actions.solidLogin(issuer[0].object.value);
             },
             "browse" : function(path) {
               return simplyDataApi.browse(path)
@@ -2665,8 +3038,8 @@
                 return true;
               });
             },
-            "listComponents" : function() {
-              return simplyDataApi.listComponents()
+            "listComponents" : async function() {
+              return await simplyDataApi.listComponents()
                 .catch(function(error) {
                 return [];
               });
@@ -2755,7 +3128,10 @@
                       if (typeof appData[part.id] === "undefined") {
                         appData[part.id] = [];
                       }
-                      parts = JSON.parse(part.contents);
+                      parts = part.contents;
+                      if (typeof parts === "string") {
+                        parts = JSON.parse(parts);
+                      }
                       parts.forEach(function(entry) {
                         entry.base = builder.id;
                         appData[part.id].push(entry);
@@ -2783,7 +3159,10 @@
                       if (typeof appData[part.id] === "undefined") {
                         appData[part.id] = [];
                       }
-                      parts = JSON.parse(part.contents);
+                      parts = part.contents;
+                      if (typeof parts === "string") {
+                        parts = JSON.parse(parts);
+                      }
                       parts.forEach(function(entry) {
                         appData[part.id].push(entry);
                       });
@@ -3045,6 +3424,9 @@
               simplyApp.commands.codeMirrorInit();
               simplyApp.commands.autoRunTests();
               simplyApp.commands.autoRunPreviews();
+            },
+            "login" : function() {
+              return simplyApp.actions.login(editor.pageData.login.webId);
             },
             "collapseMenu" : function(el) {
               if (!el.hasAttribute("open")) {
@@ -3432,13 +3814,13 @@
             "#components/:component" : function(params) {
               editor.pageData.app = {};
               simplyApp.actions.getAppData()
-                .then(function(appData) {
+              .then(function(appData) {
                 editor.pageData.app = appData;
               })
-                .then(function() {
+              .then(function() {
                 return simplyApp.actions.getComponent(params.component);
               })
-                .then(function(parts) {
+              .then(function(parts) {
                 var component = {
                   id : params.component
                 };
@@ -3597,12 +3979,19 @@
                 simplyApp.commands.autoRunPreviews();
               });
             },
-            "/" : function() {
-                simplyApp.actions.listComponents()
-                .then(function(components) {
-                    editor.pageData.components = components;
-                    editor.pageData.page = "List components";
-                });
+            "/" : async function() {
+              if (
+                document.location.search.match("code") ||
+                document.location.search.match("state")
+              ) {
+                await solidClientAuthentication.default.handleIncomingRedirect({ restorePreviousSession : true });
+                document.location.hash = "#components/";
+              } else {
+                editor.pageData.login = {
+                  "webId" : "https://ylebre.solidcommunity.net/profile/card#me"
+                };
+                editor.pageData.page = "login";
+              }
             }
           }
           /* /Routes */
@@ -4560,6 +4949,46 @@
       </template>
     </div>
     </template>
+    <template id="login">
+      <form class="login-form" data-simply-command="login">
+      <p class="login-text">
+        <simply-render rel="logo"></simply-render>
+      </p>
+      <input data-simply-field="login.webId" class="login-webid" autofocus required placeholder="WebID">
+      <input type="submit" name="Login" value="Login" class="login-submit">
+      <a href="#" class="login-no-webid">No WebID? Get one here!</a>
+    </form>
+    </template>
+    <template id="logo">
+      <svg viewbox="0 0 520 300" xmlns="http://www.w3.org/2000/svg">
+      <style type="text/css">
+        .st0 {
+          fill: var(--simply-logo-color-secondary);
+        }	
+        .st1 {
+          fill: var(--simply-logo-color-primary);
+        }
+        text {
+          font-family: Cocon;
+          font-size: 143px;
+          letter-spacing: -7px;
+          fill: var(--simply-logo-color-primary);
+          text-anchor: middle;
+        }
+      </style>
+      <g class="simply">
+        <path fill="black" id="s" d="m74.400002,87.400002c-16.200005,-2.599998 -21.400002,-3.800003 -21.400002,-9.599998c0,-4.100006 2.900002,-9 16.800003,-9c9.099998,0 17.299995,1.899994 23.599998,5.299995l0,-4.299995c0,-10.700005 -10.099998,-17.200005 -27,-17.200005c-17,0 -35.300003,8.599998 -35.300003,27.400002c0,11.5 6.300003,17.599998 20.5,19.599998c16.599998,2.300003 21.400002,4 21.400002,10.300003c0,9.099998 -11.900002,9.099998 -16.300003,9.099998c-11,0 -18.599998,-2.699997 -23.699997,-5.5l0,4c0,4.399994 0,17.800003 28.199997,17.800003c21,0 34.100006,-10.199997 34.100006,-26.5c0.099991,-14.800003 -11.300003,-19.800003 -20.900002,-21.400002z" class="st0"/>
+        <path fill="black" id="im" d="m187.600006,72.5c9.199997,0 13.900009,5.599998 13.900009,16.5l0,29.599998c0,10.599998 3.799988,14.099998 15.199997,14.099998l7.399994,0l0,-43.399994c0,-13.900002 7.300018,-16.800003 13.300018,-16.800003c10.099976,0 14.5,5.300003 14.5,17.300003l0,28.899994c0,9.199997 2.599976,14.100006 16.099976,14.100006l7.300018,0l0,-42.5c0,-24.300003 -12.700012,-37.700005 -35.900024,-37.700005c-11.199982,0 -20.5,8.300003 -23.699997,13.599998l-2.699997,4.400002l-1.899994,-4.799995c-2.200012,-5.5 -10.800003,-13.100002 -23.100006,-13.100002c-8.300003,0 -15.399994,1.599998 -21.199997,4.799999c-10.800003,5.900002 -16.5,17 -16.5,32.099998l0,12.200005c0,7.599998 -3.5,11.5 -11.199997,12.199997l-0.200012,0l-0.199997,0c-7.699997,-0.599998 -11.300003,-4.5 -11.300003,-12.199997l0,-27c0,-13.5 -4.099991,-17.200005 -19,-17.200005l-4.399994,0l0,48.400002c0,7.300003 1.800003,12.900002 5.199997,16.699997c5,5.5 15.699997,11.400009 29.400009,11.400009l0.599991,0c3.900009,0 7.199997,-0.5 10,-1.200012l0.600006,-0.099991c6.800003,-1.699997 10.800003,-4.100006 13,-5.699997l0.599991,-0.400009c2.800003,-2.099991 10.300003,-9.699997 10.400009,-20l0,-16.699997c0.300003,-6.900002 1.899994,-17.5 13.800003,-17.5z" class="st0"/>
+        <path id="i-dot" d="m115,45.099998c6.800003,0 12.300003,-5.199997 12.300003,-11.599998c0,-6.400002 -5.5,-11.6 -12.300003,-11.6c-6.899994,0 -12.5,5.199999 -12.5,11.6c0,6.400002 5.600006,11.599998 12.5,11.599998z" class="st1"/>
+        <path fill="black" id="p" d="m328.600006,52.599998c-27.899994,0 -43.299988,15.800003 -43.299988,44.5l0,43.900002c0,12.199997 4.5,17.5 14.899994,17.5l7.799988,0l0,-38.099998c0,0 0.200012,2.900002 4.900024,8.299995c5.5,5.600006 10.299988,6.5 19,6.5c21.899994,0 36.599976,-17.299995 36.599976,-43.099998c0,-23.299995 -16.399994,-39.5 -39.899994,-39.5zm1.600006,62.900002c-9.799988,0 -19.100006,-6.199997 -19.100006,-23.800003c0,-12.199997 8.100006,-19.799995 15.899994,-19.799995c11.800018,0 18.900024,5.400002 18.900024,23.199997c-0.000031,12.400002 -6.700012,20.400002 -15.700012,20.400002z" class="st0"/>
+        <path id="l" d="m400.799988,103.699997l0,-60.199997c0,-12.200001 -4.600006,-17.200001 -15.899994,-17.200001l-7.5,0l0,81.600002c0,19.200005 13.299988,26.099998 25.799988,26.099998c4.800018,0 16.100006,-1 16.100006,-10.699997l0,-7.300003l-3.700012,0c-6.399963,0 -14.799988,-1.300003 -14.799988,-12.300003z" class="st0"/>
+        <path fill="black" id="y" d="m483,55l-11.399994,0c-2.100006,15.800003 -8.300018,37.099998 -14.399994,49.5l-2.5,5.099998l-2.200012,-5.199997c-4.5,-10.300003 -10.299988,-26.599998 -13.100006,-39.700005c-1.399994,-6.399994 -7.899994,-9.699997 -13.600006,-9.699997l-11.799988,0c4,21.400002 17.799988,56.099998 29.600006,73.600006l0.799988,1.199997l-0.600006,1.300003c-3.5,8 -8.099976,11.299988 -16.199982,12l-10,0.699997l0,4.5c0,8.599991 7.699982,11.699997 14.299988,11.699997c16.100006,0 21.300018,-3.800003 44.200012,-47.800003c9.300018,-17.799995 16.800018,-41.5 16.800018,-49.299995c-0.300049,-3.300003 -1.300049,-7.900002 -9.900024,-7.900002z" class="st0"/>
+      </g>
+      <text x="50%" y="276">
+        login
+      </text>
+    </svg>
+    </template>
     <template id="menu">
       <ul data-simply-list="menu">
       <template>
@@ -4857,6 +5286,10 @@
       <template data-simply-template="Publish App" rel="simply-toolbar-publish"></template>
     </nav>
     </template>
+    <template id="underlay">
+      <div class="underlay-photo"></div>
+    <div class="underlay-black"></div> 
+    </template>
     <!-- /Component HTML templates -->
     <header data-simply-path="/" data-simply-field="header" data-simply-content="template" data-simply-default-value="Header">
       <template data-simply-template='Header' rel="header"></template>
@@ -4994,6 +5427,11 @@
         </div>
       </div>
     </main>
+    
+    </template>
+    <template data-simply-template="login">
+      <simply-render rel="login"></simply-render>
+    <simply-render rel="underlay"></simply-render>
     
     </template>
     <template data-simply-template="Edit page">
@@ -5803,6 +6241,8 @@
         }
       });
     </script>
+    <!-- triplebinding -->
+    <script src="/assets/js/simply.tripleBinding.js"></script>
     <!-- toastAnimation -->
     <script>
       var purgeTimer;

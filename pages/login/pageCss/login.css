@@ -1,0 +1,15 @@
+html:has(.login-form) {
+  background: none;
+  height: 100%;
+}
+body:has(.login-form) {
+  font-family: "Open Sans";
+  font-weight: 100;
+  overflow: hidden;
+  font-size: 1.2em;
+  background-color: #222;
+}
+div.main:has(.login-form) {
+  display: flex;
+  justify-content: center;
+}

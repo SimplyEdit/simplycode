@@ -1,0 +1,7 @@
+<script src="/assets/js/solid-client-authn.bundle.js"></script>
+<script>
+   // monkeypatch it so 1.12.1 mimics the syntax used in 1.13.2
+  if (typeof solidClientAuthentication.default === "undefined") {
+    solidClientAuthentication.default = solidClientAuthentication;
+  }
+</script>

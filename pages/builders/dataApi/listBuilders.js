@@ -1,16 +1,17 @@
 function() {
-  return simplyRawApi.get("builders")
-    .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
-    }
-    throw new Error("listBuilders failed", response.status);
-  })
-    .then(function(components) {
-    components.forEach(function(component) {
-      simplyDataApi.mergeComponent(component.contents);
-      component.description = component.contents.description;
-    });
-    return components;
+  return simplyDataApi.listDirectories(simplyRawApi.projectUrl + "builders/")
+  .then(function(components) {
+    let promises = [];
+    components.forEach(function(componentPath) {
+	  promises.push(
+        simplyRawApi.get(componentPath + "meta.json")
+        .then(function(response) {
+          if (response.status === 200) {
+            return response.json();
+          }
+        })
+      );
+    });    
+    return Promise.all(promises);
   });
 }

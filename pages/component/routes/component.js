@@ -1,13 +1,13 @@
 function(params) {
   editor.pageData.app = {};
   simplyApp.actions.getAppData()
-    .then(function(appData) {
+  .then(function(appData) {
     editor.pageData.app = appData;
   })
-    .then(function() {
+  .then(function() {
     return simplyApp.actions.getComponent(params.component);
   })
-    .then(function(parts) {
+  .then(function(parts) {
     var component = {
       id : params.component
     };

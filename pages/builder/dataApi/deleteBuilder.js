@@ -1,8 +1,8 @@
 function(component) {
-  return simplyRawApi.delete("builders/" + component)
-    .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
+  return simplyRawApi.delete(simplyRawApi.projectUrl + "builders/" + component + "/")
+  .then(function(response) {
+    if (response.ok) {
+      return true;
     }
     throw new Error("deleteBuilder failed", response.status);
   });

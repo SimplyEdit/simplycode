@@ -1,0 +1,8 @@
+:root {
+  --login-spacing: 0.5rem;
+  --login-font-size: 1.5rem;
+  --login-text-color: white;
+  --login-text-contrast: black;
+  --login-text-contrast-focus: #222;
+  --login-input-font-size: var(--login-font-size);
+}

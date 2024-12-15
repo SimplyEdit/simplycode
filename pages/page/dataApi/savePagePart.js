@@ -1,14 +1,14 @@
 function(component, part, contents) {
-  return simplyDataApi.savePart("pages/" + component, part, contents)
+  return simplyDataApi.savePart(simplyRawApi.projectUrl + "pages/" + component, part, contents)
     .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
+    if (response.ok) {
+      return true;
     }
     // retry the call once
-    return simplyDataApi.savePart("pages/" + component, part, contents)
+    return simplyDataApi.savePart(simplyRawApi.projectUrl + "pages/" + component, part, contents)
       .then(function(response) {
-      if (response.status === 200) {
-        return response.json();
+      if (response.ok) {
+        return true;
       }
       throw new Error("savePagePart failed", response.status);
     });

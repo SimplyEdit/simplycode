@@ -1,14 +1,14 @@
 function(component, part, contents) {
-  return simplyDataApi.savePart("base-components/" + component, part, contents)
+  return simplyDataApi.savePart(simplyRawApi.projectUrl + "base-components/" + component, part, contents)
     .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
+    if (response.ok) {
+      return true;
     }
     // retry the call once
-    return simplyDataApi.savePart("base-components/" + component, part, contents)
+    return simplyDataApi.savePart(simplyRawApi.projectUrl + "base-components/" + component, part, contents)
       .then(function(response) {
-      if (response.status === 200) {
-        return response.json();
+      if (response.ok) {
+        return true;
       }
       throw new Error("saveBaseComponentPart failed", response.status);
     });
