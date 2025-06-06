@@ -5797,6 +5797,19 @@
       document.addEventListener("dragover", simply.dragdrop.dragOver);
       document.addEventListener("drop", simply.dragdrop.drop);
     </script>
+    <!-- handleShortcuts -->
+    <script>
+      simply.shortcuts = {
+        handleShortcuts : function(event) {
+          if (event.ctrlKey && event.key === 's') {
+            event.preventDefault();
+            console.log('pressed CTRL + S 2');
+            simplyApp.command.saveComponent();
+          }
+        }
+      };
+      document.addEventListener("keydown", simply.shortcuts.handleShortcuts);
+    </script>
     <!-- component-parts-count -->
     <script>
       document.addEventListener("simply-data-changed", function(event) {
