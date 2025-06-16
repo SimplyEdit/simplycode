@@ -2455,6 +2455,7 @@
                 'component', // componentTemplates
                 'action', // actions
                 'command', // commands
+                'shortcuts', // shortcuts 
                 'page', // pageTemplates
                 'method', // rawApi, dataApi
                 'dataSource', // dataSources
@@ -2467,6 +2468,8 @@
                   return 'component';
                 case 'actions':
                   return 'action';
+                case 'shortcuts':
+                  return 'shortcut';
                 case 'commands':
                   return 'command';
                 case 'pageTemplates':
@@ -2487,6 +2490,7 @@
             "build" : function(builderTemplate, data) {
               var build = builderTemplate;
               let replacements = {
+                "shortcuts" : editor.transformers.simplyPreviewShortcuts.render(data.shortcuts ?? []),
                 "actions" : editor.transformers.simplyPreviewActions.render(data.actions ?? []),
                 "commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
                 "dataApi" : editor.transformers.simplyPreviewDataApi.render(data.dataApi ?? []),
@@ -3024,6 +3028,9 @@
             "addRoute" : function(el) {
               editor.pageData.component.parts.routes.push({});
             },
+            "addShortcut" : function(el) {
+              editor.pageData.component.parts.shortcuts.push({});
+            },
             "addSorter" : function(el) {
               editor.pageData.component.parts.sorters.push({});
             },
@@ -3280,6 +3287,11 @@
             }
           },
           /* /Commands */
+          /* Shortcuts */
+          shortcuts: {
+            {{shortcuts}}
+          },
+          /* /Shortcuts */
           /* Routes */
           routes: {
             "#preview/components/:component/:partType/:part" : function(params) {
@@ -4466,6 +4478,54 @@
       </div>
     </details>
     </template>
+    <template id="componentShortcuts">
+      <details class="simplycode-component">
+      <summary data-simply-command="initEditors" title="Shortcuts are keyboard shortcuts selected to call specific actions.">
+        <span data-simply-field="count.shortcuts" data-simply-content="attributes" data-simply-attributes="data-count">
+          Shortcuts
+        </span>
+        <span class="simplycode-controls">
+          <button class="simplycode-button" data-simply-command="addShortcut">Add shortcuts</button>
+        </span>
+      </summary>
+      <div class="simplycode-code-method" data-simply-list="component.parts.shortcuts">
+        <template>
+          <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
+            <div class="simplycode-part-header">
+              <div class="simplycode-tabs">
+                <input class="simplycode-tab" data-simply-field="shortcut" placeholder="shortcut-key">
+                <label class="simplycode-tab">
+                  <input type="radio" name="shortcutEditor" checked value="code" data-simply-field="editor">
+                  <span>Code</span>
+                </label>
+                <label class="simplycode-tab">
+                  <input type="radio" name="shortcutsEditor" value="tests" data-simply-field="editor">
+                  <span>Tests</span>
+                </label>
+              </div>
+              <div class="simplycode-options">
+    			<button class="simplycode-button" draggable="true">Drag to move</button>
+                <button class="simplycode-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-deleted="false" data-simply-command="deleteEntry">Delete shortcut</button>
+              </div>
+            </div>
+            <div class="simplycode-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+              <template data-simply-template="code">
+                <div class="simplycode-editor-code">
+                  <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+                  <simply-render rel="componentQUnitActionRunner"></simply-render>
+                </div>
+              </template>
+              <template data-simply-template="tests">
+                <div class="simplycode-editor-code">
+                  <simply-render rel="componentQUnitTests"></simply-render>
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+    </details>
+    </template>
     <template id="componentSorters">
       <details class="simplycode-component">
       <summary data-simply-command="initEditors" title="Sorters are utility function that are used to sort arrays, used in datasources, actions.">
@@ -4876,6 +4936,7 @@
       <simply-render rel="componentBodyHtml"></simply-render>
       <simply-render rel="componentFootHtml"></simply-render>
       <simply-render rel="componentCommands"></simply-render>
+      <simply-render rel="componentShortcuts"></simply-render>
       <simply-render rel="componentActions"></simply-render>
       <simply-render rel="componentRoutes"></simply-render>
       <simply-render rel="componentRawApi"></simply-render>
@@ -4958,6 +5019,7 @@
       <simply-render rel="componentComponentTemplate"></simply-render>
       <simply-render rel="componentComponentCss"></simply-render>
       <simply-render rel="componentCommands"></simply-render>
+      <simply-render rel="componentShortcuts"></simply-render>
       <simply-render rel="componentActions"></simply-render>
       <simply-render rel="componentDataApi"></simply-render>
       <simply-render rel="componentRoutes"></simply-render>
@@ -5005,6 +5067,7 @@
       <simply-render rel="componentPageTemplate"></simply-render>
       <simply-render rel="componentPageCss"></simply-render>
       <simply-render rel="componentCommands"></simply-render>
+      <simply-render rel="componentShortcuts"></simply-render>
       <simply-render rel="componentActions"></simply-render>
       <simply-render rel="componentDataApi"></simply-render>
       <simply-render rel="componentRoutes"></simply-render>
@@ -5163,6 +5226,7 @@
             let replacements = {
               "componentPreview" : data,
               "actions" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.actions ?? []),
+              "shortcuts" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.shortcuts ?? []),
               "commands" : editor.transformers.simplyPreviewCommands.render(editor.pageData.app.commands ?? []),
               "dataApi" : editor.transformers.simplyPreviewDataApi.render(editor.pageData.app.dataApi ?? []),
               "rawApi" : editor.transformers.simplyPreviewRawApi.render(editor.pageData.app.rawApi ?? []),
@@ -5290,6 +5354,7 @@
             var fullApp = data.pageFrame.fullApp;
             let replacements = {
               "actions" : editor.transformers.simplyPreviewActions.render(data.actions ?? []),
+              "shortcuts" : editor.transformers.simplyPreviewActions.render(data.shortcuts ?? []),
               "commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
               "dataApi" : editor.transformers.simplyPreviewDataApi.render(data.dataApi ?? []),
               "rawApi" : editor.transformers.simplyPreviewRawApi.render(data.rawApi ?? []),
@@ -5344,6 +5409,7 @@
             let replacements = {
               "pagePreview" : data,
               "actions" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.actions ?? []),
+              "shortcuts" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.shortcuts ?? []),
               "commands" : editor.transformers.simplyPreviewCommands.render(editor.pageData.app.commands ?? []),
               "dataApi" : editor.transformers.simplyPreviewDataApi.render(editor.pageData.app.dataApi ?? []),
               "rawApi" : editor.transformers.simplyPreviewRawApi.render(editor.pageData.app.rawApi ?? []),

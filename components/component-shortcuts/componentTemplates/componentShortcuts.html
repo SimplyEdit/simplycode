@@ -1,0 +1,46 @@
+<details class="simplycode-component">
+  <summary data-simply-command="initEditors" title="Shortcuts are keyboard shortcuts selected to call specific actions.">
+    <span data-simply-field="count.shortcuts" data-simply-content="attributes" data-simply-attributes="data-count">
+      Shortcuts
+    </span>
+    <span class="simplycode-controls">
+      <button class="simplycode-button" data-simply-command="addShortcut">Add shortcuts</button>
+    </span>
+  </summary>
+  <div class="simplycode-code-method" data-simply-list="component.parts.shortcuts">
+    <template>
+      <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
+        <div class="simplycode-part-header">
+          <div class="simplycode-tabs">
+            <input class="simplycode-tab" data-simply-field="shortcut" placeholder="shortcut-key">
+            <label class="simplycode-tab">
+              <input type="radio" name="shortcutEditor" checked value="code" data-simply-field="editor">
+              <span>Code</span>
+            </label>
+            <label class="simplycode-tab">
+              <input type="radio" name="shortcutsEditor" value="tests" data-simply-field="editor">
+              <span>Tests</span>
+            </label>
+          </div>
+          <div class="simplycode-options">
+			<button class="simplycode-button" draggable="true">Drag to move</button>
+            <button class="simplycode-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-deleted="false" data-simply-command="deleteEntry">Delete shortcut</button>
+          </div>
+        </div>
+        <div class="simplycode-editors" data-simply-field="editor" data-simply-content="template" data-simply-default-template="code">
+          <template data-simply-template="code">
+            <div class="simplycode-editor-code">
+              <textarea data-codemirror-mode="javascript" data-simply-field="code" placeholder="function() {...}"></textarea>
+              <simply-render rel="componentQUnitActionRunner"></simply-render>
+            </div>
+          </template>
+          <template data-simply-template="tests">
+            <div class="simplycode-editor-code">
+              <simply-render rel="componentQUnitTests"></simply-render>
+            </div>
+          </template>
+        </div>
+      </div>
+    </template>
+  </div>
+</details>
