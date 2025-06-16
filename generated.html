@@ -4499,7 +4499,7 @@
                   <span>Code</span>
                 </label>
                 <label class="simplycode-tab">
-                  <input type="radio" name="shortcutsEditor" value="tests" data-simply-field="editor">
+                  <input type="radio" name="shortcutEditor" value="tests" data-simply-field="editor">
                   <span>Tests</span>
                 </label>
               </div>
@@ -5862,18 +5862,6 @@
       document.addEventListener("dragleave", simply.dragdrop.dragLeave);
       document.addEventListener("dragover", simply.dragdrop.dragOver);
       document.addEventListener("drop", simply.dragdrop.drop);
-    </script>
-    <!-- handleShortcuts -->
-    <script>
-      simply.shortcuts = {
-        handleShortcuts : function(event) {
-          if (event.ctrlKey && event.key === 's') {
-            event.preventDefault();
-            simplyApp.actions.saveComponent();
-          }
-        }
-      };
-      document.addEventListener("keydown", simply.shortcuts.handleShortcuts);
     </script>
     <!-- component-parts-count -->
     <script>
