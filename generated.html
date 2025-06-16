@@ -5226,7 +5226,7 @@
             let replacements = {
               "componentPreview" : data,
               "actions" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.actions ?? []),
-              "shortcuts" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.shortcuts ?? []),
+              "shortcuts" : editor.transformers.simplyPreviewShortcuts.render(editor.pageData.app.shortcuts ?? []),
               "commands" : editor.transformers.simplyPreviewCommands.render(editor.pageData.app.commands ?? []),
               "dataApi" : editor.transformers.simplyPreviewDataApi.render(editor.pageData.app.dataApi ?? []),
               "rawApi" : editor.transformers.simplyPreviewRawApi.render(editor.pageData.app.rawApi ?? []),
@@ -5354,7 +5354,7 @@
             var fullApp = data.pageFrame.fullApp;
             let replacements = {
               "actions" : editor.transformers.simplyPreviewActions.render(data.actions ?? []),
-              "shortcuts" : editor.transformers.simplyPreviewActions.render(data.shortcuts ?? []),
+              "shortcuts" : editor.transformers.simplyPreviewShortcuts.render(data.shortcuts ?? []),
               "commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
               "dataApi" : editor.transformers.simplyPreviewDataApi.render(data.dataApi ?? []),
               "rawApi" : editor.transformers.simplyPreviewRawApi.render(data.rawApi ?? []),
@@ -5409,7 +5409,7 @@
             let replacements = {
               "pagePreview" : data,
               "actions" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.actions ?? []),
-              "shortcuts" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.shortcuts ?? []),
+              "shortcuts" : editor.transformers.simplyPreviewShortcuts.render(editor.pageData.app.shortcuts ?? []),
               "commands" : editor.transformers.simplyPreviewCommands.render(editor.pageData.app.commands ?? []),
               "dataApi" : editor.transformers.simplyPreviewDataApi.render(editor.pageData.app.dataApi ?? []),
               "rawApi" : editor.transformers.simplyPreviewRawApi.render(editor.pageData.app.rawApi ?? []),
