@@ -37,10 +37,10 @@ Data API to store/fetch information.
 Changes the app State.
 Is triggered by code (usually a command or a  route).
 
-### Shortcuts
-Is a component that is triggered by a user action when pressing the keyboard. Usually triggered in the DOM.
-Can access DOM elements, is aware of a DOM structure.
-Can show UI notifications.
+### Shortcuts (access keys, keyboard shortcuts)
+This component are handlers for keyboard input by a user. This can either be
+a 'global' keyboard shortcut, or one that is defined on a DOM element
+using the data-simply-accesskey attribute.
 Makes use of Actions to change editor State.
 
 ### Commands
