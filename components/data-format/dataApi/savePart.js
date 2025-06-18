@@ -196,6 +196,41 @@ function(basePath, part, contents) {
         }
       });
       break;
+    case "shortcuts":
+      contents.forEach(function(componentPart, componentIndex) {
+        if (!componentPart.shortcut) {
+          throw new Error("Required part name is empty");
+        }
+        if (componentPart.deleted == "true") {
+          results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.shortcut + ".js"));
+          if (componentPart.tests && componentPart.tests.length) {
+            results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.shortcut + "/"));
+          }
+          contents.splice(componentIndex, 1);
+        } else {
+          results.push(simplyRawApi.putRaw(
+            basePath + "/" + part + "/" + componentPart.shortcut + ".js", {},
+            componentPart.code
+          ));
+          if (componentPart.tests) {
+            componentPart.tests.forEach(function(test, testIndex) {
+              if (!test.name) {
+                throw new Error("Required test name is empty");
+              }
+              if (test.deleted == "true") {
+                results.push(simplyRawApi.delete(basePath + "/" + part + "/tests/" + componentPart.shortcut + "/" + test.name + ".js"));
+                componentPart.tests.splice(testIndex, 1);
+              } else {
+                results.push(simplyRawApi.putRaw(
+                  basePath + "/" + part + "/tests/" + componentPart.shortcut + "/" + test.name + ".js", {},
+                  test['test-code']
+                ));
+              }
+            });
+          }
+        }
+      });
+      break;
     case "dataSources":
       contents.forEach(function(componentPart, componentIndex) {
         if (!componentPart.dataSource) {
