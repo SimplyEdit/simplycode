@@ -26,6 +26,7 @@ function(params) {
         componentCss : [],
         commands : [],
         actions : [],
+        shortcuts : [],
         dataApi : [],
         routes : [],
         transformers : [],
