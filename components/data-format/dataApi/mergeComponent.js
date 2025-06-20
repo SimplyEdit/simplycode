@@ -212,6 +212,44 @@ function(component) {
           componentPart.contents = JSON.stringify(Object.values(contents));
         }
         break;
+      case "shortcuts":
+        if (typeof componentPart.contents === "object") {
+          var contents = {};
+          componentPart.contents.forEach(function(partFile) {
+            if (partFile.id.match(/\.js$/)) {
+              partId = partFile.id.replace(/\.js$/, '');
+              if (typeof contents[partId] === "undefined") {
+                contents[partId] = {
+                  shortcut : partId
+                }
+              }
+              contents[partId]['code'] = partFile.contents;
+            }
+            if (partFile.id.match(/^tests$/)) {
+              tests = {};
+              partFile.contents.forEach(function(testSet) {
+                testSetPartId = testSet.id;
+                if (typeof contents[testSetPartId] === "undefined") {
+                  contents[testSetPartId] = {
+                    shortcut : testSetPartId
+                  }
+                }
+                testSet.contents.forEach(function(test) {
+                  if (typeof tests[testSet.id] === "undefined") {
+                    tests[testSet.id] = [];
+                  }
+                  tests[testSet.id].push({
+                    name : test.id.replace(/\.js$/, ''),
+                    "test-code" : test.contents
+                  });
+                });
+                contents[testSet.id]['tests'] = Object.values(tests[testSet.id]);
+              });
+            }
+          });
+          componentPart.contents = JSON.stringify(Object.values(contents));
+        }
+        break;
       case "dataSources":
         if (typeof componentPart.contents === "object") {
           var contents = {};

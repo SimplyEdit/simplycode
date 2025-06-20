@@ -20,6 +20,7 @@ function(params) {
         footHtml : [],
         commands : [],
         actions : [],
+        shortcuts : [],
         routes : [],
         rawApi : []
       };

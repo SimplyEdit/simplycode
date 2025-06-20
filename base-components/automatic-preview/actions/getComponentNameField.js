@@ -5,6 +5,7 @@ function(component) {
     'component', // componentTemplates
     'action', // actions
     'command', // commands
+    'shortcuts', // shortcuts 
     'page', // pageTemplates
     'method', // rawApi, dataApi
     'dataSource', // dataSources
@@ -17,6 +18,8 @@ function(component) {
       return 'component';
     case 'actions':
       return 'action';
+    case 'shortcuts':
+      return 'shortcut';
     case 'commands':
       return 'command';
     case 'pageTemplates':

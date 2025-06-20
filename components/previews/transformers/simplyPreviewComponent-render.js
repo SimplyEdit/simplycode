@@ -5,6 +5,7 @@ function(data) {
   let replacements = {
     "componentPreview" : data,
     "actions" : editor.transformers.simplyPreviewActions.render(editor.pageData.app.actions ?? []),
+    "shortcuts" : editor.transformers.simplyPreviewShortcuts.render(editor.pageData.app.shortcuts ?? []),
     "commands" : editor.transformers.simplyPreviewCommands.render(editor.pageData.app.commands ?? []),
     "dataApi" : editor.transformers.simplyPreviewDataApi.render(editor.pageData.app.dataApi ?? []),
     "rawApi" : editor.transformers.simplyPreviewRawApi.render(editor.pageData.app.rawApi ?? []),

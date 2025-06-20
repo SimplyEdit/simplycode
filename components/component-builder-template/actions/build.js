@@ -1,6 +1,7 @@
 function(builderTemplate, data) {
   var build = builderTemplate;
   let replacements = {
+    "shortcuts" : editor.transformers.simplyPreviewShortcuts.render(data.shortcuts ?? []),
     "actions" : editor.transformers.simplyPreviewActions.render(data.actions ?? []),
     "commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
     "dataApi" : editor.transformers.simplyPreviewDataApi.render(data.dataApi ?? []),
