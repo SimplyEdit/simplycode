@@ -177,6 +177,8 @@ nav > ul > li[data-simply-command=expandMenu]::before {
 }
 .simplycode-part .simplycode-dual {
   display: grid;
+  grid-template-areas: "left right" 
+    "footer footer";
   grid-template-columns: 1fr 1fr;
 }
 .simplycode-part .simplycode-dual-preview {

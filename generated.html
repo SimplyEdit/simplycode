@@ -515,6 +515,50 @@
         border: 0;
         padding: 5px;
       }
+      /* fullscreen-editors */
+      body:has(.simplycode-editor-code :focus) {
+        overflow: hidden;
+      }
+      .simplycode-editors:not(.simplycode-dual) .simplycode-editor-code:has(:focus) {
+        position: fixed;
+        top: 65px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex !important;
+        flex-direction: column;
+      }
+      .simplycode-editors:not(.simplycode-dual) .simplycode-editor-code:has(:focus) .CodeMirror {
+        flex-grow: 1;
+      }
+      .simplycode-editors.simplycode-dual:has(.simplycode-editor-code :focus) {
+        position: fixed;
+        top: 65px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        display: flex !important;
+        flex-direction: column;
+      }
+      .simplycode-editors:not(.simplycode-dual) .simplycode-editor-code.simplycode-dual:has(:focus):has(.CodeMirror ~ .CodeMirror) {
+        flex-direction: row;
+      }
+      .simplycode-editors.simplycode-dual:has(.simplycode-editor-code :focus) .simplycode-previews {
+        display: none;
+      }
+      .simplycode-editors.simplycode-dual:has(.simplycode-editor-code :focus) .simplycode-editor-code {
+        flex-grow: 1;
+        height: 100%;
+      }
+      .simplycode-editors:not(.simplycode-dual) .simplycode-editor-code.simplycode-dual:has(:focus) .CodeMirror,
+      .simplycode-editors.simplycode-dual:has(.simplycode-editor-code :focus) .CodeMirror {
+        height: 100%;
+      }
+      .simplycode-html {
+        grid-column: span 2 / span 2;
+      }
       /* simply-toast */
       :root {
         --simply-toast-height: 60px;
@@ -889,6 +933,8 @@
       }
       .simplycode-part .simplycode-dual {
         display: grid;
+        grid-template-areas: "left right" 
+          "footer footer";
         grid-template-columns: 1fr 1fr;
       }
       .simplycode-part .simplycode-dual-preview {
@@ -4315,8 +4361,8 @@
               <div class="simplycode-previews">
                 <simply-render rel="pagePreview"></simply-render>
               </div>
+              <simply-render rel="componentHtmlValidator"></simply-render>
             </div>
-            <simply-render rel="componentHtmlValidator"></simply-render>
           </div>
         </template>
       </div>
@@ -4681,14 +4727,16 @@
       <simply-render rel="simply-toolbar"></simply-render>
     </template>
     <template id="componentHtmlValidator">
+      <div class="simplycode-html">
       <div data-simply-field="code" data-simply-transformer="validateHtml"></div>
-    <div class="simplycode-html-messages" data-simply-list="validateResult.messages">
-      <template>
-        <div class="simplycode-html-message">
-          <span data-simply-field="message"></span><br>
-          <span data-simply-field="extract" data-simply-transformer="escapeHtml"></span> on line <span data-simply-field="firstLine"></span> <span data-simply-field="lastLine"></span>
-        </div>
-      </template>
+      <div class="simplycode-html-messages" data-simply-list="validateResult.messages">
+        <template>
+          <div class="simplycode-html-message">
+            <span data-simply-field="message"></span><br>
+            <span data-simply-field="extract" data-simply-transformer="escapeHtml"></span> on line <span data-simply-field="firstLine"></span> <span data-simply-field="lastLine"></span>
+          </div>
+        </template>
+      </div>
     </div>
     </template>
     <template id="menu">
@@ -5801,8 +5849,8 @@
     <script src="js/codemirror/mode/javascript/javascript.js"></script>
     <script src="js/codemirror/mode/xml/xml.js"></script>
     <!-- Codemirror styles -->
-    <link rel="stylesheet" href="js/codemirror/lib/codemirror.css" />
-    <link rel="stylesheet" href="js/codemirror/theme/base16-dark.css"/>
+    <link rel="stylesheet" href="js/codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="js/codemirror/theme/base16-dark.css">
     <!-- Data change codeMirror -->
     <script>
       document.addEventListener("simply-data-changed", function(event) {

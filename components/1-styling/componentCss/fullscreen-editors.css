@@ -1,0 +1,43 @@
+body:has(.simplycode-editor-code :focus) {
+  overflow: hidden;
+}
+.simplycode-editors:not(.simplycode-dual) .simplycode-editor-code:has(:focus) {
+  position: fixed;
+  top: 65px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex !important;
+  flex-direction: column;
+}
+.simplycode-editors:not(.simplycode-dual) .simplycode-editor-code:has(:focus) .CodeMirror {
+  flex-grow: 1;
+}
+.simplycode-editors.simplycode-dual:has(.simplycode-editor-code :focus) {
+  position: fixed;
+  top: 65px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex !important;
+  flex-direction: column;
+}
+.simplycode-editors:not(.simplycode-dual) .simplycode-editor-code.simplycode-dual:has(:focus):has(.CodeMirror ~ .CodeMirror) {
+  flex-direction: row;
+}
+.simplycode-editors.simplycode-dual:has(.simplycode-editor-code :focus) .simplycode-previews {
+  display: none;
+}
+.simplycode-editors.simplycode-dual:has(.simplycode-editor-code :focus) .simplycode-editor-code {
+  flex-grow: 1;
+  height: 100%;
+}
+.simplycode-editors:not(.simplycode-dual) .simplycode-editor-code.simplycode-dual:has(:focus) .CodeMirror,
+.simplycode-editors.simplycode-dual:has(.simplycode-editor-code :focus) .CodeMirror {
+  height: 100%;
+}
+.simplycode-html {
+  grid-column: span 2 / span 2;
+}
