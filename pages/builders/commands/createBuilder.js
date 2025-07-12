@@ -1,4 +1,7 @@
 function() {
+  if (!simplyApp.commands.preSaveCheck()) {
+    return;
+  }
   var newComponent = editor.pageData.newComponent;
   simplyApp.actions.saveBuilder(newComponent)
     .then(function() {
