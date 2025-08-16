@@ -2594,6 +2594,43 @@
             
               return build;
             },
+            "syncRemoteComponent" : function(remote) {
+              let original = {
+                "url" : simplyRawApi.url,
+                "headers" : simplyRawApi.headers
+              };
+              simplyRawApi.url = remote.url;
+              simplyRawApi.headers = {
+                "accept" : "application/json"
+              };
+              let fetchFunctions = {
+                "base-component" : simplyDataApi.getBaseComponent,
+                "component" : simplyDataApi.getComponent,
+                "page" : simplyDataApi.getPage,
+                "page-frame" : simplyDataApi.getPageFrame,
+                "builder" : simplyDataApi.getBuilder
+              };
+              
+              fetchFunctions[remote.type](remote.component)
+              .then(function(parts) {    
+                parts.forEach(function(part) {
+                  if (part.id == "meta") {
+                    return;
+                  }
+                  editor.pageData.component.parts[part.id] = JSON.parse(part.contents);
+                });
+              })
+              .then(function() {
+                for (i in original) {
+                  simplyRawApi[i] = original[i];
+                }
+              })
+              .catch(function() {
+               for (i in original) {
+                  simplyRawApi[i] = original[i];
+                }
+              });
+            },
             "browse" : function(path) {
               return simplyDataApi.browse(path)
                 .catch(function(error) {
@@ -3097,6 +3134,9 @@
             },
             "addRawApiMethod" : function(el) {
               editor.pageData.component.parts.rawApi.push({});
+            },
+            "syncRemoteComponent" : function(el) {
+              return simplyApp.actions.syncRemoteComponent(editor.pageData.component.remote);
             },
             "addRoute" : function(el) {
               editor.pageData.component.parts.routes.push({});
@@ -4516,6 +4556,23 @@
       </div>
     </details>
     </template>
+    <template id="componentRemote">
+      <details class="sb-component">
+      <summary title="Remote API URL to fetch this component from">
+        Remote API URL
+      </summary>
+      <input placeholder="https://..." data-simply-field="component.remote.url">
+      <select data-simply-field="component.remote.type">
+        <option value="base-component">Base component</option>
+        <option value="component">Component</option>
+        <option value="page-frame">Page frame</option>
+        <option value="page">Page</option>
+        <option value="builder">Builder</option>
+      </select>
+      <input placeholder="component path" data-simply-field="component.remote.component"><br>
+      <button class="sb-button" data-simply-command="syncRemoteComponent">Sync from remote</button>
+    </details>
+    </template>
     <template id="componentRoutes">
       <details class="simplycode-component">
       <summary data-simply-command="initEditors" title="Routes provide a translation from a URL to something the app should do. Routes make use of actions to fetch or store data">
@@ -5002,6 +5059,7 @@
       <div class="simplycode-header">
         <h1>Edit base component: <span data-simply-field="component.id"></span></h1>
       </div>
+      <simply-render rel="componentRemote"></simply-render>
       <simply-render rel="componentDescription"></simply-render>
       <simply-render rel="componentHeadHtml"></simply-render>
       <simply-render rel="componentBodyHtml"></simply-render>
@@ -5047,6 +5105,7 @@
       <div class="simplycode-header">
         <h1>Edit builder: <span data-simply-field="component.id"></span></h1>
       </div>
+      <simply-render rel="componentRemote"></simply-render>
       <simply-render rel="componentDescription"></simply-render>
       <simply-render rel="componentBuilderTemplate"></simply-render>
     </main>
@@ -5086,6 +5145,7 @@
       <div class="simplycode-header">
         <h1>Edit component: <span data-simply-field="component.id"></span></h1>
       </div>
+      <simply-render rel="componentRemote"></simply-render>
       <simply-render rel="componentDescription"></simply-render>
       <simply-render rel="componentComponentTemplate"></simply-render>
       <simply-render rel="componentComponentCss"></simply-render>
@@ -5134,6 +5194,7 @@
       <div class="simplycode-header">
         <h1>Edit page: <span data-simply-field="component.id"></span></h1>
       </div>
+      <simply-render rel="componentRemote"></simply-render>
       <simply-render rel="componentDescription"></simply-render>
       <simply-render rel="componentPageTemplate"></simply-render>
       <simply-render rel="componentPageCss"></simply-render>
@@ -5152,6 +5213,7 @@
       <div class="simplycode-header">
         <h1>Edit page frame</h1>
       </div>
+      <simply-render rel="componentRemote"></simply-render>
       <simply-render rel="componentDescription"></simply-render>
       <simply-render rel="componentPageFrame"></simply-render>
     </main>
