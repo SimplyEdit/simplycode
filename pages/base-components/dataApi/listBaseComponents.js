@@ -9,6 +9,7 @@ function() {
     .then(function(components) {
     components.forEach(function(component) {
       simplyDataApi.mergeComponent(component.contents);
+      component.baseType = 'baseComponent';
       component.description = component.contents.description;
     });
     return components;
