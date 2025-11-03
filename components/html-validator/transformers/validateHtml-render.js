@@ -6,8 +6,9 @@ function(data) {
     window.clearTimeout(element.validateTimeout);
   }
   element.validateTimeout = window.setTimeout(function() {
-    fetch("https://validator.w3.org/nu/?out=json", {
-      mode : 'cors',
+//    fetch("https://validator.w3.org/nu/?out=json", {
+	fetch("http://localhost:8888/?out=json", {
+    mode : 'cors',
       headers: {
         "Content-type" : "text/html; charset=utf-8"
       },
