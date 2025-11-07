@@ -3077,9 +3077,23 @@
               var testRunners = document.querySelectorAll(".simplycode-component[open] iframe.qunit");
               testRunners.forEach(function(testRunner) {
                 testRunner.contentWindow.document.testRunner = testRunner;
-                testRunner.contentWindow.document.open();
-                testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
-                testRunner.contentWindow.document.close();
+                simplyApp.commands.resetTests(testRunner)
+                .then(function(testRunner) {
+                  testRunner.contentWindow.document.testRunner = testRunner;
+                  testRunner.contentWindow.document.open();
+                  testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
+                  testRunner.contentWindow.document.close();
+                });
+              });
+            },
+            "resetTests" : function(el) {
+              return new Promise(function(resolve, reject) {
+                var newRunner = el.cloneNode(false);
+                newRunner.addEventListener("load", function() {
+                  resolve(newRunner);
+                });
+                el.parentNode.insertBefore(newRunner, el);
+                el.remove();
               });
             },
             // baseComponent/codemirror
@@ -3224,6 +3238,22 @@
               simplyApp.commands.autoRunPreviews();
             },
             // component/navigation
+            "preSaveCheck" : function(el) {
+              if (document.querySelector(":invalid")) {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "error",
+                  "message" : "Not all required fields have been filled out.",
+                  "state" : "new"
+                });
+                document.querySelectorAll("details:has(:invalid)").forEach(function(item) {
+                  item.setAttribute("open", true);
+                });
+                document.querySelector(":invalid:not(form)").focus();
+                return false;
+              }
+              return true;
+            },
+            // component/navigation
             "collapseMenu" : function(el) {
               if (!el.hasAttribute("open")) {
                 return simplyApp.commands.expandMenu(el);
@@ -3286,6 +3316,9 @@
             },
             // page/base-component
             "saveBaseComponent" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
               simplyApp.actions.saveBaseComponent(editor.pageData.component)
                 .then(function() {
                 editor.pageData.alerts.unshift({
@@ -3297,6 +3330,9 @@
             },
             // page/base-components
             "createBaseComponent" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
               var newComponent = editor.pageData.newComponent;
               simplyApp.actions.saveBaseComponent(newComponent)
                 .then(function() {
@@ -3327,6 +3363,9 @@
             },
             // page/builder
             "saveBuilder" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
               simplyApp.actions.saveBuilder(editor.pageData.component)
                 .then(function() {
                 editor.pageData.alerts.unshift({
@@ -3338,6 +3377,9 @@
             },
             // page/builders
             "createBuilder" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
               var newComponent = editor.pageData.newComponent;
               simplyApp.actions.saveBuilder(newComponent)
                 .then(function() {
@@ -3368,6 +3410,9 @@
             },
             // page/component
             "saveComponent" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
               simplyApp.actions.saveComponent(editor.pageData.component)
               .then(function() {
                 editor.pageData.alerts.unshift({
@@ -3379,6 +3424,9 @@
             },
             // page/component-list
             "createComponent" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
               var newComponent = editor.pageData.newComponent;
               simplyApp.actions.saveComponent(newComponent)
                 .then(function() {
@@ -3409,6 +3457,9 @@
             },
             // page/page
             "savePage" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
               simplyApp.actions.savePage(editor.pageData.component)
                 .then(function() {
                 editor.pageData.alerts.unshift({
@@ -3431,6 +3482,9 @@
             },
             // page/pages
             "createPage" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
               var newComponent = editor.pageData.newComponent;
               simplyApp.actions.savePage(newComponent)
                 .then(function() {
@@ -3901,7 +3955,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="action" placeholder="Action name, eg getItemList">
+                <input class="simplycode-tab" required data-simply-field="action" placeholder="Action name, eg getItemList">
                 <label class="simplycode-tab">
                   <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
                   <span>Code</span>
@@ -3950,7 +4004,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="name" placeholder="Name">
+                <input class="simplycode-tab" required data-simply-field="name" placeholder="Name">
               </div>
               <div class="simplycode-options">
     			<button class="simplycode-button" draggable="true">Drag to move</button>
@@ -3984,7 +4038,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="builder" placeholder="Builder name">
+                <input class="simplycode-tab" data-simply-field="builder" required placeholder="Builder name">
                 <label class="simplycode-tab">
                   <input type="radio" name="builderEditor" checked value="code" data-simply-field="editor">
                   <span>Code</span>
@@ -4023,7 +4077,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="command" placeholder="Command name, eg getItemList">
+                <input class="simplycode-tab" data-simply-field="command" required placeholder="Command name, eg getItemList">
                 <label class="simplycode-tab">
                   <input type="radio" name="commandEditor" checked value="code" data-simply-field="editor">
                   <span>Code</span>
@@ -4073,7 +4127,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="name" placeholder="Name this CSS collection">
+                <input class="simplycode-tab" data-simply-field="name" required placeholder="Name this CSS collection">
               </div>
               <div class="simplycode-options">
     			<button class="simplycode-button" draggable="true">Drag to move</button>
@@ -4106,7 +4160,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="component" placeholder="Component name">
+                <input class="simplycode-tab" data-simply-field="component" required placeholder="Component name">
                 <label class="simplycode-tab">
                   <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
                   <span>Code</span>
@@ -4156,7 +4210,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="method" placeholder="API method name, eg getItemList">
+                <input class="simplycode-tab" data-simply-field="method" required placeholder="API method name, eg getItemList">
               </div>
               <div class="simplycode-options">
     			<button class="simplycode-button" draggable="true">Drag to move</button>
@@ -4189,7 +4243,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="dataSource" placeholder="Data source name, eg itemList">
+                <input class="simplycode-tab" data-simply-field="dataSource" required placeholder="Data source name, eg itemList">
                 <label class="simplycode-tab" title="Load code is used to fetch the data source and render it in the list. Save code is used to gather data from the data source and save it back to where it came from.">
                   <input type="radio" checked name="dataSourceEditor" value="code" data-simply-field="editor">
                   <span>Load/Save</span>
@@ -4276,7 +4330,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="name" placeholder="Name">
+                <input class="simplycode-tab" data-simply-field="name" required placeholder="Name">
               </div>
               <div class="simplycode-options">
     			<button class="simplycode-button" draggable="true">Drag to move</button>
@@ -4310,7 +4364,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="name" placeholder="Name">
+                <input class="simplycode-tab" data-simply-field="name" required placeholder="Name">
               </div>
               <div class="simplycode-options">
                 <button class="simplycode-button" draggable="true">Drag to move</button>
@@ -4344,7 +4398,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="name" placeholder="Name this CSS collection">
+                <input class="simplycode-tab" data-simply-field="name" required placeholder="Name this CSS collection">
               </div>
               <div class="simplycode-options">
                 <button class="simplycode-button" draggable="true">Drag to move</button>
@@ -4432,7 +4486,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="page" placeholder="Page name">
+                <input class="simplycode-tab" data-simply-field="page" required placeholder="Page name">
                 <label class="simplycode-tab">
                   <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
                   <span>Code</span>
@@ -4615,7 +4669,7 @@
           <div class="simplycode-test" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-test-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="name" placeholder="Test name">
+                <input class="simplycode-tab" data-simply-field="name" required placeholder="Test name">
               </div>
               <div class="simplycode-options">
                 <button class="simplycode-button" draggable="true">Drag to move</button>
@@ -4647,7 +4701,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="method" placeholder="API method name, eg getItemList">
+                <input class="simplycode-tab" data-simply-field="method" required placeholder="API method name, eg getItemList">
               </div>
               <div class="simplycode-options">
                 <button class="simplycode-button" draggable="true">Drag to move</button>
@@ -4680,7 +4734,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="name" placeholder="Name of the route">
+                <input class="simplycode-tab" data-simply-field="name" required placeholder="Name of the route">
                 <input class="simplycode-tab" data-simply-field="route" placeholder="#route/:variable">
               </div>
               <div class="simplycode-options">
@@ -4714,7 +4768,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="shortcut" placeholder="shortcut-key">
+                <input class="simplycode-tab" data-simply-field="shortcut" required placeholder="shortcut-key">
                 <label class="simplycode-tab">
                   <input type="radio" name="actionEditor" checked value="code" data-simply-field="editor">
                   <span>Code</span>
@@ -4763,7 +4817,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="sorter" placeholder="Sorter name, eg sortByDescription">
+                <input class="simplycode-tab" data-simply-field="sorter" required placeholder="Sorter name, eg sortByDescription">
               </div>
               <div class="simplycode-options">
                 <button class="simplycode-button" draggable="true">Drag to move</button>
@@ -4796,7 +4850,7 @@
           <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
             <div class="simplycode-part-header">
               <div class="simplycode-tabs">
-                <input class="simplycode-tab" data-simply-field="transformer" placeholder="Transformer name, eg itemNameFromId">
+                <input class="simplycode-tab" data-simply-field="transformer" required placeholder="Transformer name, eg itemNameFromId">
                 <label class="simplycode-tab" title="Render code transforms the data from what is stored into what the user sees. Extract takes the data as provided from the DOM and transforms it for storage">
                   <input type="radio" checked name="transformerEditor" value="code" data-simply-field="editor">
                   <span>Render/Extract</span>
@@ -5170,15 +5224,17 @@
       <div class="simplycode-header">
         <h1>Edit base component: <span data-simply-field="component.id"></span></h1>
       </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentHeadHtml"></simply-render>
-      <simply-render rel="componentBodyHtml"></simply-render>
-      <simply-render rel="componentFootHtml"></simply-render>
-      <simply-render rel="componentCommands"></simply-render>
-      <simply-render rel="componentShortcuts"></simply-render>
-      <simply-render rel="componentActions"></simply-render>
-      <simply-render rel="componentRoutes"></simply-render>
-      <simply-render rel="componentRawApi"></simply-render>
+      <form action="#">
+        <simply-render rel="componentDescription"></simply-render>
+        <simply-render rel="componentHeadHtml"></simply-render>
+        <simply-render rel="componentBodyHtml"></simply-render>
+        <simply-render rel="componentFootHtml"></simply-render>
+        <simply-render rel="componentCommands"></simply-render>
+        <simply-render rel="componentShortcuts"></simply-render>
+        <simply-render rel="componentActions"></simply-render>
+        <simply-render rel="componentRoutes"></simply-render>
+        <simply-render rel="componentRawApi"></simply-render>
+      </form>
     </main>
     </template>
     <!-- page/base-components-->
@@ -5193,22 +5249,24 @@
           </a>
         </template>
       </div>
-      <h1>Add base component</h1>
-      <div class="simplycode-part">
-        <div class="simplycode-part-header">
-          <div class="simplycode-tabs">
-            <input data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+      <form action="#">
+        <h1>Add base component</h1>
+        <div class="simplycode-part">
+          <div class="simplycode-part-header">
+            <div class="simplycode-tabs">
+              <input data-simply-field="newComponent.id" class="simplycode-tab" required placeholder="Name your component">
+            </div>
+            <div class="simplycode-options">
+              <button class="simplycode-button" data-simply-command="createBaseComponent">Create</button>
+            </div>
           </div>
-          <div class="simplycode-options">
-            <button class="simplycode-button" data-simply-command="createBaseComponent">Create</button>
+          <div class="simplycode-editors">
+            <div class="simplycode-editor-code">
+              <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+            </div>
           </div>
         </div>
-        <div class="simplycode-editors">
-          <div class="simplycode-editor-code">
-            <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
-          </div>
-        </div>
-      </div>
+      </form>
     </main>
     </template>
     <!-- page/builder-->
@@ -5217,8 +5275,10 @@
       <div class="simplycode-header">
         <h1>Edit builder: <span data-simply-field="component.id"></span></h1>
       </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentBuilderTemplate"></simply-render>
+      <form action="#">
+        <simply-render rel="componentDescription"></simply-render>
+        <simply-render rel="componentBuilderTemplate"></simply-render>
+      </form>
     </main>
     </template>
     <!-- page/builders-->
@@ -5233,22 +5293,24 @@
           </a>
         </template>
       </div>
-      <h1>Add builder</h1>
-      <div class="simplycode-part">
-        <div class="simplycode-part-header">
-          <div class="simplycode-tabs">
-            <input data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+      <form action="#">
+        <h1>Add builder</h1>
+        <div class="simplycode-part">
+          <div class="simplycode-part-header">
+            <div class="simplycode-tabs">
+              <input required data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+            </div>
+            <div class="simplycode-options">
+              <button class="simplycode-button" data-simply-command="createBuilder">Create</button>
+            </div>
           </div>
-          <div class="simplycode-options">
-            <button class="simplycode-button" data-simply-command="createBuilder">Create</button>
+          <div class="simplycode-editors">
+            <div class="simplycode-editor-code">
+              <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+            </div>
           </div>
         </div>
-        <div class="simplycode-editors">
-          <div class="simplycode-editor-code">
-            <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
-          </div>
-        </div>
-      </div>
+      </form>
     </main>
     
     </template>
@@ -5258,17 +5320,19 @@
       <div class="simplycode-header">
         <h1>Edit component: <span data-simply-field="component.id"></span></h1>
       </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentComponentTemplate"></simply-render>
-      <simply-render rel="componentComponentCss"></simply-render>
-      <simply-render rel="componentCommands"></simply-render>
-      <simply-render rel="componentShortcuts"></simply-render>
-      <simply-render rel="componentActions"></simply-render>
-      <simply-render rel="componentDataApi"></simply-render>
-      <simply-render rel="componentRoutes"></simply-render>
-      <simply-render rel="componentTransformers"></simply-render>
-      <simply-render rel="componentDataSources"></simply-render>
-      <simply-render rel="componentSorters"></simply-render>
+      <form action="#">
+        <simply-render rel="componentDescription"></simply-render>
+        <simply-render rel="componentComponentTemplate"></simply-render>
+        <simply-render rel="componentComponentCss"></simply-render>
+        <simply-render rel="componentCommands"></simply-render>
+        <simply-render rel="componentShortcuts"></simply-render>
+        <simply-render rel="componentActions"></simply-render>
+        <simply-render rel="componentDataApi"></simply-render>
+        <simply-render rel="componentRoutes"></simply-render>
+        <simply-render rel="componentTransformers"></simply-render>
+        <simply-render rel="componentDataSources"></simply-render>
+        <simply-render rel="componentSorters"></simply-render>
+      </form>
     </main>
     </template>
     <!-- page/component-list-->
@@ -5277,30 +5341,31 @@
       <h1>Components</h1>
       <div class="simplycode-component-list" data-simply-list="components">
         <template>
-          <a class="simplycode-component-list-item data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="componentLink">
+          <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="componentLink">
             <h3 data-simply-field="id"></h3>
             <p class="ds-margin-up" data-simply-field="description"></p>
           </a>
         </template>
       </div>
-      <h1>Add component</h1>
-      <div class="simplycode-part">
-        <div class="simplycode-part-header">
-          <div class="simplycode-tabs">
-            <input data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+      <form action="#">
+        <h1>Add component</h1>
+        <div class="simplycode-part">
+          <div class="simplycode-part-header">
+            <div class="simplycode-tabs">
+              <input required data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+            </div>
+            <div class="simplycode-options">
+              <button class="simplycode-button" data-simply-command="createComponent">Create</button>
+            </div>
           </div>
-          <div class="simplycode-options">
-            <button class="simplycode-button" data-simply-command="createComponent">Create</button>
+          <div class="simplycode-editors">
+            <div class="simplycode-editor-code">
+              <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+            </div>
           </div>
         </div>
-        <div class="simplycode-editors">
-          <div class="simplycode-editor-code">
-            <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
-          </div>
-        </div>
-      </div>
+      </form>
     </main>
-    
     </template>
     <!-- page/page-->
     <template data-simply-template="Edit page">
@@ -5308,17 +5373,19 @@
       <div class="simplycode-header">
         <h1>Edit page: <span data-simply-field="component.id"></span></h1>
       </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentPageTemplate"></simply-render>
-      <simply-render rel="componentPageCss"></simply-render>
-      <simply-render rel="componentCommands"></simply-render>
-      <simply-render rel="componentShortcuts"></simply-render>
-      <simply-render rel="componentActions"></simply-render>
-      <simply-render rel="componentDataApi"></simply-render>
-      <simply-render rel="componentRoutes"></simply-render>
-      <simply-render rel="componentTransformers"></simply-render>
-      <simply-render rel="componentDataSources"></simply-render>
-      <simply-render rel="componentSorters"></simply-render>
+      <form action="#">
+        <simply-render rel="componentDescription"></simply-render>
+        <simply-render rel="componentPageTemplate"></simply-render>
+        <simply-render rel="componentPageCss"></simply-render>
+        <simply-render rel="componentCommands"></simply-render>
+        <simply-render rel="componentShortcuts"></simply-render>
+        <simply-render rel="componentActions"></simply-render>
+        <simply-render rel="componentDataApi"></simply-render>
+        <simply-render rel="componentRoutes"></simply-render>
+        <simply-render rel="componentTransformers"></simply-render>
+        <simply-render rel="componentDataSources"></simply-render>
+        <simply-render rel="componentSorters"></simply-render>
+      </form>
     </main>
     </template>
     <!-- page/page-frame-->
@@ -5327,8 +5394,10 @@
       <div class="simplycode-header">
         <h1>Edit page frame</h1>
       </div>
-      <simply-render rel="componentDescription"></simply-render>
-      <simply-render rel="componentPageFrame"></simply-render>
+      <form action="#">
+        <simply-render rel="componentDescription"></simply-render>
+        <simply-render rel="componentPageFrame"></simply-render>
+      </form>
     </main>
     </template>
     <!-- page/pages-->
@@ -5343,24 +5412,25 @@
           </a>
         </template>
       </div>
-      <h1>Add page</h1>
-      <div class="simplycode-part">
-        <div class="simplycode-part-header">
-          <div class="simplycode-tabs">
-            <input data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+      <form action="#">
+        <h1>Add page</h1>
+        <div class="simplycode-part">
+          <div class="simplycode-part-header">
+            <div class="simplycode-tabs">
+              <input required data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+            </div>
+            <div class="simplycode-options">
+              <button class="simplycode-button" data-simply-command="createPage">Create</button>
+            </div>
           </div>
-          <div class="simplycode-options">
-            <button class="simplycode-button" data-simply-command="createPage">Create</button>
+          <div class="simplycode-editors">
+            <div class="simplycode-editor-code">
+              <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+            </div>
           </div>
         </div>
-        <div class="simplycode-editors">
-          <div class="simplycode-editor-code">
-            <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
-          </div>
-        </div>
-      </div>
+      </form>
     </main>
-    
     </template>
     <!-- page/preview-->
     <template data-simply-template="preview-app">
