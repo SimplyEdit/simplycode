@@ -3086,6 +3086,7 @@
                 });
               });
             },
+            // baseComponent/automatic-tests
             "resetTests" : function(el) {
               return new Promise(function(resolve, reject) {
                 var newRunner = el.cloneNode(false);
@@ -3237,7 +3238,7 @@
               simplyApp.commands.autoRunTests();
               simplyApp.commands.autoRunPreviews();
             },
-            // component/navigation
+            // component/components-generic
             "preSaveCheck" : function(el) {
               if (document.querySelector(":invalid")) {
                 editor.pageData.alerts.unshift({
