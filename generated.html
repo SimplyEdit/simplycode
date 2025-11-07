@@ -3001,9 +3001,23 @@
               var testRunners = document.querySelectorAll(".simplycode-component[open] iframe.qunit");
               testRunners.forEach(function(testRunner) {
                 testRunner.contentWindow.document.testRunner = testRunner;
-                testRunner.contentWindow.document.open();
-                testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
-                testRunner.contentWindow.document.close();
+                simplyApp.commands.resetTests(testRunner)
+                .then(function(testRunner) {
+                  testRunner.contentWindow.document.testRunner = testRunner;
+                  testRunner.contentWindow.document.open();
+                  testRunner.contentWindow.document.write(testRunner.parentNode.querySelector(".qunit-code").innerText);
+                  testRunner.contentWindow.document.close();
+                });
+              });
+            },
+            "resetTests" : function(el) {
+              return new Promise(function(resolve, reject) {
+                var newRunner = el.cloneNode(false);
+                newRunner.addEventListener("load", function() {
+                  resolve(newRunner);
+                });
+                el.parentNode.insertBefore(newRunner, el);
+                el.remove();
               });
             },
             "codeMirrorInit" : function() {
