@@ -2,6 +2,7 @@ function(data) {
   this.originalData = data;
   methods = [];
   data.forEach(function(method) {
+    methods.push('// ' + method.base);
 	methods.push('editor.addDataSource("' + method.dataSource + '", {');
     methods.push('  load : function(el, callback) {');
     methods.push('    ' + method['load-code']);

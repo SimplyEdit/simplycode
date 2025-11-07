@@ -54,6 +54,7 @@ function() {
           }
           parts = JSON.parse(part.contents);
           parts.forEach(function(entry) {
+            entry.base = component.baseType + "/" + component.id;
             appData[part.id].push(entry);
           });
         });
