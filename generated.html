@@ -2514,6 +2514,64 @@
               return components;
             });
           },
+          // page/imports
+          "listSimplyModules" : function() {
+            return simplyRawApi.get("simply-modules")
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("listSimplyModules failed", response.status);
+            })
+            .then(function(simplyModules) {
+              simplyModules.forEach(function(moduleGroup) {
+                console.log(moduleGroup.id); // test-import
+                moduleGroup.contents.forEach(function(module) {
+                  console.log(module.id); // test
+                  module.contents.forEach(function(moduleComponentCategory) {
+                    console.log(moduleComponentCategory.id); // base-components
+                    switch(moduleComponentCategory.id) {
+                      case "components":
+                        moduleComponentCategory.contents.forEach(function(component) {
+                          simplyDataApi.mergeComponent(component.contents);
+                          component.description = component.contents.description;
+                          component.baseType = 'component';
+                        });
+                      break;
+                      case "base-components":
+                        moduleComponentCategory.contents.forEach(function(component) {
+                          simplyDataApi.mergeComponent(component.contents);
+                          component.description = component.contents.description;
+                          component.baseType = 'baseComponent';
+                        });
+                      break;
+                      case "pages":
+                        moduleComponentCategory.contents.forEach(function(component) {
+                          simplyDataApi.mergeComponent(component.contents);
+                          component.description = component.contents.description;
+                          component.baseType = 'page';
+                        });
+                      break;
+                      case "builders":
+                        moduleComponentCategory.contents.forEach(function(component) {
+                          simplyDataApi.mergeComponent(component.contents);
+                          component.description = component.contents.description;
+                          component.baseType = 'builder';
+                        });
+                      case "imports":
+                        moduleComponentCategory.contents.forEach(function(component) {
+                          simplyDataApi.mergeComponent(component.contents);
+                          component.description = component.contents.description;
+                          component.baseType = 'import';
+                        });
+                      break;
+                    }
+                  });
+                });
+              });
+              return simplyModules;
+            });
+          },
           // page/page
           "deletePage" : function(component) {
             return simplyRawApi.delete("pages/" + component)
@@ -2995,6 +3053,13 @@
                 return [];
               });
             },
+            // page/imports
+            "listSimplyModules" : function() {
+              return simplyDataApi.listSimplyModules()
+                .catch(function(error) {
+                return [];
+              });
+            },
             // page/page
             "deletePage" : function(component) {
               return simplyDataApi.deletePage(component);
@@ -3073,6 +3138,44 @@
                   frame[part.id] = part.contents;
                 });
                 appData.pageFrame = frame;
+              })
+              .then(function() {
+                return simplyApp.actions.listSimplyModules()
+                .then(function(modules) {
+                  modules.forEach(function(module) {
+                    // test-import
+                    console.log(module);
+                    module.contents.forEach(function(moduleGroup) {
+                      // test
+                      moduleGroup.contents.forEach(function(moduleComponentCategory) {
+                        switch (moduleComponentCategory.id) {
+                          case "base-components":
+                          case "components":
+                          case "pages":
+                          case "builders":
+                          case "imports":
+                            moduleComponentCategory.contents.forEach(function(component) {
+                              component.contents.forEach(function(part) {
+                                if (part.id == "meta") {
+                                  return;
+                                };
+            
+                                if (typeof appData[part.id] === "undefined") {
+                                  appData[part.id] = [];
+                                }
+                                parts = JSON.parse(part.contents);
+                                parts.forEach(function(entry) {
+                                  entry.base = component.baseType + "/" + component.id;
+                                  appData[part.id].push(entry);
+                                });
+                              });
+                            });
+                          break;
+                        }
+                      });
+                    });
+                  });
+                });
               })
               .then(function() {
                 return simplyApp.actions.listBuilders()
