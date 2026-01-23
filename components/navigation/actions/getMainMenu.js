@@ -36,6 +36,13 @@ function() {
             href : "#builders",
             "data-path" : "builders"
           }
+        },
+        {
+          item : {
+            innerHTML : "Imports",
+            href : "#imports",
+            "data-path" : "imports"
+          }
         }
       ]
     );
