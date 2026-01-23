@@ -118,6 +118,23 @@ function(component) {
           componentPart.contents = JSON.stringify(Object.values(contents));
         }
         break;
+      case "importUrls":
+        if (typeof componentPart.contents === "object") {
+          var contents = {};
+          componentPart.contents.forEach(function(partFile) {
+            if (partFile.id.match(/\.url$/)) {
+              partId = partFile.id.replace(/\.url$/, '');
+              if (typeof contents[partId] === "undefined") {
+                contents[partId] = {
+                  import : partId
+                }
+              }
+              contents[partId]['url'] = partFile.contents;
+            }
+          });
+          componentPart.contents = JSON.stringify(Object.values(contents));
+        }
+        break;
       case "rawApi":
       case "dataApi":
         if (typeof componentPart.contents === "object") {

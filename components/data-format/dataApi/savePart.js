@@ -109,6 +109,22 @@ function(basePath, part, contents) {
         }
       });
       break;
+    case "importUrls":
+      contents.forEach(function(componentPart, componentIndex) {
+        if (!componentPart.url) {
+          throw new Error("Required part name is empty");
+        }
+        if (componentPart.deleted == "true") {
+          results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.import + ".url"));
+          contents.splice(componentIndex, 1);
+        } else {
+          results.push(simplyRawApi.putRaw(
+            basePath + "/" + part + "/" + componentPart.import + ".url", {},
+            componentPart.url
+          ));
+        }
+      });
+      break;
     case "rawApi":
     case "dataApi":
       contents.forEach(function(componentPart, componentIndex) {
