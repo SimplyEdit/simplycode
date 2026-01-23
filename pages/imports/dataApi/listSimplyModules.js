@@ -8,11 +8,8 @@ function() {
   })
   .then(function(simplyModules) {
     simplyModules.forEach(function(moduleGroup) {
-      console.log(moduleGroup.id); // test-import
       moduleGroup.contents.forEach(function(module) {
-        console.log(module.id); // test
         module.contents.forEach(function(moduleComponentCategory) {
-          console.log(moduleComponentCategory.id); // base-components
           switch(moduleComponentCategory.id) {
             case "components":
               moduleComponentCategory.contents.forEach(function(component) {

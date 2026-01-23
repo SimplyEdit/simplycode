@@ -17,7 +17,6 @@ function() {
     .then(function(modules) {
       modules.forEach(function(module) {
         // test-import
-        console.log(module);
         module.contents.forEach(function(moduleGroup) {
           // test
           moduleGroup.contents.forEach(function(moduleComponentCategory) {
