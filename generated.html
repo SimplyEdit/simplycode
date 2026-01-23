@@ -949,6 +949,12 @@
       .simplycode-editor-code textarea {
         margin-top: -1px;
       }
+      /* simplycode-import-url (component/component-import-url) */
+      .simplycode-editor-url input {
+        width: 100%;
+        padding: 10px;
+        font-size: 1.2em;
+      }
       /* QUnit iframe (component/component-qunit-tests) */
       .qunit-code {
         display: none;
@@ -1509,6 +1515,23 @@
                     componentPart.contents = JSON.stringify(Object.values(contents));
                   }
                   break;
+                case "importUrls":
+                  if (typeof componentPart.contents === "object") {
+                    var contents = {};
+                    componentPart.contents.forEach(function(partFile) {
+                      if (partFile.id.match(/\.url$/)) {
+                        partId = partFile.id.replace(/\.url$/, '');
+                        if (typeof contents[partId] === "undefined") {
+                          contents[partId] = {
+                            import : partId
+                          }
+                        }
+                        contents[partId]['url'] = partFile.contents;
+                      }
+                    });
+                    componentPart.contents = JSON.stringify(Object.values(contents));
+                  }
+                  break;
                 case "rawApi":
                 case "dataApi":
                   if (typeof componentPart.contents === "object") {
@@ -1911,6 +1934,22 @@
                     results.push(simplyRawApi.putRaw(
                       basePath + "/" + part + "/" + componentPart.builder, {},
                       componentPart.code
+                    ));
+                  }
+                });
+                break;
+              case "importUrls":
+                contents.forEach(function(componentPart, componentIndex) {
+                  if (!componentPart.url) {
+                    throw new Error("Required part name is empty");
+                  }
+                  if (componentPart.deleted == "true") {
+                    results.push(simplyRawApi.delete(basePath + "/" + part + "/" + componentPart.import + ".url"));
+                    contents.splice(componentIndex, 1);
+                  } else {
+                    results.push(simplyRawApi.putRaw(
+                      basePath + "/" + part + "/" + componentPart.import + ".url", {},
+                      componentPart.url
                     ));
                   }
                 });
@@ -2407,6 +2446,74 @@
               return components;
             });
           },
+          // page/import
+          "deleteImport" : function(component) {
+            return simplyRawApi.delete("imports/" + component)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteImport failed", response.status);
+            });
+          },
+          // page/import
+          "deleteImportPart" : function(component, part) {
+            return simplyRawApi.delete("imports/" + component + "/" + part)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("deleteImportPart failed", response.status);
+            });
+          },
+          // page/import
+          "getImport" : function(component) {
+            return simplyRawApi.get("imports/" + component)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("getImport failed", response.status);
+            })
+              .then(function(component) {
+              return simplyDataApi.mergeComponent(component);
+            });
+          },
+          // page/import
+          "saveImportPart" : function(component, part, contents) {
+            return simplyDataApi.savePart("imports/" + component, part, contents)
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              // retry the call once
+              return simplyDataApi.savePart("imports/" + component, part, contents)
+                .then(function(response) {
+                if (response.status === 200) {
+                  return response.json();
+                }
+                throw new Error("saveImportPart failed", response.status);
+              });
+            });
+          },
+          // page/imports
+          "listImports" : function() {
+            return simplyRawApi.get("imports")
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("listImports failed", response.status);
+            })
+              .then(function(components) {
+              components.forEach(function(component) {
+                simplyDataApi.mergeComponent(component.contents);
+                component.baseType = 'import';
+                component.description = component.contents.description;
+              });
+              return components;
+            });
+          },
           // page/page
           "deletePage" : function(component) {
             return simplyRawApi.delete("pages/" + component)
@@ -2639,6 +2746,41 @@
             
               return build;
             },
+            // component/component-import-url
+            "build" : function(builderTemplate, data) {
+              var build = builderTemplate;
+              let replacements = {
+                "shortcuts" : editor.transformers.simplyPreviewShortcuts.render(data.shortcuts ?? []),
+                "actions" : editor.transformers.simplyPreviewActions.render(data.actions ?? []),
+                "commands" : editor.transformers.simplyPreviewCommands.render(data.commands ?? []),
+                "dataApi" : editor.transformers.simplyPreviewDataApi.render(data.dataApi ?? []),
+                "rawApi" : editor.transformers.simplyPreviewRawApi.render(data.rawApi ?? []),
+                "routes" : editor.transformers.simplyPreviewRoutes.render(data.routes ?? []),
+                "dataSources" : editor.transformers.simplyPreviewDataSources.render(data.dataSources ?? []),
+                "transformers" : editor.transformers.simplyPreviewTransformers.render(data.transformers ?? []),
+                "sorters" : editor.transformers.simplyPreviewSorters.render(data.sorters ?? []),
+                "pageTemplates" :editor.transformers.simplyPreviewPageTemplates.render(data.pageTemplates ?? []),
+                "pageCss" : editor.transformers.simplyPreviewPageCss.render(data.pageCss ?? []),
+                "componentCss" : editor.transformers.simplyPreviewComponentCss.render(data.componentCss ?? []),
+                "componentTemplates" : editor.transformers.simplyPreviewComponentTemplates.render(data.componentTemplates ?? []),
+                "headHtml": editor.transformers.simplyPreviewHeadHtml.render(data.headHtml ?? []),
+                "footHtml": editor.transformers.simplyPreviewFootHtml.render(data.footHtml ?? []),
+                "bodyHtml" : editor.transformers.simplyPreviewBodyHtml.render(data.bodyHtml ?? [])
+              };
+            
+              Object.keys(replacements).forEach(function(replacement) {
+                matches = build.match("(\\s*){{" + replacement + "}}");
+                if (matches) {
+                  let indentedNewline = matches[1];
+                  if (indentedNewline == '') {
+                    indentedNewline = "\n";
+                  }
+                  build = build.replace("{{" + replacement + "}}", replacements[replacement].replace(/\n/g, indentedNewline));
+                }
+              });
+            
+              return build;
+            },
             // component/navigation
             "browse" : function(path) {
               return simplyDataApi.browse(path)
@@ -2684,6 +2826,13 @@
                         innerHTML : "Builders",
                         href : "#builders",
                         "data-path" : "builders"
+                      }
+                    },
+                    {
+                      item : {
+                        innerHTML : "Imports",
+                        href : "#imports",
+                        "data-path" : "imports"
                       }
                     }
                   ]
@@ -2803,6 +2952,45 @@
             // page/component-list
             "listComponents" : function() {
               return simplyDataApi.listComponents()
+                .catch(function(error) {
+                return [];
+              });
+            },
+            // page/import
+            "deleteImport" : function(component) {
+              return simplyDataApi.deleteImport(component);
+            },
+            // page/import
+            "getImport" : function(component) {
+              return simplyDataApi.getImport(component);
+            },
+            // page/import
+            "saveImport" : function(component) {
+              var promises = [];
+              for (var name in component.parts) {
+                if (component.parts[name].length) { 
+                  promises.push(simplyDataApi.saveImportPart(component.id, name, component.parts[name]));
+                } else {
+                  editor.pageData.parts.forEach(function(part) {
+                    if (part.id == name) {
+                      promises.push(simplyDataApi.deleteImportPart(component.id, name));
+                    }
+                  });
+                }
+              };
+            
+              var meta = clone(component);
+              delete meta.parts;
+              promises.push(simplyDataApi.saveImportPart(meta.id, "meta", meta));
+            
+              return Promise.all(promises)
+                .then(function() {
+                return true;
+              });
+            },
+            // page/imports
+            "listImports" : function() {
+              return simplyDataApi.listImports()
                 .catch(function(error) {
                 return [];
               });
@@ -3188,6 +3376,10 @@
             "addHeadHtml" : function(el) {
               editor.pageData.component.parts.headHtml.push({});
             },
+            // component/component-import-url
+            "addImportUrl" : function(el) {
+              editor.pageData.component.parts.importUrls.push({});
+            },
             // component/component-page-css
             "addPageCss" : function(el) {
               editor.pageData.component.parts.pageCss.push({});
@@ -3437,6 +3629,53 @@
                   "state" : "new"
                 });
                 document.location.hash="components/" + newComponent.id;
+              });
+            },
+            // page/import
+            "deleteImport" : function() {
+              if (!confirm("Delete import?")) {
+                return;
+              }
+              simplyApp.actions.deleteImport(
+                editor.pageData.component.id
+              )
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Import deleted.",
+                  "state" : "new"
+                });
+                document.location.hash="imports/";
+              });
+            },
+            // page/import
+            "saveImport" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
+              simplyApp.actions.saveImport(editor.pageData.component)
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Import saved.",
+                  "state" : "new"
+                });
+              });
+            },
+            // page/imports
+            "createImport" : function() {
+              if (!simplyApp.commands.preSaveCheck()) {
+                return;
+              }
+              var newComponent = editor.pageData.newComponent;
+              simplyApp.actions.saveImport(newComponent)
+                .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Import created.",
+                  "state" : "new"
+                });
+                document.location.hash="imports/" + newComponent.id;
               });
             },
             // page/page
@@ -3733,6 +3972,45 @@
                 editor.pageData.page = "Edit component";
               });
             },
+            // page/import
+            "#imports/:component" : function(params) {
+              editor.pageData.app = {};
+              simplyApp.actions.getAppData()
+                .then(function(appData) {
+                editor.pageData.app = appData;
+              })
+                .then(function() {
+                return simplyApp.actions.getImport(params.component);
+              })
+                .then(function(parts) {
+                var component = {
+                  id : params.component
+                };
+            
+                parts = parts.filter(function(part) {
+                  if (part.id == "meta") {
+                    component = JSON.parse(part.contents);
+                    component.id = params.component;
+                    return false;
+                  }
+                  return true;
+                });
+                if (typeof component.parts === "undefined") {
+                  component.parts = {
+                    importTemplates : []
+                  };
+                }
+                var count = {};
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                  count[part.id] = component.parts[part.id].length;
+                });
+                editor.pageData.component = component;
+                editor.pageData.parts = parts;
+                editor.pageData.count = count;
+                editor.pageData.page = "Edit import";
+              });
+            },
             // page/page
             "#pages/:component" : function(params) {
               editor.pageData.app = {};
@@ -3804,6 +4082,14 @@
                     editor.pageData.components = components;
                     editor.pageData.page = "List components";
                 });
+            },
+            // page/imports
+            "#imports" : function() {
+              simplyApp.actions.listImports()
+                .then(function(components) {
+                editor.pageData.components = components;
+                editor.pageData.page = "Imports";
+              });
             },
             // page/page-frame
             "#page-frame" : function() {
@@ -4376,6 +4662,45 @@
               <div class="simplycode-editor-code">
                 <textarea data-codemirror-mode="htmlmixed" data-simply-field="code" placeholder="<link rel='stylesheet'..."></textarea>
                 <simply-render rel="componentHtmlValidator"></simply-render>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </details>
+    </template>
+    <!-- component/component-import-url-->
+    <template id="componentImportUrl">
+      <details class="simplycode-component">
+      <summary data-simply-command="initEditors" title="These imports are fetched as modules for your project.">
+        <span data-simply-field="count.imports" data-simply-content="attributes" data-simply-attributes="data-count">
+          Import URL
+        </span>
+        <span class="simplycode-controls">
+          <button class="simplycode-button" data-simply-command="addImportUrl">Add import URL</button>
+        </span>
+      </summary>
+      <div class="simplycode-code-method" data-simply-list="component.parts.importUrls">
+        <template>
+          <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
+            <div class="simplycode-part-header">
+              <div class="simplycode-tabs">
+                <input class="simplycode-tab" data-simply-field="import" required placeholder="Import name">
+                <label class="simplycode-tab">
+                  <input type="radio" name="importEditor" checked value="url" data-simply-field="editor">
+                  <span>URL</span>
+                </label>
+              </div>
+              <div class="simplycode-options">
+                <button class="simplycode-button" draggable="true">Drag to move</button>
+                <button class="simplycode-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-simply-command="deleteEntry">Delete import URL</button>
+              </div>
+            </div>
+            <div class="simplycode-editors">
+              <div class="simplycode-editor-url" data-simply-field="editor" data-simply-content="template" data-simply-default-template="url">
+                <template data-simply-template="url">
+                  <input type="text" data-simply-field="url" placeholder="https://....">
+                </template>
               </div>
             </div>
           </div>
@@ -5106,6 +5431,37 @@
     </button>
     </template>
     <!-- component/simply-toolbar-->
+    <template id="simply-toolbar-import">
+      <div class="simply-toolbar-title">
+      <simply-render rel="logo"></simply-render>
+    </div>
+    <button data-simply-accesskey="Control+s" class="ds-button simply-toolbar-button" data-simply-command="saveImport">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#save">
+        </use></svg>
+      Save
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="deleteImport">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#trash">
+        </use></svg>
+      Delete
+    </button>
+    <span class="simply-toolbar-push-right"></span>
+    <button class="ds-button simply-toolbar-button" data-simply-command="preview">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#eye">
+        </use></svg>
+      Preview
+    </button>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#check">
+        </use></svg>
+      Publish
+    </button>
+    </template>
+    <!-- component/simply-toolbar-->
     <template id="simply-toolbar-page-frame">
       <div class="simply-toolbar-title">
       <simply-render rel="logo"></simply-render>
@@ -5203,6 +5559,7 @@
       <nav class="simply-toolbar simply-toolbar-main" data-simply-field="page" data-simply-section="simply-code-management" data-simply-content="template" data-simply-default-template="default" data-simply-default-value="default">
       <template data-simply-template="default" rel="simply-toolbar-default"></template>
       <template data-simply-template="Edit builder" rel="simply-toolbar-builder"></template>
+      <template data-simply-template="Edit import" rel="simply-toolbar-import"></template>
       <template data-simply-template="Edit page" rel="simply-toolbar-page"></template>
       <template data-simply-template="Edit component" rel="simply-toolbar-component"></template>
       <template data-simply-template="Edit base component" rel="simply-toolbar-base-component"></template>
@@ -5367,6 +5724,51 @@
         </div>
       </form>
     </main>
+    </template>
+    <!-- page/import-->
+    <template data-simply-template="Edit import">
+      <main>
+      <div class="simplycode-header">
+        <h1>Edit import: <span data-simply-field="component.id"></span></h1>
+      </div>
+      <form action="#">
+        <simply-render rel="componentDescription"></simply-render>
+        <simply-render rel="componentImportUrl"></simply-render>
+      </form>
+    </main>
+    </template>
+    <!-- page/imports-->
+    <template data-simply-template="Imports">
+      <main>
+      <h1>Imports</h1>
+      <div class="simplycode-component-list" data-simply-list="components">
+        <template>
+          <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="importLink">
+            <h3 data-simply-field="id"></h3>
+            <p class="ds-margin-up" data-simply-field="description"></p>
+          </a>
+        </template>
+      </div>
+      <form action="#">
+        <h1>Add import</h1>
+        <div class="simplycode-part">
+          <div class="simplycode-part-header">
+            <div class="simplycode-tabs">
+              <input required data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+            </div>
+            <div class="simplycode-options">
+              <button class="simplycode-button" data-simply-command="createImport">Create</button>
+            </div>
+          </div>
+          <div class="simplycode-editors">
+            <div class="simplycode-editor-code">
+              <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+            </div>
+          </div>
+        </div>
+      </form>
+    </main>
+    
     </template>
     <!-- page/page-->
     <template data-simply-template="Edit page">
@@ -5924,6 +6326,19 @@
           },
           extract : function(data) {
               return this.simplyData;
+          }
+        },
+        // page/imports
+        "importLink" : {
+          render : function(data) {
+            this.simplyData = data;
+            return {
+              href : "#imports/" + data,
+              innerHTML: data
+            };
+          },
+          extract : function(data) {
+            return this.simplyData;
           }
         },
         // page/pages
