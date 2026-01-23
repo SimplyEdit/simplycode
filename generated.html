@@ -949,6 +949,12 @@
       .simplycode-editor-code textarea {
         margin-top: -1px;
       }
+      strong.simplycode-module {
+        color: var(--simplycode-highlight-dark);
+        float: right;
+        padding-right: 5px;
+      }
+      
       /* simplycode-import-url (component/component-import-url) */
       .simplycode-editor-url input {
         width: 100%;
@@ -2313,6 +2319,80 @@
               return components;
             });
           },
+          // page/base-components
+          "listMergedBaseComponents" : async function() {
+            let moduleComponents;
+            let localComponents;
+          
+            try {
+              moduleComponents = await simplyDataApi.listSimplyModuleBaseComponents();
+            } catch(e) {
+              moduleComponents = [];
+            }
+          
+            try {
+              localComponents = await simplyDataApi.listBaseComponents();
+            } catch(e) {
+              localComponents = [];
+            } 
+            
+            let componentIndex = {};
+            let result = [];
+          
+            moduleComponents.forEach(function(component) {
+              componentIndex[component.id] = component;
+              component.imported = true;
+              result.push(component);
+            });
+          
+            localComponents.forEach(function(localComponent) {
+              if (typeof componentIndex[localComponent.id] !== "undefined") {
+                // FIXME: Merge the module + local component;
+                let mergedComponent = {};
+                
+                componentIndex[localComponent.id].contents.forEach(function(componentPart) {
+                  if (typeof mergedComponent[componentPart.id] === "undefined") {
+                    mergedComponent[componentPart.id] = {};
+                  }
+                  let parts = JSON.parse(componentPart.contents);
+                  let nameField = simplyApp.actions.getComponentNameField(componentPart.id);
+                  if (Array.isArray(parts)) {
+                    parts.forEach(function(part) {
+                      mergedComponent[componentPart.id][part[nameField]] = part;
+                    });
+                  }
+                });
+                localComponent.contents.forEach(function(componentPart) {
+                  if (typeof mergedComponent[componentPart.id] === "undefined") {
+                    mergedComponent[componentPart.id] = {};
+                  }
+                  let parts = JSON.parse(componentPart.contents);
+                  let nameField = simplyApp.actions.getComponentNameField(componentPart.id);
+                  if (Array.isArray(parts)) {
+                    parts.forEach(function(part) {
+                      mergedComponent[componentPart.id][part[nameField]] = part;
+                    });
+                  }
+                });
+                
+                componentIndex[localComponent.id].contents = [];
+                Object.keys(mergedComponent).forEach(function(componentPart) {
+                  let content = [];
+                  Object.values(mergedComponent[componentPart]).forEach(function(part) {
+                    content.push(part);
+                  });
+                  let mergedPart = {
+                    "id" : componentPart,
+                    "contents" : JSON.stringify(content)
+                  };
+                  componentIndex[localComponent.id].contents.push(mergedPart);
+                });
+              } else {
+                result.push(localComponent);
+              }
+            });
+            return result;
+          },
           // page/builder
           "deleteBuilder" : function(component) {
             return simplyRawApi.delete("builders/" + component)
@@ -2449,6 +2529,80 @@
               return components;
             });
           },
+          // page/component-list
+          "listMergedComponents" : async function() {
+            let moduleComponents;
+            let localComponents;
+          
+            try {
+              moduleComponents = await simplyDataApi.listSimplyModuleComponents();
+            } catch(e) {
+              moduleComponents = [];
+            }
+          
+            try {
+              localComponents = await simplyDataApi.listComponents();
+            } catch(e) {
+              localComponents = [];
+            } 
+            
+            let componentIndex = {};
+            let result = [];
+          
+            moduleComponents.forEach(function(component) {
+              componentIndex[component.id] = component;
+              component.imported = true;
+              result.push(component);
+            });
+          
+            localComponents.forEach(function(localComponent) {
+              if (typeof componentIndex[localComponent.id] !== "undefined") {
+                // FIXME: Merge the module + local component;
+                let mergedComponent = {};
+                
+                componentIndex[localComponent.id].contents.forEach(function(componentPart) {
+                  if (typeof mergedComponent[componentPart.id] === "undefined") {
+                    mergedComponent[componentPart.id] = {};
+                  }
+                  let parts = JSON.parse(componentPart.contents);
+                  let nameField = simplyApp.actions.getComponentNameField(componentPart.id);
+                  if (Array.isArray(parts)) {
+                    parts.forEach(function(part) {
+                      mergedComponent[componentPart.id][part[nameField]] = part;
+                    });
+                  }
+                });
+                localComponent.contents.forEach(function(componentPart) {
+                  if (typeof mergedComponent[componentPart.id] === "undefined") {
+                    mergedComponent[componentPart.id] = {};
+                  }
+                  let parts = JSON.parse(componentPart.contents);
+                  let nameField = simplyApp.actions.getComponentNameField(componentPart.id);
+                  if (Array.isArray(parts)) {
+                    parts.forEach(function(part) {
+                      mergedComponent[componentPart.id][part[nameField]] = part;
+                    });
+                  }
+                });
+                
+                componentIndex[localComponent.id].contents = [];
+                Object.keys(mergedComponent).forEach(function(componentPart) {
+                  let content = [];
+                  Object.values(mergedComponent[componentPart]).forEach(function(part) {
+                    content.push(part);
+                  });
+                  let mergedPart = {
+                    "id" : componentPart,
+                    "contents" : JSON.stringify(content)
+                  };
+                  componentIndex[localComponent.id].contents.push(mergedPart);
+                });
+              } else {
+                result.push(localComponent);
+              }
+            });
+            return result;
+          },
           // page/import
           "deleteImport" : function(component) {
             return simplyRawApi.delete("imports/" + component)
@@ -2518,6 +2672,96 @@
             });
           },
           // page/imports
+          "listSimplyModuleBaseComponents" : function() {
+            return simplyRawApi.get("simply-modules")
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("listSimplyModules failed", response.status);
+            })
+              .then(function(simplyModules) {
+              let components = [];
+              simplyModules.forEach(function(moduleGroup) {
+                moduleGroup.contents.forEach(function(module) {
+                  module.contents.forEach(function(moduleComponentCategory) {
+                    switch(moduleComponentCategory.id) {
+                      case "base-components":
+                        moduleComponentCategory.contents.forEach(function(component) {
+                          simplyDataApi.mergeComponent(component.contents);
+                          component.description = component.contents.description;
+                          component.baseType = 'baseComponent';
+                          components.push(component);
+                        });
+                      break;
+                    }
+                  });
+                });
+              });
+              return components;
+            });
+          },
+          // page/imports
+          "listSimplyModuleComponents" : function() {
+            return simplyRawApi.get("simply-modules")
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("listSimplyModules failed", response.status);
+            })
+              .then(function(simplyModules) {
+              let components = [];
+              simplyModules.forEach(function(moduleGroup) {
+                moduleGroup.contents.forEach(function(module) {
+                  module.contents.forEach(function(moduleComponentCategory) {
+                    switch(moduleComponentCategory.id) {
+                      case "components":
+                        moduleComponentCategory.contents.forEach(function(component) {
+                          simplyDataApi.mergeComponent(component.contents);
+                          component.description = component.contents.description;
+                          component.baseType = 'component';
+                          components.push(component);
+                        });
+                      break;
+                    }
+                  });
+                });
+              });
+              return components;
+            });
+          },
+          // page/imports
+          "listSimplyModulePages" : function() {
+            return simplyRawApi.get("simply-modules")
+              .then(function(response) {
+              if (response.status === 200) {
+                return response.json();
+              }
+              throw new Error("listSimplyModules failed", response.status);
+            })
+              .then(function(simplyModules) {
+              let components = [];
+              simplyModules.forEach(function(moduleGroup) {
+                moduleGroup.contents.forEach(function(module) {
+                  module.contents.forEach(function(moduleComponentCategory) {
+                    switch(moduleComponentCategory.id) {
+                      case "components":
+                        moduleComponentCategory.contents.forEach(function(component) {
+                          simplyDataApi.mergeComponent(component.contents);
+                          component.description = component.contents.description;
+                          component.baseType = 'page';
+                          components.push(component);
+                        });
+                      break;
+                    }
+                  });
+                });
+              });
+              return components;
+            });
+          },
+          // page/imports
           "listSimplyModules" : function() {
             return simplyRawApi.get("simply-modules")
               .then(function(response) {
@@ -2528,11 +2772,8 @@
             })
             .then(function(simplyModules) {
               simplyModules.forEach(function(moduleGroup) {
-                console.log(moduleGroup.id); // test-import
                 moduleGroup.contents.forEach(function(module) {
-                  console.log(module.id); // test
                   module.contents.forEach(function(moduleComponentCategory) {
-                    console.log(moduleComponentCategory.id); // base-components
                     switch(moduleComponentCategory.id) {
                       case "components":
                         moduleComponentCategory.contents.forEach(function(component) {
@@ -2688,6 +2929,80 @@
                 throw new Error("savePageFramePart failed", response.status);
               });
             });
+          },
+          // page/pages
+          "listMergedPages" : async function() {
+            let moduleComponents;
+            let localComponents;
+          
+            try {
+              moduleComponents = await simplyDataApi.listSimplyModulePages();
+            } catch(e) {
+              moduleComponents = [];
+            }
+          
+            try {
+              localComponents = await simplyDataApi.listPages();
+            } catch(e) {
+              localComponents = [];
+            } 
+            
+            let componentIndex = {};
+            let result = [];
+          
+            moduleComponents.forEach(function(component) {
+              componentIndex[component.id] = component;
+              component.imported = true;
+              result.push(component);
+            });
+          
+            localComponents.forEach(function(localComponent) {
+              if (typeof componentIndex[localComponent.id] !== "undefined") {
+                // FIXME: Merge the module + local component;
+                let mergedComponent = {};
+                
+                componentIndex[localComponent.id].contents.forEach(function(componentPart) {
+                  if (typeof mergedComponent[componentPart.id] === "undefined") {
+                    mergedComponent[componentPart.id] = {};
+                  }
+                  let parts = JSON.parse(componentPart.contents);
+                  let nameField = simplyApp.actions.getComponentNameField(componentPart.id);
+                  if (Array.isArray(parts)) {
+                    parts.forEach(function(part) {
+                      mergedComponent[componentPart.id][part[nameField]] = part;
+                    });
+                  }
+                });
+                localComponent.contents.forEach(function(componentPart) {
+                  if (typeof mergedComponent[componentPart.id] === "undefined") {
+                    mergedComponent[componentPart.id] = {};
+                  }
+                  let parts = JSON.parse(componentPart.contents);
+                  let nameField = simplyApp.actions.getComponentNameField(componentPart.id);
+                  if (Array.isArray(parts)) {
+                    parts.forEach(function(part) {
+                      mergedComponent[componentPart.id][part[nameField]] = part;
+                    });
+                  }
+                });
+                
+                componentIndex[localComponent.id].contents = [];
+                Object.keys(mergedComponent).forEach(function(componentPart) {
+                  let content = [];
+                  Object.values(mergedComponent[componentPart]).forEach(function(part) {
+                    content.push(part);
+                  });
+                  let mergedPart = {
+                    "id" : componentPart,
+                    "contents" : JSON.stringify(content)
+                  };
+                  componentIndex[localComponent.id].contents.push(mergedPart);
+                });
+              } else {
+                result.push(localComponent);
+              }
+            });
+            return result;
           },
           // page/pages
           "listPages" : function() {
@@ -2934,7 +3249,7 @@
             },
             // page/base-components
             "listBaseComponents" : function() {
-              return simplyDataApi.listBaseComponents()
+              return simplyDataApi.listMergedBaseComponents()
                 .catch(function(error) {
                 return [];
               });
@@ -3012,7 +3327,7 @@
             },
             // page/component-list
             "listComponents" : function() {
-              return simplyDataApi.listComponents()
+              return simplyDataApi.listMergedComponents()
                 .catch(function(error) {
                 return [];
               });
@@ -3198,7 +3513,7 @@
             },
             // page/pages
             "listPages" : function() {
-              return simplyDataApi.listPages()
+              return simplyDataApi.listMergedPages()
                 .catch(function(error) {
                 return [];
               });
@@ -3217,44 +3532,6 @@
                   frame[part.id] = part.contents;
                 });
                 appData.pageFrame = frame;
-              })
-              .then(function() {
-                return simplyApp.actions.listSimplyModules()
-                .then(function(modules) {
-                  modules.forEach(function(module) {
-                    // test-import
-                    console.log(module);
-                    module.contents.forEach(function(moduleGroup) {
-                      // test
-                      moduleGroup.contents.forEach(function(moduleComponentCategory) {
-                        switch (moduleComponentCategory.id) {
-                          case "base-components":
-                          case "components":
-                          case "pages":
-                          case "builders":
-                          case "imports":
-                            moduleComponentCategory.contents.forEach(function(component) {
-                              component.contents.forEach(function(part) {
-                                if (part.id == "meta") {
-                                  return;
-                                };
-            
-                                if (typeof appData[part.id] === "undefined") {
-                                  appData[part.id] = [];
-                                }
-                                parts = JSON.parse(part.contents);
-                                parts.forEach(function(entry) {
-                                  entry.base = component.baseType + "/" + component.id;
-                                  appData[part.id].push(entry);
-                                });
-                              });
-                            });
-                          break;
-                        }
-                      });
-                    });
-                  });
-                });
               })
               .then(function() {
                 return simplyApp.actions.listBuilders()
@@ -5784,7 +6061,12 @@
       <div class="simplycode-component-list" data-simply-list="components">
         <template>
           <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="baseComponentLink">
-            <h3 data-simply-field="id"></h3>
+            <h3>
+              <span data-simply-field="id"></span>
+              <span data-simply-field="imported" data-simply-content="template" data-simply-default-value="false">
+                <template data-simply-template="true"><strong class="simplycode-module">Import</strong></template>
+              </span>
+            </h3>
             <p class="ds-margin-up" data-simply-field="description"></p>
           </a>
         </template>
@@ -5882,7 +6164,12 @@
       <div class="simplycode-component-list" data-simply-list="components">
         <template>
           <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="componentLink">
-            <h3 data-simply-field="id"></h3>
+            <h3>
+              <span data-simply-field="id"></span>
+              <span data-simply-field="imported" data-simply-content="template" data-simply-default-value="false">
+                <template data-simply-template="true"><strong class="simplycode-module">Import</strong></template>
+              </span>
+            </h3>
             <p class="ds-margin-up" data-simply-field="description"></p>
           </a>
         </template>
@@ -5992,7 +6279,12 @@
       <div class="simplycode-component-list" data-simply-list="components">
         <template>
           <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="pageLink">
-            <h3 data-simply-field="id"></h3>
+            <h3>
+              <span data-simply-field="id"></span>
+              <span data-simply-field="imported" data-simply-content="template" data-simply-default-value="false">
+                <template data-simply-template="true"><strong class="simplycode-module">Import</strong></template>
+              </span>
+            </h3>
             <p class="ds-margin-up" data-simply-field="description"></p>
           </a>
         </template>
