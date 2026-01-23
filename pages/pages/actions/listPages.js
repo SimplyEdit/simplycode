@@ -1,5 +1,5 @@
 function() {
-  return simplyDataApi.listPages()
+  return simplyDataApi.listMergedPages()
     .catch(function(error) {
     return [];
   });
