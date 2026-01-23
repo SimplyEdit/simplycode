@@ -13,6 +13,44 @@ function() {
     appData.pageFrame = frame;
   })
   .then(function() {
+    return simplyApp.actions.listSimplyModules()
+    .then(function(modules) {
+      modules.forEach(function(module) {
+        // test-import
+        console.log(module);
+        module.contents.forEach(function(moduleGroup) {
+          // test
+          moduleGroup.contents.forEach(function(moduleComponentCategory) {
+            switch (moduleComponentCategory.id) {
+              case "base-components":
+              case "components":
+              case "pages":
+              case "builders":
+              case "imports":
+                moduleComponentCategory.contents.forEach(function(component) {
+                  component.contents.forEach(function(part) {
+                    if (part.id == "meta") {
+                      return;
+                    };
+
+                    if (typeof appData[part.id] === "undefined") {
+                      appData[part.id] = [];
+                    }
+                    parts = JSON.parse(part.contents);
+                    parts.forEach(function(entry) {
+                      entry.base = component.baseType + "/" + component.id;
+                      appData[part.id].push(entry);
+                    });
+                  });
+                });
+              break;
+            }
+          });
+        });
+      });
+    });
+  })
+  .then(function() {
     return simplyApp.actions.listBuilders()
     .then(function(builders) {
       builders.forEach(function(builder) {
