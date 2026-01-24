@@ -11,6 +11,11 @@ function(component) {
       });
     }
   };
+  
+  component.parts.importUrls.forEach(function(importUrl) {
+    let modulePath = "simply-modules/" + component.id + "/" + importUrl.import + "/";
+    promises.push(simplyApp.actions.fetchImport(importUrl.url, modulePath));
+  });
 
   var meta = clone(component);
   delete meta.parts;
