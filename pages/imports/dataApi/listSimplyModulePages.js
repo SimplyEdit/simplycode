@@ -12,7 +12,7 @@ function() {
       moduleGroup.contents.forEach(function(module) {
         module.contents.forEach(function(moduleComponentCategory) {
           switch(moduleComponentCategory.id) {
-            case "components":
+            case "pages":
               moduleComponentCategory.contents.forEach(function(component) {
                 simplyDataApi.mergeComponent(component.contents);
                 component.description = component.contents.description;

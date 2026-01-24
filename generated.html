@@ -2746,7 +2746,7 @@
                 moduleGroup.contents.forEach(function(module) {
                   module.contents.forEach(function(moduleComponentCategory) {
                     switch(moduleComponentCategory.id) {
-                      case "components":
+                      case "pages":
                         moduleComponentCategory.contents.forEach(function(component) {
                           simplyDataApi.mergeComponent(component.contents);
                           component.description = component.contents.description;
@@ -3384,83 +3384,6 @@
                 await simplyRawApi.putRaw(targetPath + subpathFilename, {}, contents);
               }
             },
-            // page/import
-            "fetchImportUrls" : async function (component) {
-                // @TODO: Check if the URL is actually a ZIP file and not another type
-            
-                const zipProxyUrl = 'zithub.pother.ca'
-            
-                const imports = await simplyApp.actions.getImport(component)
-            
-                const importUrls = imports
-                    .filter(importItem => importItem.id === 'importUrls')
-                    .map(importItem => JSON.parse(importItem.contents))
-                    .flat(2)
-            
-                const fetches = importUrls.map(importDetails => {
-                    const url = new URL(importDetails.url)
-            
-                    // GitHub does not send CORS headers, so a custom build proxy is used
-                    if (url.hostname.endsWith('github.com')) {
-                        url.pathname = `${url.href}`
-                        url.hostname = zipProxyUrl
-                    }
-            
-                    return fetch(url)
-                })
-            
-                const responses = await Promise.all(fetches)
-            
-                const arrayBufferResponses = responses.map(async response => {
-                    let blob = await response.blob()
-            
-                    return await blob.arrayBuffer()
-                })
-            
-                const arrayBuffers = await Promise.all(arrayBufferResponses)
-            
-                const zipArchives = arrayBuffers.map(async arrayBuffer => {
-                    const files = {}
-            
-                    const zip = await JSZip.loadAsync(arrayBuffer)
-                    const zipFiles = Object.values(zip.files)
-            
-                    for (const file of zipFiles) {
-                        if (file.dir === false) {
-                            files[file.name] = await file.async('blob')
-                        }
-                    }
-            
-                    return files
-                })
-            
-                const archiveFiles = await Promise.all(zipArchives)
-            
-                // @CHECKME: Instead of a naked object, should FileList and File be used?
-            
-                const fileCollections = archiveFiles.map(async fileCollection => {
-                    for (const [ fileName, blob ] of Object.entries(fileCollection)) {
-                        const bytes = await blob.arrayBuffer()
-            
-                        let contents, type
-            
-                        try {
-                            type = 'text/plain;charset=utf-8'
-                            contents = new TextDecoder('utf-8', { fatal: true }).decode(bytes)
-                        } catch (e) {
-                            type = 'application/octet-stream'
-                            contents = blob
-                        }
-            
-                        fileCollection[fileName] = { contents, type }
-                    }
-            
-                    return fileCollection
-                })
-            
-                return await Promise.all(fileCollections)
-            }
-            ,
             // page/import
             "getImport" : function(component) {
               return simplyDataApi.getImport(component);
@@ -4189,6 +4112,39 @@
                   "state" : "new"
                 });
                 document.location.hash="imports/" + newComponent.id;
+              });
+            },
+            // page/imports
+            "fetchImports" : function() {  
+              editor.pageData.alerts.unshift({
+                "data-simply-template" : "info",
+                "message" : "Installing imports...",
+                "state" : "new"
+              });
+              var promises = [];
+              simplyApp.actions.listImports()
+              .then(function(modules) {
+                modules.forEach(function(module) {
+                  module.contents.forEach(function(componentPart) {
+                    if (componentPart.id === "importUrls") {
+                      let importUrls = JSON.parse(componentPart.contents);
+                      importUrls.forEach(function(importUrl) {
+                        let targetPath = "simply-modules/" + module.id + "/" + importUrl.import + "/";
+                        promises.push(simplyApp.actions.fetchImport(importUrl.url, targetPath));
+                      });
+                    }
+                  });
+                });
+              })
+              .then(function() {
+                return Promise.all(promises);
+              })
+              .then(function() {
+                editor.pageData.alerts.unshift({
+                  "data-simply-template" : "info",
+                  "message" : "Installation done!",
+                  "state" : "new"
+                });
               });
             },
             // page/page
@@ -5975,6 +5931,43 @@
     </button>
     </template>
     <!-- component/simply-toolbar-->
+    <template id="simply-toolbar-imports">
+      <div class="simply-toolbar-title">
+      <simply-render rel="logo"></simply-render>
+    </div>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#save">
+        </use></svg>
+      Save
+    </button>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#trash">
+        </use></svg>
+      Delete
+    </button>
+    <button class="ds-button simply-toolbar-button" data-simply-command="fetchImports">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#download">
+        </use></svg>
+      Fetch imports
+    </button>
+    <span class="simply-toolbar-push-right"></span>
+    <button class="ds-button simply-toolbar-button" data-simply-command="preview">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#eye">
+        </use></svg>
+      Preview
+    </button>
+    <button disabled class="ds-button simply-toolbar-button">
+      <svg class="ds-icon ds-icon-feather">
+        <use xlink:href="/assets/img/feather-sprite.svg#check">
+        </use></svg>
+      Publish
+    </button>
+    </template>
+    <!-- component/simply-toolbar-->
     <template id="simply-toolbar-page-frame">
       <div class="simply-toolbar-title">
       <simply-render rel="logo"></simply-render>
@@ -6073,6 +6066,7 @@
       <template data-simply-template="default" rel="simply-toolbar-default"></template>
       <template data-simply-template="Edit builder" rel="simply-toolbar-builder"></template>
       <template data-simply-template="Edit import" rel="simply-toolbar-import"></template>
+      <template data-simply-template="Imports" rel="simply-toolbar-imports"></template>
       <template data-simply-template="Edit page" rel="simply-toolbar-page"></template>
       <template data-simply-template="Edit component" rel="simply-toolbar-component"></template>
       <template data-simply-template="Edit base component" rel="simply-toolbar-base-component"></template>
