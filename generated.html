@@ -2272,8 +2272,8 @@
             });
           },
           // page/base-component
-          "getBaseComponent" : function(component) {
-            return simplyRawApi.get("base-components/" + component)
+          "getBaseComponent" : function(component, modulePath="") {
+            return simplyRawApi.get(modulePath + "base-components/" + component)
               .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -2482,8 +2482,8 @@
             });
           },
           // page/component
-          "getComponent" : function(component) {
-            return simplyRawApi.get("components/" + component)
+          "getComponent" : function(component, modulePath="") {
+            return simplyRawApi.get(modulePath + "components/" + component)
             .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -2721,6 +2721,8 @@
                           simplyDataApi.mergeComponent(component.contents);
                           component.description = component.contents.description;
                           component.baseType = 'component';
+                          component.moduleGroup = moduleGroup.id;
+                          component.module = module.id;
                           components.push(component);
                         });
                       break;
@@ -2837,8 +2839,8 @@
             });
           },
           // page/page
-          "getPage" : function(component) {
-            return simplyRawApi.get("pages/" + component)
+          "getPage" : function(component, modulePath="") {
+            return simplyRawApi.get(modulePath + "pages/" + component)
               .then(function(response) {
               if (response.status === 200) {
                 return response.json();
@@ -3220,8 +3222,8 @@
               return simplyDataApi.deleteBaseComponent(component);
             },
             // page/base-component
-            "getBaseComponent" : function(component) {
-              return simplyDataApi.getBaseComponent(component);
+            "getBaseComponent" : function(component, modulePath="") {
+              return simplyDataApi.getBaseComponent(component, modulePath);
             },
             // page/base-component
             "saveBaseComponent" : function(component) {
@@ -3298,8 +3300,8 @@
                 return simplyDataApi.deleteComponent(component);
             },
             // page/component
-            "getComponent" : function(component) {
-              return simplyDataApi.getComponent(component);
+            "getComponent" : function(component, modulePath="") {
+              return simplyDataApi.getComponent(component, modulePath);
             },
             // page/component
             "saveComponent" : function(component) {
@@ -3442,8 +3444,8 @@
               return simplyDataApi.deletePage(component);
             },
             // page/page
-            "getPage" : function(component) {
-              return simplyDataApi.getPage(component);
+            "getPage" : function(component, modulePath="") {
+              return simplyDataApi.getPage(component, modulePath);
             },
             // page/page
             "savePage" : function(component) {
@@ -4319,6 +4321,141 @@
                 setTimeout(function() { // FIXME: Wait for the CSS to be available;
                   simplyApp.commands.autoRunPreviews();
                 }, 1000);
+              });
+            },
+            // page/base-component
+            "#module/:moduleGroup/:module/base/:component" : function(params) {
+              simplyApp.actions.getBaseComponent(params.component,  "simply-modules/" + params.moduleGroup + "/" + params.module + "/")
+              .then(function(parts) {
+                var component = {
+                  id : params.component
+                };
+            
+                parts = parts.filter(function(part) {
+                  if (part.id == "meta") {
+                    component = JSON.parse(part.contents);
+                    component.id = params.component;
+                    return false;
+                  }
+                  return true;
+                });
+                if (typeof component.parts === "undefined") {
+                  component.parts = {
+                    headHtml : [],
+                    bodyHtml : [],
+                    footHtml : [],
+                    commands : [],
+                    actions : [],
+                    shortcuts : [],
+                    routes : [],
+                    rawApi : []
+                  };
+                }
+                var count = {};
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                  count[part.id] = component.parts[part.id].length;
+                });
+                editor.pageData.component = component;
+                editor.pageData.parts = parts;
+                editor.pageData.count = count;
+                editor.pageData.page = "View base component module";
+              });
+            },
+            // page/component
+            "#module/:moduleGroup/:module/components/:component" : function(params) {
+              editor.pageData.app = {};
+              simplyApp.actions.getAppData()
+                .then(function(appData) {
+                editor.pageData.app = appData;
+              })
+                .then(function() {
+                return simplyApp.actions.getComponent(params.component, "simply-modules/" + params.moduleGroup + "/" + params.module + "/");
+              })
+                .then(function(parts) {
+                var component = {
+                  id : params.component
+                };
+            
+                parts = parts.filter(function(part) {
+                  if (part.id == "meta") {
+                    component = JSON.parse(part.contents);
+                    component.id = params.component;
+                    return false;
+                  }
+                  return true;
+                });
+                if (typeof component.parts === "undefined") {
+                  component.parts = {
+                    componentTemplates : [],
+                    componentCss : [],
+                    commands : [],
+                    actions : [],
+                    shortcuts : [],
+                    dataApi : [],
+                    routes : [],
+                    transformers : [],
+                    dataSources : [],
+                    sorters : []
+                  };
+                }
+                var count = {};
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                  count[part.id] = component.parts[part.id].length;
+                });
+                editor.pageData.component = component;
+                editor.pageData.parts = parts;
+                editor.pageData.count = count;
+                editor.pageData.page = "View component module";
+              });
+            },
+            // page/page
+            "#module/:moduleGroup/:module/pages/:component" : function(params) {
+              editor.pageData.app = {};
+              simplyApp.actions.getAppData()
+                .then(function(appData) {
+                editor.pageData.app = appData;
+              })
+                .then(function() {
+                return simplyApp.actions.getPage(params.component, "simply-modules/" + params.moduleGroup + "/" + params.module + "/");
+              })
+                .then(function(parts) {
+                var component = {
+                  id : params.component
+                };
+            
+                parts = parts.filter(function(part) {
+                  if (part.id == "meta") {
+                    component = JSON.parse(part.contents);
+                    component.id = params.component;
+                    return false;
+                  }
+                  return true;
+                });
+                if (typeof component.parts === "undefined") {
+                  component.parts = {
+                    pageTemplates : [],
+                    pageCss : [],
+                    commands : [],
+                    actions : [],
+                    shortcuts : [],
+                    dataApi : [],
+                    routes : [],
+                    transformers : [],
+                    dataSources : [],
+                    sorters : []
+                  };
+                }
+                var count = {};
+                parts.forEach(function(part) {
+                  component.parts[part.id] = JSON.parse(part.contents);
+                  count[part.id] = component.parts[part.id].length;
+                });
+                editor.pageData.component = component;
+                editor.pageData.parts = parts;
+                editor.pageData.count = count;
+                editor.pageData.page = "View page module";
               });
             },
             // page/base-component
@@ -6108,6 +6245,25 @@
       </form>
     </main>
     </template>
+    <!-- page/base-component-->
+    <template data-simply-template="View base component module">
+      <main>
+      <div class="simplycode-header">
+        <h1>View base component module: <span data-simply-field="component.id"></span></h1>
+      </div>
+      <form action="#">
+        <simply-render rel="componentDescription"></simply-render>
+        <simply-render rel="componentHeadHtml"></simply-render>
+        <simply-render rel="componentBodyHtml"></simply-render>
+        <simply-render rel="componentFootHtml"></simply-render>
+        <simply-render rel="componentCommands"></simply-render>
+        <simply-render rel="componentShortcuts"></simply-render>
+        <simply-render rel="componentActions"></simply-render>
+        <simply-render rel="componentRoutes"></simply-render>
+        <simply-render rel="componentRawApi"></simply-render>
+      </form>
+    </main>
+    </template>
     <!-- page/base-components-->
     <template data-simply-template="Base components">
       <main>
@@ -6211,6 +6367,27 @@
       </form>
     </main>
     </template>
+    <!-- page/component-->
+    <template data-simply-template="View component module">
+      <main>
+      <div class="simplycode-header">
+        <h1>View component module: <span data-simply-field="component.id"></span></h1>
+      </div>
+      <form action="#">
+        <simply-render rel="componentDescription"></simply-render>
+        <simply-render rel="componentComponentTemplate"></simply-render>
+        <simply-render rel="componentComponentCss"></simply-render>
+        <simply-render rel="componentCommands"></simply-render>
+        <simply-render rel="componentShortcuts"></simply-render>
+        <simply-render rel="componentActions"></simply-render>
+        <simply-render rel="componentDataApi"></simply-render>
+        <simply-render rel="componentRoutes"></simply-render>
+        <simply-render rel="componentTransformers"></simply-render>
+        <simply-render rel="componentDataSources"></simply-render>
+        <simply-render rel="componentSorters"></simply-render>
+      </form>
+    </main>
+    </template>
     <!-- page/component-list-->
     <template data-simply-template="List components">
       <main>
@@ -6298,6 +6475,27 @@
       <main>
       <div class="simplycode-header">
         <h1>Edit page: <span data-simply-field="component.id"></span></h1>
+      </div>
+      <form action="#">
+        <simply-render rel="componentDescription"></simply-render>
+        <simply-render rel="componentPageTemplate"></simply-render>
+        <simply-render rel="componentPageCss"></simply-render>
+        <simply-render rel="componentCommands"></simply-render>
+        <simply-render rel="componentShortcuts"></simply-render>
+        <simply-render rel="componentActions"></simply-render>
+        <simply-render rel="componentDataApi"></simply-render>
+        <simply-render rel="componentRoutes"></simply-render>
+        <simply-render rel="componentTransformers"></simply-render>
+        <simply-render rel="componentDataSources"></simply-render>
+        <simply-render rel="componentSorters"></simply-render>
+      </form>
+    </main>
+    </template>
+    <!-- page/page-->
+    <template data-simply-template="View page module">
+      <main>
+      <div class="simplycode-header">
+        <h1>View page module: <span data-simply-field="component.id"></span></h1>
       </div>
       <form action="#">
         <simply-render rel="componentDescription"></simply-render>
@@ -6820,12 +7018,21 @@
         // page/base-components
         "baseComponentLink" : {
           render : function(data) {
-            this.simplyData = data;
-            return {
-              href : "#base/" + data,
-              innerHTML: data
-            };
-          },
+              this.simplyData = data;
+              let componentData = this.dataBinding.config.data;
+              if (typeof componentData.imported !== "undefined" && componentData.imported) {
+                return {
+                  href: "#module/" + componentData.moduleGroup + "/" + componentData.module + "/base/" + data,
+                  innerHTML: data
+                };
+              } else {
+                return {
+                  href : "#base/" + data,
+                  innerHTML: data
+                };
+              } 
+          }
+          ,
           extract : function(data) {
             return this.simplyData;
           }
@@ -6847,10 +7054,18 @@
         "componentLink" : {
           render : function(data) {
               this.simplyData = data;
-              return {
-                href : "#components/" + data,
-                innerHTML: data
-              };
+              let componentData = this.dataBinding.config.data;
+              if (typeof componentData.imported !== "undefined" && componentData.imported) {
+                return {
+                  href: "#module/" + componentData.moduleGroup + "/" + componentData.module + "/components/" + data,
+                  innerHTML: data
+                };
+              } else {
+                return {
+                  href : "#components/" + data,
+                  innerHTML: data
+                };
+              } 
           },
           extract : function(data) {
               return this.simplyData;
@@ -6872,12 +7087,21 @@
         // page/pages
         "pageLink" : {
           render : function(data) {
-            this.simplyData = data;
-            return {
-              href : "#pages/" + data,
-              innerHTML: data
-            };
-          },
+              this.simplyData = data;
+              let componentData = this.dataBinding.config.data;
+              if (typeof componentData.imported !== "undefined" && componentData.imported) {
+                return {
+                  href: "#module/" + componentData.moduleGroup + "/" + componentData.module + "/pages/" + data,
+                  innerHTML: data
+                };
+              } else {
+                return {
+                  href : "#pages/" + data,
+                  innerHTML: data
+                };
+              }
+          }
+          ,
           extract : function(data) {
             return this.simplyData;
           }
