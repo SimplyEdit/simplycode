@@ -12,10 +12,16 @@ function(component) {
     }
   };
   
-  component.parts.importUrls.forEach(function(importUrl) {
-    let modulePath = "simply-modules/" + component.id + "/" + importUrl.import + "/";
-    promises.push(simplyApp.actions.fetchImport(importUrl.url, modulePath));
-  });
+  if (
+    (typeof component.parts !== "undefined") &&
+    (typeof component.parts.importUrls !== "undefined") &&
+    Array.isArray(component.parts.importUrls)
+  ) {
+    component.parts.importUrls.forEach(function(importUrl) {
+      let modulePath = "simply-modules/" + component.id + "/" + importUrl.import + "/";
+      promises.push(simplyApp.actions.fetchImport(importUrl.url, modulePath));
+    });
+  }
 
   var meta = clone(component);
   delete meta.parts;
