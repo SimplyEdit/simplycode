@@ -1,5 +1,5 @@
-function(component) {
-  return simplyRawApi.get("pages/" + component)
+function(component, modulePath="") {
+  return simplyRawApi.get(modulePath + "pages/" + component)
     .then(function(response) {
     if (response.status === 200) {
       return response.json();
