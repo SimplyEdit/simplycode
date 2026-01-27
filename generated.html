@@ -3342,14 +3342,11 @@
             "fetchImport" : async function (importUrl, targetPath) {
               const zipProxyUrl = 'zithub.pother.ca'
             
-              // GitHub does not send CORS headers, so a custom build proxy is used
               const url = new URL(importUrl);
-              if (url.hostname.endsWith('github.com')) {
-                url.pathname = `${url.href}`;
-                url.hostname = zipProxyUrl;
-              }
             
-              const response = await fetch(url);
+              const response = await fetch(url, {
+                "mode": "same-origin" // without this, gitlab returns a 406. Github does not seem to mind if we send this
+              });
               let blob = await response.blob();
               let arrayBuffer = blob.arrayBuffer();
             
@@ -3378,9 +3375,7 @@
             
                 let subpathFilename = fileName.split("/");
                 let zipProvider = new URL(importUrl);
-                if (zipProvider.hostname.endsWith('github.com')) {
-                  subpathFilename.shift(); // github adds the repo name as the directory in the zip, remove that;
-                }
+                subpathFilename.shift(); // github adds the repo name as the directory in the zip, remove that; gitlab does the same.
                 subpathFilename = subpathFilename.join("/");
              
                 await simplyRawApi.putRaw(targetPath + subpathFilename, {}, contents);
