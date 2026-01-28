@@ -1,7 +1,7 @@
 function(data) {
     this.simplyData = data;
     let componentData = this.dataBinding.config.data;
-    if (typeof componentData.imported !== "undefined" && componentData.imported) {
+    if (componentData.moduleGroup && componentData.module) {
       return {
         href: "#module/" + componentData.moduleGroup + "/" + componentData.module + "/components/" + data,
         innerHTML: data

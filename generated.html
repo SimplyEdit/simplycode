@@ -2691,6 +2691,8 @@
                           simplyDataApi.mergeComponent(component.contents);
                           component.description = component.contents.description;
                           component.baseType = 'baseComponent';
+                          component.moduleGroup = moduleGroup.id;
+                          component.module = module.id;
                           components.push(component);
                         });
                       break;
@@ -2753,6 +2755,8 @@
                           simplyDataApi.mergeComponent(component.contents);
                           component.description = component.contents.description;
                           component.baseType = 'page';
+                          component.moduleGroup = moduleGroup.id;
+                          component.module = module.id;
                           components.push(component);
                         });
                       break;
@@ -7015,7 +7019,7 @@
           render : function(data) {
               this.simplyData = data;
               let componentData = this.dataBinding.config.data;
-              if (typeof componentData.imported !== "undefined" && componentData.imported) {
+              if (componentData.moduleGroup && componentData.module) {
                 return {
                   href: "#module/" + componentData.moduleGroup + "/" + componentData.module + "/base/" + data,
                   innerHTML: data
@@ -7050,7 +7054,7 @@
           render : function(data) {
               this.simplyData = data;
               let componentData = this.dataBinding.config.data;
-              if (typeof componentData.imported !== "undefined" && componentData.imported) {
+              if (componentData.moduleGroup && componentData.module) {
                 return {
                   href: "#module/" + componentData.moduleGroup + "/" + componentData.module + "/components/" + data,
                   innerHTML: data
@@ -7084,7 +7088,7 @@
           render : function(data) {
               this.simplyData = data;
               let componentData = this.dataBinding.config.data;
-              if (typeof componentData.imported !== "undefined" && componentData.imported) {
+              if (componentData.moduleGroup && componentData.module) {
                 return {
                   href: "#module/" + componentData.moduleGroup + "/" + componentData.module + "/pages/" + data,
                   innerHTML: data

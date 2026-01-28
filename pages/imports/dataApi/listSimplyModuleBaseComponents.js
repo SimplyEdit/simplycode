@@ -17,6 +17,8 @@ function() {
                 simplyDataApi.mergeComponent(component.contents);
                 component.description = component.contents.description;
                 component.baseType = 'baseComponent';
+                component.moduleGroup = moduleGroup.id;
+                component.module = module.id;
                 components.push(component);
               });
             break;
