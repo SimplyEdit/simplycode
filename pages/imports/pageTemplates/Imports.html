@@ -1,0 +1,29 @@
+<main>
+  <h1>Imports</h1>
+  <div class="simplycode-component-list" data-simply-list="components">
+    <template>
+      <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="importLink">
+        <h3 data-simply-field="id"></h3>
+        <p class="ds-margin-up" data-simply-field="description"></p>
+      </a>
+    </template>
+  </div>
+  <form action="#">
+    <h1>Add import</h1>
+    <div class="simplycode-part">
+      <div class="simplycode-part-header">
+        <div class="simplycode-tabs">
+          <input required data-simply-field="newComponent.id" class="simplycode-tab" placeholder="Name your component">
+        </div>
+        <div class="simplycode-options">
+          <button class="simplycode-button" data-simply-command="createImport">Create</button>
+        </div>
+      </div>
+      <div class="simplycode-editors">
+        <div class="simplycode-editor-code">
+          <textarea data-simply-field="newComponent.description" placeholder="Describe what this component should do, for your own use."></textarea>
+        </div>
+      </div>
+    </div>
+  </form>
+</main>

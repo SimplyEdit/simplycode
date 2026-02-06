@@ -1,0 +1,36 @@
+<details class="simplycode-component">
+  <summary data-simply-command="initEditors" title="These imports are fetched as modules for your project.">
+    <span data-simply-field="count.imports" data-simply-content="attributes" data-simply-attributes="data-count">
+      Import URL
+    </span>
+    <span class="simplycode-controls">
+      <button class="simplycode-button" data-simply-command="addImportUrl">Add import URL</button>
+    </span>
+  </summary>
+  <div class="simplycode-code-method" data-simply-list="component.parts.importUrls">
+    <template>
+      <div class="simplycode-part" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted">
+        <div class="simplycode-part-header">
+          <div class="simplycode-tabs">
+            <input class="simplycode-tab" data-simply-field="import" required placeholder="Import name">
+            <label class="simplycode-tab">
+              <input type="radio" name="importEditor" checked value="url" data-simply-field="editor">
+              <span>URL</span>
+            </label>
+          </div>
+          <div class="simplycode-options">
+            <button class="simplycode-button" draggable="true">Drag to move</button>
+            <button class="simplycode-button" data-simply-field="deleted" data-simply-content="attributes" data-simply-attributes="data-deleted" data-simply-command="deleteEntry">Delete import URL</button>
+          </div>
+        </div>
+        <div class="simplycode-editors">
+          <div class="simplycode-editor-url" data-simply-field="editor" data-simply-content="template" data-simply-default-template="url">
+            <template data-simply-template="url">
+              <input type="text" data-simply-field="url" placeholder="https://....">
+            </template>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</details>
