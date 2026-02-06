@@ -237,3 +237,8 @@ header .simplycode-controls {
 .simplycode-editor-code textarea {
   margin-top: -1px;
 }
+strong.simplycode-module {
+  color: var(--simplycode-highlight-dark);
+  float: right;
+  padding-right: 5px;
+}

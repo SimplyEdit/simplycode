@@ -1,3 +1,3 @@
-function(component) {
-  return simplyDataApi.getComponent(component);
+function(component, modulePath="") {
+  return simplyDataApi.getComponent(component, modulePath);
 }

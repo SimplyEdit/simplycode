@@ -1,5 +1,5 @@
 function() {
-  return simplyDataApi.listComponents()
+  return simplyDataApi.listMergedComponents()
     .catch(function(error) {
     return [];
   });

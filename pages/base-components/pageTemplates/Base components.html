@@ -3,7 +3,12 @@
   <div class="simplycode-component-list" data-simply-list="components">
     <template>
       <a class="simplycode-component-list-item" data-simply-command="navigate" href="#" data-simply-field="id" data-simply-content="fixed" data-simply-transformer="baseComponentLink">
-        <h3 data-simply-field="id"></h3>
+        <h3>
+          <span data-simply-field="id"></span>
+          <span data-simply-field="imported" data-simply-content="template" data-simply-default-value="false">
+            <template data-simply-template="true"><strong class="simplycode-module">Import</strong></template>
+          </span>
+        </h3>
         <p class="ds-margin-up" data-simply-field="description"></p>
       </a>
     </template>
